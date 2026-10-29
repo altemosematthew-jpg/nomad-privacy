@@ -1,0 +1,480 @@
+<title>Strike Finder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: dark-first trading desk. Masthead with data status -> lens tabs (what "best" means) -> filter rail -> dense sortable table -> detail drawer with payoff and the Robinhood hand-off. */
+:root{
+  --bg:#0e1116; --panel:#151a21; --panel-2:#1b222b; --fg:#e7ecf2; --fg-2:#a6b0bd; --fg-3:#6f7a88;
+  --line:#2a333f; --line-2:#1f2731; --accent:#f5b84b; --accent-ink:#0e1116; --accent-soft:#3a2d12;
+  --up:#4fd18b; --down:#f0634f; --warn:#f5b84b; --info:#7fb3ff;
+  --font-ui:"Archivo","Helvetica Neue",Arial,sans-serif; --font-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --radius:4px; color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f5f7; --panel:#ffffff; --panel-2:#eef1f5; --fg:#141a22; --fg-2:#4d5866; --fg-3:#7d8794;
+    --line:#d3d9e1; --line-2:#e4e8ee; --accent:#b8740a; --accent-ink:#ffffff; --accent-soft:#fdf0d5;
+    --up:#167a46; --down:#c23d2b; --warn:#b8740a; --info:#2458c5; color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f4f5f7; --panel:#ffffff; --panel-2:#eef1f5; --fg:#141a22; --fg-2:#4d5866; --fg-3:#7d8794;
+  --line:#d3d9e1; --line-2:#e4e8ee; --accent:#b8740a; --accent-ink:#ffffff; --accent-soft:#fdf0d5;
+  --up:#167a46; --down:#c23d2b; --warn:#b8740a; --info:#2458c5; color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.15}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--fg-3)}
+.eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);font-weight:600}
+
+/* masthead */
+.mast .wrap{padding-block:18px 10px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;justify-content:space-between}
+.brand{display:grid;gap:2px}
+.brand h1{font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em}
+.brand h1 em{font-style:normal;color:var(--accent)}
+.brand p{color:var(--fg-2);max-width:60ch}
+.status{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg-2)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--fg-3);margin-right:6px;vertical-align:middle}
+.dot.live{background:var(--up)} .dot.snap{background:var(--warn)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:var(--radius);padding:7px 11px;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--fg-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:4px 8px;font-size:12px}
+
+/* symbol strip */
+.symbols .wrap{padding-block:8px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;align-items:center}
+.sym{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:6px 10px;display:grid;gap:1px;cursor:pointer;min-width:92px;text-align:left}
+.sym[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sym b{font-weight:700;font-size:13px}
+.sym .px{font-size:12px}
+.sym .iv{font-size:11px;color:var(--fg-3)}
+.addsym{flex:none;display:flex;gap:6px;align-items:center}
+.addsym input{width:90px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:7px 8px;text-transform:uppercase}
+
+/* lenses */
+.lenses .wrap{padding-block:12px 4px;display:grid;gap:8px}
+.lens-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.lens{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--fg-2)}
+.lens[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.lens-desc{font-size:13px;color:var(--fg-2);max-width:90ch}
+
+/* filters */
+.filters .wrap{padding-block:8px 10px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
+.f{display:grid;gap:3px;min-width:0}
+.f label{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.f input,.f select{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:6px 8px;width:100%;min-width:0}
+.f input[type=number]{width:84px;font-family:var(--font-num)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;padding:6px 10px;font-size:13px;color:var(--fg-2);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--fg);font-weight:600}
+.count{margin-left:auto;font-size:12.5px;color:var(--fg-2)}
+
+/* table */
+.tablewrap{overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:1180px;font-size:13px}
+thead th{position:sticky;top:0;background:var(--bg);text-align:right;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-3);padding:8px 8px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+thead th.l,td.l{text-align:left}
+thead th[aria-sort="descending"]::after{content:" \25BE";color:var(--accent)} thead th[aria-sort="ascending"]::after{content:" \25B4";color:var(--accent)}
+tbody td{padding:7px 8px;border-bottom:1px solid var(--line-2);text-align:right;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel)}
+tbody tr[aria-selected="true"]{background:var(--accent-soft)}
+td.sym-cell b{font-weight:700}
+.tag{display:inline-block;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.tag.c{background:rgba(79,209,139,.16);color:var(--up)} .tag.p{background:rgba(240,99,79,.16);color:var(--down)}
+.bar{display:inline-block;width:46px;height:6px;background:var(--line-2);border-radius:3px;vertical-align:middle;margin-left:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.empty{padding:28px 0;color:var(--fg-2);display:grid;gap:6px}
+
+/* detail drawer */
+.drawer{border:1px solid var(--line);background:var(--panel);border-radius:6px;margin-block:14px 26px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0}
+.drawer>div{padding:16px;min-width:0}
+.drawer .right{border-left:1px solid var(--line)}
+.d-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:10px}
+.d-head h2{font-size:20px;font-weight:800}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px 16px;margin-top:8px}
+.kv div{display:grid;gap:1px;min-width:0}
+.kv .k{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.kv .v{font-size:15px;font-weight:600}
+.kv .s{font-size:12px;color:var(--fg-2)}
+.why{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:4px;font-size:13px;color:var(--fg-2)}
+.why b{color:var(--fg)}
+.payoff{width:100%;height:auto;max-width:100%;display:block;margin-top:6px}
+.ticket{border:1px solid var(--line);background:var(--bg);border-radius:var(--radius);padding:10px 12px;font-family:var(--font-num);font-size:13px;white-space:pre-wrap;word-break:break-word;user-select:all}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.sizer{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end;margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
+.note{font-size:12.5px;color:var(--fg-2)}
+.steps{margin:8px 0 0;padding-left:18px;color:var(--fg-2);font-size:13px;display:grid;gap:3px}
+
+/* glossary + footer */
+.glossary .wrap{padding-block:10px 20px}
+.glossary details{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:0 14px}
+.glossary summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
+.glossary summary::-webkit-details-marker{display:none}
+.glossary dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 24px;margin:0;padding:0 0 14px;border-top:1px solid var(--line-2);padding-top:12px}
+.glossary dt{font-weight:700;font-size:13px}
+.glossary dd{margin:2px 0 0;font-size:13px;color:var(--fg-2)}
+footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:grid;gap:4px;border-top:1px solid var(--line)}
+@media (max-width:860px){ .drawer{grid-template-columns:1fr} .drawer .right{border-left:0;border-top:1px solid var(--line)} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+
+<header class="mast"><div class="wrap">
+  <div class="brand">
+    <h1>Strike <em>Finder</em></h1>
+    <p>Scans every listed call and put on your watchlist and ranks them by what you mean by "best": priced below fair value, tight and liquid, likeliest to pay, or most leverage per dollar. Then hands the exact contract to Robinhood.</p>
+  </div>
+  <div class="status">
+    <span><i class="dot" id="dot"></i><span id="status-text">Loading chains…</span></span>
+    <button class="btn sm" id="refresh" type="button">Refresh</button>
+  </div>
+</div></header>
+
+<section class="symbols" aria-label="Watchlist"><div class="wrap" id="symstrip"></div></section>
+
+<section class="lenses"><div class="wrap">
+  <div class="lens-row" id="lenses" role="group" aria-label="Ranking lens"></div>
+  <p class="lens-desc" id="lens-desc"></p>
+</div></section>
+
+<section class="filters"><div class="wrap">
+  <div class="f"><label for="side">I want to</label>
+    <div class="seg" id="side"><button type="button" data-v="buy" aria-pressed="true">Buy</button><button type="button" data-v="sell" aria-pressed="false">Sell (collect premium)</button></div></div>
+  <div class="f"><label for="type">Type</label>
+    <div class="seg" id="type"><button type="button" data-v="both" aria-pressed="true">Calls + puts</button><button type="button" data-v="C" aria-pressed="false">Calls</button><button type="button" data-v="P" aria-pressed="false">Puts</button></div></div>
+  <div class="f"><label for="dte-min">Days to expiry</label><div style="display:flex;gap:4px;align-items:center"><input id="dte-min" type="number" min="0" max="365" value="5"><span class="muted">to</span><input id="dte-max" type="number" min="1" max="365" value="60"></div></div>
+  <div class="f"><label for="delta-min">|Delta|</label><div style="display:flex;gap:4px;align-items:center"><input id="delta-min" type="number" min="0" max="1" step="0.05" value="0.15"><span class="muted">to</span><input id="delta-max" type="number" min="0" max="1" step="0.05" value="0.70"></div></div>
+  <div class="f"><label for="max-price">Max price / contract ($)</label><input id="max-price" type="number" min="0" step="50" value="1500"></div>
+  <div class="f"><label for="min-oi">Min open interest</label><input id="min-oi" type="number" min="0" step="50" value="200"></div>
+  <div class="f"><label for="max-spread">Max spread %</label><input id="max-spread" type="number" min="0" max="100" step="1" value="12"></div>
+  <div class="f"><label for="per-sym">Per symbol</label><select id="per-sym"><option value="3">Top 3</option><option value="5" selected>Top 5</option><option value="10">Top 10</option><option value="999">All</option></select></div>
+  <span class="count" id="count"></span>
+</div></section>
+
+<section class="wrap" aria-label="Results">
+  <div class="tablewrap">
+    <table id="tbl">
+      <thead><tr>
+        <th class="l" data-k="sym">Symbol</th><th class="l" data-k="type">Type</th><th data-k="dte">Exp · DTE</th><th data-k="strike">Strike</th>
+        <th data-k="mid">Bid / Ask</th><th data-k="spreadPct">Spread</th><th data-k="iv">IV</th><th data-k="ivRel">IV vs 30d</th>
+        <th data-k="delta">Δ</th><th data-k="pop">P(profit)</th><th data-k="moveBE">Move to BE</th><th data-k="thetaPct">Theta/day</th>
+        <th data-k="theoEdge">vs fair</th><th data-k="oi">OI</th><th data-k="vol">Vol</th><th data-k="score" aria-sort="descending">Score</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="empty" id="empty" hidden><b>No contracts match these filters.</b><span>Widen the delta or DTE range, lower the open-interest floor, or raise the max price.</span></div>
+  <div class="drawer" id="drawer" hidden></div>
+</section>
+
+<section class="glossary"><div class="wrap">
+  <details><summary>How the numbers are computed, and what "best" means in each lens</summary>
+    <dl>
+      <dt>vs fair</dt><dd>Cboe's theoretical value (its own volatility-surface price) compared with what you'd pay (the ask) or receive (the bid). +4% means the ask sits 4% under theo. The single most direct "is this contract cheap" number.</dd>
+      <dt>P(profit)</dt><dd>Black–Scholes probability the stock finishes beyond your breakeven at expiry, using the contract's own implied volatility. For sellers it's the chance the option expires worthless or below the credit you took.</dd>
+      <dt>IV vs 30d</dt><dd>The contract's implied volatility relative to the symbol's 30-day at-the-money IV. Negative = this strike is priced calmer than the rest of the chain (cheaper vol).</dd>
+      <dt>Theta/day</dt><dd>Daily time decay as a percent of the option's mid price. 1.5% means the premium bleeds 1.5% a day if nothing moves. Buyers want low; sellers want high.</dd>
+      <dt>Spread</dt><dd>(ask − bid) ÷ mid. Anything over ~10% is expensive to get in and out of; the score punishes it hard.</dd>
+      <dt>Score</dt><dd>Percentile ranks blended per lens (weights shown in the lens description). Only contracts that pass your filters are ranked, so the score is relative to the current view.</dd>
+      <dt>Leverage</dt><dd>|Δ| × stock price ÷ option price: how many dollars of stock exposure each dollar of premium controls.</dd>
+      <dt>Data</dt><dd>Cboe delayed quotes (about 15 minutes behind the market). Greeks and theo are Cboe's. Nothing here is advice; it is a ranked list of what the chain says right now.</dd>
+    </dl>
+  </details>
+</div></section>
+
+<footer><div class="wrap">
+  <p><b>Not investment advice.</b> Options can lose their entire premium; short options can lose more than the premium received. Quotes are delayed ~15 minutes; confirm the live price inside Robinhood before you submit an order.</p>
+  <p id="foot-src"></p>
+</div></footer>
+
+<script>
+/* ---------- data loading: embedded snapshot (shared page) or the local server (Mac mini) ---------- */
+const RH_CHAIN = s => "https://robinhood.com/options/chains/" + encodeURIComponent(s);
+const RH_STOCK = s => "https://robinhood.com/us/en/stocks/" + encodeURIComponent(s) + "/";
+const R = 0.04;                       // risk-free rate used in the probability math
+const LENSES = [
+  {id:"value",   name:"Best priced",      desc:"Priced below Cboe's fair value, in a liquid contract you can actually fill. Weights: vs fair 40%, spread 20%, liquidity 20%, theta burn 10%, IV vs 30d 10%.",
+   w:{theoEdge:.40, spread:.20, liq:.20, theta:.10, ivRel:.10}},
+  {id:"liquid",  name:"Tightest & most liquid", desc:"Best execution: narrowest spreads and the deepest open interest and volume. Weights: spread 45%, liquidity 45%, vs fair 10%.",
+   w:{spread:.45, liq:.45, theoEdge:.10}},
+  {id:"pop",     name:"Highest chance to pay", desc:"Probability the trade finishes profitable at expiry, with liquidity as a tiebreaker. Weights: P(profit) 60%, spread 20%, liquidity 20%.",
+   w:{pop:.60, spread:.20, liq:.20}},
+  {id:"cheapvol",name:"Cheap volatility",  desc:"Strikes whose implied volatility is low versus the symbol's 30-day IV and whose IV is falling: the option itself is cheap, regardless of direction. Weights: IV vs 30d 45%, IV trend 15%, spread 20%, liquidity 20%.",
+   w:{ivRel:.45, ivTrend:.15, spread:.20, liq:.20}},
+  {id:"lever",   name:"Most leverage",     desc:"Most stock exposure per dollar of premium. These are the lottery tickets; theta eats them, so decay is penalised. Weights: leverage 50%, theta burn 20%, spread 15%, liquidity 15%.",
+   w:{lever:.50, theta:.20, spread:.15, liq:.15}},
+  {id:"flow",    name:"Unusual activity",  desc:"Where money is moving today: volume far above open interest. Weights: volume/OI 55%, volume 25%, spread 20%.",
+   w:{flow:.55, volRank:.25, spread:.20}},
+];
+const state = {data:null, live:false, symbols:new Set(), lens:"value", side:"buy", type:"both", sortK:"score", sortDir:-1, sel:null, all:[]};
+
+const $ = s => document.querySelector(s);
+const fmt = (n,d=2) => (n==null||isNaN(n)) ? "–" : n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (n,d=1,sign=false) => (n==null||isNaN(n)) ? "–" : (sign&&n>0?"+":"") + (n*100).toFixed(d) + "%";
+const money = n => "$" + fmt(n,2);
+function ncdf(x){ const t=1/(1+0.2316419*Math.abs(x)); const d=0.3989423*Math.exp(-x*x/2); let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return x>0?1-p:p; }
+function parseOCC(occ){ const m=/^([A-Z0-9.\-^]{1,10})(\d{2})(\d{2})(\d{2})([CP])(\d{8})$/.exec(occ); if(!m) return null;
+  return {root:m[1], exp:new Date(2000+ +m[2], +m[3]-1, +m[4], 16, 0, 0), type:m[5], strike:+m[6]/1000}; }
+
+function setStatus(text, kind){ $("#status-text").textContent=text; const d=$("#dot"); d.className="dot"+(kind?" "+kind:""); }
+
+async function loadData(){
+  if(window.__SNAPSHOT__){ state.data=window.__SNAPSHOT__; state.live=false;
+    const ts=new Date(state.data.generated*1000);
+    setStatus("Snapshot from "+ts.toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" · Cboe delayed quotes","snap"); return true; }
+  try{ const r=await fetch("/api/scan",{cache:"no-store"}); if(!r.ok) throw new Error(r.status); state.data=await r.json(); state.live=true;
+    setStatus("Live via local server · "+state.data.symbols.length+" symbols · Cboe delayed 15 min","live"); return true; }
+  catch(e){ setStatus("No data source. Open this page from the Options Finder server on your Mac (http://127.0.0.1:8765) or republish with a snapshot.",""); return false; }
+}
+async function addSymbol(sym){
+  sym=sym.toUpperCase().replace(/[^A-Z0-9.\-^]/g,""); if(!sym) return;
+  if(state.data.symbols.some(s=>s.s===sym)){ state.symbols.add(sym); build(); return; }
+  if(!state.live){ setStatus("Snapshot mode: "+sym+" isn't in the snapshot. Run the local server for any symbol.","snap"); return; }
+  setStatus("Fetching "+sym+"…","live");
+  try{ const r=await fetch("/api/chain?symbol="+encodeURIComponent(sym)); const j=await r.json(); if(j.error) throw new Error(j.error);
+    state.data.symbols.push(j); state.symbols.add(sym); build(); setStatus("Live via local server · "+state.data.symbols.length+" symbols","live"); }
+  catch(e){ setStatus("Couldn't load "+sym+": "+e.message,"live"); }
+}
+
+/* ---------- metrics ---------- */
+function enrich(){
+  const now=Date.now(); const rows=[];
+  for(const S of state.data.symbols){
+    const px=+S.px||0; if(!px) continue;
+    const iv30=S.iv30? S.iv30/100 : null;
+    for(const o of S.o){
+      const [occ,bid,ask,bs,as,iv,oi,vol,delta,gamma,theta,vega,theo,last]=o;
+      const p=parseOCC(occ); if(!p||ask<=0) continue;
+      const dte=(p.exp-now)/86400000; if(dte<=0) continue;
+      const T=dte/365, mid=(bid+ask)/2 || ask;
+      const spreadPct=(ask-bid)/mid;
+      const K=p.strike, isC=p.type==="C";
+      // buyer breakeven at the ask; seller breakeven at the bid
+      const beBuy = isC ? K+ask : K-ask;
+      const beSell= isC ? K+bid : K-bid;
+      const sig=iv>0?iv:(iv30||0.3);
+      const dBuy=(Math.log(px/beBuy)+(R-sig*sig/2)*T)/(sig*Math.sqrt(T));
+      const popBuy = isC ? ncdf(dBuy) : ncdf(-dBuy);
+      const dSell=(Math.log(px/beSell)+(R-sig*sig/2)*T)/(sig*Math.sqrt(T));
+      const popSell= isC ? ncdf(-dSell) : ncdf(dSell);
+      const theoEdgeBuy = theo>0 ? (theo-ask)/ask : null;      // + = ask below fair value
+      const theoEdgeSell= theo>0 ? (bid-theo)/theo : null;     // + = bid above fair value
+      const moveBE = isC ? (beBuy-px)/px : (beBuy-px)/px;
+      rows.push({sym:S.s, px, occ, type:p.type, exp:p.exp, dte, strike:K, bid, ask, mid, bs, as, iv, iv30, ivTrend:S.ivchg!=null? -S.ivchg/100 : 0,
+        ivRel: iv30? iv/iv30-1 : 0, oi, vol, delta, adelta:Math.abs(delta), gamma, theta, vega, theo, last,
+        spreadPct, popBuy, popSell, theoEdgeBuy, theoEdgeSell, beBuy, beSell, moveBE,
+        thetaPct: mid>0 ? Math.abs(theta)/mid : 0, lever: mid>0 ? Math.abs(delta)*px/mid : 0,
+        flow: oi>0 ? vol/oi : (vol>0? 5:0), cost: ask*100, credit: bid*100,
+        expMove: px*sig*Math.sqrt(T)});
+    }
+  }
+  state.all=rows;
+}
+function filtered(){
+  const f={dteMin:+$("#dte-min").value||0, dteMax:+$("#dte-max").value||365, dMin:+$("#delta-min").value||0, dMax:+$("#delta-max").value||1,
+    maxPrice:+$("#max-price").value||1e9, minOI:+$("#min-oi").value||0, maxSpread:(+$("#max-spread").value||100)/100};
+  return state.all.filter(r => state.symbols.has(r.sym) && (state.type==="both"||r.type===state.type) && r.dte>=f.dteMin && r.dte<=f.dteMax
+    && r.adelta>=f.dMin && r.adelta<=f.dMax && r.oi>=f.minOI && r.spreadPct<=f.maxSpread && (state.side==="buy" ? r.cost<=f.maxPrice : true) && r.bid>0);
+}
+function pctRank(arr, key, higherBetter=true){
+  const vals=arr.map(key).map(v=>v==null?NaN:v); const sorted=vals.filter(v=>!isNaN(v)).sort((a,b)=>a-b); const n=sorted.length;
+  return vals.map(v=>{ if(isNaN(v)||!n) return 0.5; let lo=0,hi=n; while(lo<hi){const m=(lo+hi)>>1; if(sorted[m]<v) lo=m+1; else hi=m;} const p=n>1? lo/(n-1):0.5; return higherBetter? Math.min(1,p) : 1-Math.min(1,p); });
+}
+function score(rows){
+  const buy=state.side==="buy"; const L=LENSES.find(l=>l.id===state.lens);
+  rows.forEach(r=>{ r.pop=buy?r.popBuy:r.popSell; r.theoEdge=buy?r.theoEdgeBuy:r.theoEdgeSell; });
+  const comps={
+    theoEdge: pctRank(rows, r=>r.theoEdge, true),
+    spread:   pctRank(rows, r=>r.spreadPct, false),
+    liq:      pctRank(rows, r=>Math.log1p(r.oi)+0.6*Math.log1p(r.vol)+0.2*Math.log1p(r.bs+r.as), true),
+    theta:    pctRank(rows, r=>r.thetaPct, !buy),
+    ivRel:    pctRank(rows, r=>r.ivRel, !buy),
+    ivTrend:  pctRank(rows, r=>r.ivTrend, buy),
+    pop:      pctRank(rows, r=>r.pop, true),
+    lever:    pctRank(rows, r=>r.lever, true),
+    flow:     pctRank(rows, r=>r.flow, true),
+    volRank:  pctRank(rows, r=>r.vol, true),
+  };
+  rows.forEach((r,i)=>{ let s=0, wsum=0; for(const k in L.w){ s+=L.w[k]*comps[k][i]; wsum+=L.w[k]; } r.score=wsum? s/wsum : 0; r.parts=Object.fromEntries(Object.keys(L.w).map(k=>[k,comps[k][i]])); });
+  return rows;
+}
+function build(){
+  if(!state.data) return;
+  let rows=score(filtered());
+  const per=+$("#per-sym").value||999;
+  if(per<999){ const by={}; rows.sort((a,b)=>b.score-a.score); rows=rows.filter(r=>{ by[r.sym]=(by[r.sym]||0)+1; return by[r.sym]<=per; }); }
+  const k=state.sortK, dir=state.sortDir;
+  rows.sort((a,b)=>{ const x=a[k], y=b[k]; if(typeof x==="string") return dir*x.localeCompare(y); return dir*((x??-Infinity)-(y??-Infinity)); });
+  renderRows(rows);
+  $("#count").textContent=rows.length+" contracts shown · "+filtered().length+" pass filters · "+state.all.length+" scanned";
+  if(state.sel && !rows.some(r=>r.occ===state.sel)) { state.sel=null; $("#drawer").hidden=true; }
+}
+function renderRows(rows){
+  const tb=$("#rows"); tb.textContent=""; $("#empty").hidden=rows.length>0;
+  const frag=document.createDocumentFragment();
+  for(const r of rows){
+    const tr=document.createElement("tr"); tr.dataset.occ=r.occ; tr.setAttribute("aria-selected", state.sel===r.occ?"true":"false");
+    const cells=[
+      ["l sym-cell", `<b>${r.sym}</b> <span class="muted num">${fmt(r.px,2)}</span>`],
+      ["l", `<span class="tag ${r.type==="C"?"c":"p"}">${r.type==="C"?"CALL":"PUT"}</span>`],
+      ["num", `${r.exp.toLocaleDateString("en-US",{month:"short",day:"numeric"})} · ${Math.ceil(r.dte)}d`],
+      ["num", fmt(r.strike, r.strike%1?2:0)],
+      ["num", `${fmt(r.bid)} / ${fmt(r.ask)}`],
+      ["num "+(r.spreadPct>0.1?"down":""), pct(r.spreadPct,1)],
+      ["num", pct(r.iv,0)],
+      ["num "+(r.ivRel<0?"up":r.ivRel>0.15?"down":""), pct(r.ivRel,0,true)],
+      ["num", fmt(r.delta,2)],
+      ["num "+(r.pop>=0.5?"up":""), pct(r.pop,0)],
+      ["num", pct(r.moveBE,1,true)],
+      ["num", pct(r.thetaPct,1)],
+      ["num "+(r.theoEdge>0?"up":r.theoEdge<-0.05?"down":""), pct(r.theoEdge,1,true)],
+      ["num", r.oi.toLocaleString()],
+      ["num", r.vol.toLocaleString()],
+      ["num", `${(r.score*100).toFixed(0)}<span class="bar"><i style="width:${Math.round(r.score*100)}%"></i></span>`],
+    ];
+    for(const [cls,html] of cells){ const td=document.createElement("td"); td.className=cls; td.innerHTML=html; tr.appendChild(td); }
+    tr.addEventListener("click", ()=>select(r.occ));
+    frag.appendChild(tr);
+  }
+  tb.appendChild(frag);
+}
+
+/* ---------- detail drawer ---------- */
+function select(occ){
+  state.sel=occ; document.querySelectorAll("#rows tr").forEach(tr=>tr.setAttribute("aria-selected", tr.dataset.occ===occ?"true":"false"));
+  const r=state.all.find(x=>x.occ===occ); if(!r) return;
+  const buy=state.side==="buy"; const isC=r.type==="C";
+  const expStr=r.exp.toLocaleDateString("en-US",{month:"numeric",day:"numeric",year:"numeric"});
+  const name=`${r.sym} ${expStr} $${fmt(r.strike,r.strike%1?2:0)} ${isC?"Call":"Put"}`;
+  const limit= buy ? r.mid : r.mid;
+  const ticket=`${name}\n${buy?"Buy to open":"Sell to open"} 1 contract · limit ${money(limit)} (mid) · ${buy?"costs":"credits"} about ${money(limit*100)}\nBreakeven at expiry: $${fmt(buy?r.beBuy:r.beSell,2)} (${pct(((buy?r.beBuy:r.beSell)-r.px)/r.px,1,true)} from $${fmt(r.px,2)})\nOCC symbol: ${r.occ}`;
+  const be=buy?r.beBuy:r.beSell;
+  const d=$("#drawer"); d.hidden=false;
+  d.innerHTML=`
+  <div class="left">
+    <div class="d-head"><h2>${name}</h2><span class="muted num">${r.occ}</span></div>
+    <div class="kv">
+      <div><span class="k">Bid / Ask</span><span class="v num">${fmt(r.bid)} / ${fmt(r.ask)}</span><span class="s">mid ${fmt(r.mid)} · spread ${pct(r.spreadPct,1)}</span></div>
+      <div><span class="k">${buy?"Cost":"Credit"} per contract</span><span class="v num">${money(buy?r.ask*100:r.bid*100)}</span><span class="s">at ${buy?"ask":"bid"}; ${money(r.mid*100)} at mid</span></div>
+      <div><span class="k">P(profit) at expiry</span><span class="v num">${pct(r.pop,0)}</span><span class="s">breakeven $${fmt(be,2)}</span></div>
+      <div><span class="k">vs Cboe fair value</span><span class="v num ${r.theoEdge>0?"up":r.theoEdge<0?"down":""}">${pct(r.theoEdge,1,true)}</span><span class="s">theo $${fmt(r.theo)}</span></div>
+      <div><span class="k">Δ · Γ · Θ · V</span><span class="v num">${fmt(r.delta,2)} · ${fmt(r.gamma,3)} · ${fmt(r.theta,3)} · ${fmt(r.vega,3)}</span><span class="s">theta = $${fmt(Math.abs(r.theta)*100,2)}/day per contract (${pct(r.thetaPct,1)})</span></div>
+      <div><span class="k">IV</span><span class="v num">${pct(r.iv,1)}</span><span class="s">symbol 30d IV ${r.iv30?pct(r.iv30,1):"–"} (${pct(r.ivRel,0,true)}), IV ${r.ivTrend>0?"falling":"rising"} ${pct(Math.abs(r.ivTrend),1)} today</span></div>
+      <div><span class="k">Expected move by expiry</span><span class="v num">±$${fmt(r.expMove,2)}</span><span class="s">one standard deviation, ${pct(r.expMove/r.px,1)}</span></div>
+      <div><span class="k">Leverage</span><span class="v num">${fmt(r.lever,1)}×</span><span class="s">$ of stock per $ of premium</span></div>
+      <div><span class="k">Open interest · Volume</span><span class="v num">${r.oi.toLocaleString()} · ${r.vol.toLocaleString()}</span><span class="s">sizes ${r.bs} × ${r.as} · last ${fmt(r.last)}</span></div>
+    </div>
+    <div class="why" id="why"></div>
+    ${payoffSVG(r, buy)}
+  </div>
+  <div class="right">
+    <p class="eyebrow">Hand-off to Robinhood</p>
+    <div class="ticket" id="ticket">${ticket}</div>
+    <div class="actions">
+      <a class="btn primary" href="${RH_CHAIN(r.sym)}" target="_blank" rel="noopener">Open ${r.sym} chain in Robinhood</a>
+      <a class="btn" href="${RH_STOCK(r.sym)}" target="_blank" rel="noopener">${r.sym} stock page</a>
+      <button class="btn" type="button" id="copy-ticket">Copy ticket</button><span class="note" id="copy-note"></span>
+    </div>
+    <ol class="steps">
+      <li>In Robinhood: ${r.sym} → Trade → Trade Options → pick <b>${expStr}</b> → <b>${isC?"Calls":"Puts"}</b> → strike <b>$${fmt(r.strike,r.strike%1?2:0)}</b>.</li>
+      <li>Choose <b>${buy?"Buy":"Sell"}</b>, set a <b>limit</b> near the mid (${money(r.mid)}); check the live bid/ask first, this page is ~15 min delayed.</li>
+      <li>Review the max loss on Robinhood's ticket, then swipe up to submit. You place the order; this page never does.</li>
+    </ol>
+    <div class="sizer">
+      <div class="f"><label for="acct">Account size ($)</label><input id="acct" type="number" min="0" step="100" value="${loadNum("sf:acct",5000)}"></div>
+      <div class="f"><label for="risk">Max risk per trade (%)</label><input id="risk" type="number" min="0.1" max="100" step="0.5" value="${loadNum("sf:risk",2)}"></div>
+      <div class="note" id="sizing"></div>
+    </div>
+  </div>`;
+  const why=[]; const P=r.parts||{};
+  const lbl={theoEdge:"price vs fair value",spread:"spread",liq:"liquidity",theta:"theta burn",ivRel:"IV vs 30d",ivTrend:"IV trend",pop:"P(profit)",lever:"leverage",flow:"volume/OI",volRank:"volume"};
+  Object.entries(P).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>why.push(`<span><b>${lbl[k]||k}</b>: better than ${(v*100).toFixed(0)}% of contracts in this view</span>`));
+  if(r.spreadPct>0.1) why.push(`<span class="down">Wide spread (${pct(r.spreadPct,1)}): use a limit order and expect to give up some edge getting filled.</span>`);
+  if(buy && r.dte<10) why.push(`<span class="down">Under 10 days to expiry: decay accelerates; this needs the move soon.</span>`);
+  if(!buy) why.push(`<span class="down">Short option: max loss is ${isC?"unlimited above":"down to zero below"} the strike unless you own the shares or buy a further strike to cap it.</span>`);
+  $("#why").innerHTML=`<span class="eyebrow">Why it ranks here (${LENSES.find(l=>l.id===state.lens).name})</span>`+why.join("");
+  $("#copy-ticket").addEventListener("click",()=>{ const t=$("#ticket").textContent; const n=$("#copy-note");
+    const fb=()=>{ try{ const rg=document.createRange(); rg.selectNodeContents($("#ticket")); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); n.textContent="Selected; press Cmd/Ctrl+C."; }catch(e){ n.textContent="Select the text to copy it."; } };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(()=>n.textContent="Copied.", fb); else fb(); });
+  const sizing=()=>{ const acct=+$("#acct").value||0, risk=(+$("#risk").value||0)/100; saveNum("sf:acct",acct); saveNum("sf:risk",risk*100);
+    const perC = buy ? r.ask*100 : Math.max(r.bid*100, (isC? r.px*0.1 : r.strike*0.1)*100); // rough: short options risk ~10% move
+    const n=Math.floor((acct*risk)/perC);
+    $("#sizing").textContent = buy ? `${n} contract${n===1?"":"s"} keeps the max loss (${money(perC)} each) within ${money(acct*risk)}.` : `${n} contract${n===1?"":"s"} keeps an estimated 10%-move loss (${money(perC)} each) within ${money(acct*risk)}; actual max loss is larger.`; };
+  $("#acct").addEventListener("input",sizing); $("#risk").addEventListener("input",sizing); sizing();
+  d.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function payoffSVG(r, buy){
+  const isC=r.type==="C"; const lo=r.px*0.8, hi=r.px*1.2, W=560, H=170, pad=28; const prem=buy?r.ask:r.bid;
+  const pl=S=>{ const intrinsic=isC?Math.max(0,S-r.strike):Math.max(0,r.strike-S); return (buy? intrinsic-prem : prem-intrinsic)*100; };
+  const pts=[]; for(let i=0;i<=60;i++){ const S=lo+(hi-lo)*i/60; pts.push([S,pl(S)]); }
+  const ys=pts.map(p=>p[1]); const ymin=Math.min(...ys,0), ymax=Math.max(...ys,0);
+  const X=S=>pad+(S-lo)/(hi-lo)*(W-2*pad), Y=v=>H-pad-(v-ymin)/((ymax-ymin)||1)*(H-2*pad);
+  const path=pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ");
+  const be=buy?r.beBuy:r.beSell;
+  return `<svg class="payoff" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit and loss at expiry across stock prices">
+    <line x1="${pad}" y1="${Y(0)}" x2="${W-pad}" y2="${Y(0)}" stroke="currentColor" stroke-opacity=".35"/>
+    <line x1="${X(r.px)}" y1="${pad-6}" x2="${X(r.px)}" y2="${H-pad}" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="3 3"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+    <circle cx="${X(Math.min(hi,Math.max(lo,be)))}" cy="${Y(0)}" r="4" fill="var(--fg)"/>
+    <text x="${X(r.px)}" y="${pad-10}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".7">now $${fmt(r.px,2)}</text>
+    <text x="${pad}" y="${H-8}" font-size="11" fill="currentColor" fill-opacity=".7">$${fmt(lo,0)}</text>
+    <text x="${W-pad}" y="${H-8}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">$${fmt(hi,0)}</text>
+    <text x="${W-pad}" y="${pad-10}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">P/L at expiry per contract · BE $${fmt(be,2)}</text>
+    <text x="${pad}" y="${pad-10}" font-size="11" fill="currentColor" fill-opacity=".7">max ${money(ymax)} / min ${money(ymin)} in this range</text>
+  </svg>`;
+}
+function loadNum(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:+v; }catch(e){ return d; } }
+function saveNum(k,v){ try{ localStorage.setItem(k,String(v)); }catch(e){} }
+
+/* ---------- controls ---------- */
+function renderSymbols(){
+  const w=$("#symstrip"); w.textContent="";
+  const sorted=[...state.data.symbols].sort((a,b)=>a.s.localeCompare(b.s));
+  for(const S of sorted){
+    const b=document.createElement("button"); b.type="button"; b.className="sym"; b.setAttribute("aria-pressed", state.symbols.has(S.s)?"true":"false");
+    const chg=S.chg!=null?S.chg/100:null;
+    b.innerHTML=`<b>${S.s}</b><span class="px num">${fmt(S.px,2)} <span class="${chg>0?"up":chg<0?"down":""}">${chg!=null?pct(chg,1,true):""}</span></span><span class="iv num">IV30 ${S.iv30!=null?S.iv30.toFixed(0)+"%":"–"} · ${S.o.length} opts</span>`;
+    b.addEventListener("click",()=>{ if(state.symbols.has(S.s)) state.symbols.delete(S.s); else state.symbols.add(S.s); b.setAttribute("aria-pressed", state.symbols.has(S.s)?"true":"false"); build(); });
+    w.appendChild(b);
+  }
+  const add=document.createElement("div"); add.className="addsym";
+  add.innerHTML=`<input id="addsym" placeholder="Add: TSLA" maxlength="8" aria-label="Add symbol"><button class="btn sm" type="button" id="addbtn">Add</button><button class="btn sm" type="button" id="allbtn">All</button><button class="btn sm" type="button" id="nonebtn">None</button>`;
+  w.appendChild(add);
+  $("#addbtn").addEventListener("click",()=>addSymbol($("#addsym").value));
+  $("#addsym").addEventListener("keydown",e=>{ if(e.key==="Enter") addSymbol($("#addsym").value); });
+  $("#allbtn").addEventListener("click",()=>{ state.data.symbols.forEach(S=>state.symbols.add(S.s)); renderSymbols(); build(); });
+  $("#nonebtn").addEventListener("click",()=>{ state.symbols.clear(); renderSymbols(); build(); });
+}
+function renderLenses(){
+  const w=$("#lenses"); w.textContent="";
+  LENSES.forEach(L=>{ const b=document.createElement("button"); b.type="button"; b.className="lens"; b.id="lens-"+L.id; b.textContent=L.name; b.setAttribute("aria-pressed", state.lens===L.id?"true":"false");
+    b.addEventListener("click",()=>{ state.lens=L.id; state.sortK="score"; state.sortDir=-1; renderLenses(); markSort(); build(); if(state.sel) select(state.sel); }); w.appendChild(b); });
+  $("#lens-desc").textContent=LENSES.find(l=>l.id===state.lens).desc;
+}
+function seg(id, onchange){ $("#"+id).querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ $("#"+id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b?"true":"false")); onchange(b.dataset.v); })); }
+function markSort(){ document.querySelectorAll("thead th").forEach(th=>{ th.removeAttribute("aria-sort"); if(th.dataset.k===state.sortK) th.setAttribute("aria-sort", state.sortDir<0?"descending":"ascending"); }); }
+function init(){
+  seg("side", v=>{ state.side=v; build(); if(state.sel) select(state.sel); });
+  seg("type", v=>{ state.type=v; build(); });
+  ["dte-min","dte-max","delta-min","delta-max","max-price","min-oi","max-spread","per-sym"].forEach(id=>$("#"+id).addEventListener("input",build));
+  document.querySelectorAll("thead th").forEach(th=>th.addEventListener("click",()=>{ const k=th.dataset.k; if(state.sortK===k) state.sortDir*=-1; else { state.sortK=k; state.sortDir = (k==="sym"||k==="type")?1:-1; } markSort(); build(); }));
+  $("#refresh").addEventListener("click", async ()=>{ if(window.__SNAPSHOT__ && !state.live){ setStatus("Snapshot mode: data refreshes when the page is republished. Run the local server for live scans.","snap"); return; } setStatus("Refreshing…","live"); if(await loadData()){ enrich(); renderSymbols(); build(); } });
+}
+(async function start(){
+  init(); renderLenses(); markSort();
+  if(!(await loadData())) return;
+  state.data.symbols.forEach(S=>state.symbols.add(S.s));
+  enrich(); renderSymbols(); build();
+  $("#foot-src").textContent="Source: "+(state.data.source||"Cboe delayed quotes")+" · chains scanned: "+state.data.symbols.map(s=>s.s).join(", ")+(state.data.errors&&Object.keys(state.data.errors).length? " · failed: "+Object.keys(state.data.errors).join(", "):"");
+})();
+</script>

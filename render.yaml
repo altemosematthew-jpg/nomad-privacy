@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: strike-finder
+    runtime: python
+    rootDir: options-finder
+    plan: free
+    buildCommand: "echo no build"
+    startCommand: "python3 finder.py"
+    healthCheckPath: /api/health
