@@ -1,0 +1,26 @@
+name: Strike Finder diagnostics
+# Manual only: fetch today's chains and print the engine's diagnostics (nothing is written to the repo).
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fetch today's chains
+        run: python3 options-finder/tracker_scan.py "$RUNNER_TEMP/scan.json"
+      - name: Engine diagnostics
+        run: node options-finder/diag.js "$RUNNER_TEMP/scan.json" options-finder/index.html
+      - name: Keep the scan
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan
+          path: ${{ runner.temp }}/scan.json
+          retention-days: 3
