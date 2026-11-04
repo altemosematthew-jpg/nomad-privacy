@@ -212,7 +212,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
   <details><summary>How the numbers are computed, and what "best" means in each lens</summary>
     <dl>
       <dt>Grade</dt><dd>Absolute checks, not relative ranks: liquid and tight (OI ≥ 500, volume ≥ 25, spread ≤ 8% or a nickel), priced at or under fair value, chance to pay ≥ 35% for a buy (≥ 65% to keep a sale's credit), 21–120 days of time for a buy (7–60 for a sale), decay ≤ 1.2% a day, no earnings inside the window, and not fighting the trend. A clears all seven, B misses one, C misses two. The Quality filter hides everything below B by default, so an empty table means nothing good is on offer right now, not that the page is broken.</dd>
-      <dt>vs realized</dt><dd>A Black–Scholes price for the contract using the stock's own 20-day realized volatility instead of the market's implied volatility, compared with the ask (buy) or bid (sell). +10% means the option is 10% cheaper than it should be if the stock keeps moving the way it has been. Options are expensive when implied volatility runs well above realized; this number catches that directly.</dd>
+      <dt>vs realized</dt><dd>A Black–Scholes price for the contract using the stock's own realized volatility (the lower of its 20- and 60-day figures, so a single earnings gap doesn't flatter every option on the name) instead of the market's implied volatility, compared with the ask (buy) or bid (sell). +10% means the option is 10% cheaper than it should be if the stock keeps moving the way it has been. Options are expensive when implied volatility runs well above realized; this number catches that directly.</dd>
       <dt>Trend</dt><dd>Up when the price is above its 20-day average and the 20-day is above the 50-day; Down when both are reversed; Mixed otherwise. A call fights a downtrend and a put fights an uptrend; the durable lens and the grade penalise that.</dd>
       <dt>Consistency</dt><dd>How often the contract has looked under-priced across the scans this page (or the live server) has done. One cheap print is often a stale quote; a contract that is cheap scan after scan is more likely real.</dd>
       <dt>vs fair</dt><dd>Cboe's theoretical value (its own volatility-surface price) compared with what you'd pay (the ask) or receive (the bid). +4% means the ask sits 4% under theo. In real-time mode the reference is Robinhood's mark, so this becomes the half-spread you give up.</dd>
@@ -550,7 +550,8 @@ function enrich(){
     const px=+S.px||0; if(!px) continue;
     const iv30=S.iv30? S.iv30/100 : null;
     state.ev[S.s]=eventScan(S);
-    const H=S.hist||null, hv=H&&H.hv20>0?H.hv20:null;
+    // Realized vol: the lower of the 20- and 60-day figures, so one earnings gap doesn't make every option on the name look cheap for a month
+    const H=S.hist||null, hv=H ? ((H.hv20>0&&H.hv60>0) ? Math.min(H.hv20,H.hv60) : (H.hv20||H.hv60||null)) : null;
     const trend = H&&H.sma20&&H.sma50 ? (px>H.sma20&&H.sma20>H.sma50 ? 1 : px<H.sma20&&H.sma20<H.sma50 ? -1 : 0) : 0;
     S.trend=trend; S.hv=hv;
     for(const o of S.o){
@@ -712,7 +713,7 @@ function select(occ){
       <div><span class="k">${buy?"Cost":"Credit"} per contract</span><span class="v num">${money(buy?r.ask*100:r.bid*100)}</span><span class="s">at ${buy?"ask":"bid"}; ${money(r.mid*100)} at mid</span></div>
       <div><span class="k">P(profit) at expiry</span><span class="v num">${pct(r.pop,0)}</span><span class="s">breakeven $${fmt(be,2)}</span></div>
       <div><span class="k">vs ${r.rt?"Robinhood mark":"Cboe fair value"}</span><span class="v num ${r.theoEdge>0?"up":r.theoEdge<0?"down":""}">${pct(r.theoEdge,1,true)}</span><span class="s">${r.rt?"mark":"theo"} $${fmt(r.theo)}</span></div>
-      <div><span class="k">vs realized vol</span><span class="v num ${r.edgeHV>0?"up":r.edgeHV<0?"down":""}">${pct(r.edgeHV,0,true)}</span><span class="s">${r.fairHV!=null?`worth $${fmt(r.fairHV)} at ${r.sym}'s 20-day realized vol of ${pct(r.hv,0)} (IV ÷ HV ${fmt(r.ivHV,2)})`:"no price history for this symbol yet"}</span></div>
+      <div><span class="k">vs realized vol</span><span class="v num ${r.edgeHV>0?"up":r.edgeHV<0?"down":""}">${pct(r.edgeHV,0,true)}</span><span class="s">${r.fairHV!=null?`worth $${fmt(r.fairHV)} at ${r.sym}'s realized vol of ${pct(r.hv,0)}${r.hist&&r.hist.hv20&&r.hist.hv60?` (20d ${pct(r.hist.hv20,0)} · 60d ${pct(r.hist.hv60,0)})`:""} · IV ÷ HV ${fmt(r.ivHV,2)}`:"no price history for this symbol yet"}</span></div>
       <div><span class="k">Trend</span><span class="v ${r.trend>0?"up":r.trend<0?"down":""}">${r.trend>0?"Up":r.trend<0?"Down":"Mixed"}${r.trendFit===1?" · with this trade":r.trendFit===-1?" · against this trade":""}</span><span class="s">${r.hist?`20d $${fmt(r.hist.sma20,0)} · 50d $${fmt(r.hist.sma50,0)} · 1-mo ${pct(r.hist.ret1m,1,true)} · 3-mo ${pct(r.hist.ret3m,1,true)}`:"no history"}</span></div>
       <div><span class="k">Δ · Γ · Θ · V</span><span class="v num">${fmt(r.delta,2)} · ${fmt(r.gamma,3)} · ${fmt(r.theta,3)} · ${fmt(r.vega,3)}</span><span class="s">theta = $${fmt(Math.abs(r.theta)*100,2)}/day per contract (${pct(r.thetaPct,1)})</span></div>
       <div><span class="k">IV</span><span class="v num">${pct(r.iv,1)}</span><span class="s">symbol 30d IV ${r.iv30?pct(r.iv30,1):"–"} (${pct(r.ivRel,0,true)}), IV ${r.ivTrend>0?"falling":"rising"} ${pct(Math.abs(r.ivTrend),1)} today</span></div>
