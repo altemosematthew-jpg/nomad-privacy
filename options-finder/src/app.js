@@ -19,6 +19,7 @@ const WATCH = ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "ME
 const CORE = ["SPY", "QQQ", "NVDA", "AMZN", "MSFT", "AAPL", "TSLA", "META"];
 const HIST = new Map();            // occ -> this session's scan-by-scan record, for the consistency stat
 const TABLE_PATHS = 400, DRAWER_PATHS = 4000;
+const JOURNAL = true;              // "My trades" journal (Claude version only, needs the db + user capabilities); false switches it off everywhere
 
 const state = {
   data: null, mode: null, syms: [], ver: 0, selected: new Set(), firstLoad: true,
@@ -26,7 +27,8 @@ const state = {
   plan: { buy: Object.assign({}, E.PLAN_DEFAULTS.buy), sell: Object.assign({}, E.PLAN_DEFAULTS.sell) },
   touched: {}, earn: E.earnMap(null, Date.now()), earnVer: 0, apiBase: null,
   mcp: null, busy: false, lastTick: 0, rt: new Map(), rtLoading: null, rtFail: new Map(), rtRange: null, rtAbort: null, accounts: null, extra: [],
-  simCache: new Map(), structCache: { key: null, list: [] }, rows: [], filteredCount: 0, qualityCount: 0, track: null
+  simCache: new Map(), structCache: { key: null, list: [] }, rows: [], filteredCount: 0, qualityCount: 0, track: null, mcpChecked: false,
+  jr: { ready: false, col: null, readonly: false, loaded: false, trades: [], quotes: new Map(), qAt: 0, qBusy: false, qErr: "", err: "", open: false, mode: {}, formRow: null }
 };
 
 /* ---------- small helpers ---------- */
@@ -298,9 +300,10 @@ function fallbackSnapshot(reason) {
 async function initClaude() {
   setStatus("Connecting to Robinhood…", "snap");
   let mcp = null; try { mcp = await window.claude.use("mcp"); } catch (e) { mcp = null; }
-  if (!mcp) { fallbackSnapshot("Robinhood isn't available in this view."); if (!state.data) setStatus("Robinhood isn't available in this view. Open the public site, strike-finder.onrender.com, for delayed data.", ""); return; }
+  state.mcpChecked = true;
+  if (!mcp) { if (state.jr.open) jRequote(); fallbackSnapshot("Robinhood isn't available in this view."); if (!state.data) setStatus("Robinhood isn't available in this view. Open the public site, strike-finder.onrender.com, for delayed data.", ""); return; }
   state.mcp = mcp; state.mode = "rt";
-  addRHButtons();
+  addRHButtons(); if (state.jr.open) jRequote();
   rhCall("get_accounts", {}, 3600e3).then(a => { state.accounts = (a.accounts || a.results || []).filter(x => x && x.account_number); }).catch(() => {});
   try { const x = JSON.parse(localStorage.getItem("sf:extra") || "[]"); if (Array.isArray(x)) state.extra = x.filter(s => /^[A-Z][A-Z0-9.]{0,6}$/.test(s)).slice(0, 12); } catch (e) {}
   await rhLoadAll([...new Set(CORE.concat(WATCH, state.extra))]);
@@ -437,6 +440,10 @@ function select(id, quiet) {
   if (sp) ticket = `${name}\n${buy ? leg(r.raw[0], "Buy") + " · " + leg(r.raw[1], "Sell") : leg(r.raw[0], "Sell") + " · " + leg(r.raw[1], "Buy")}\nNet ${buy ? "debit" : "credit"} limit $${fmt(r.mid)} (mid); expect fills near $${fmt(r.price)}\nMax gain ${money(r.maxGain * per, 0)} · max loss ${money(r.maxLoss * per, 0)} · breakeven $${fmt(r.be)}\nExit plan: ${tgtTxt} · ${stpTxt} · otherwise close by ${dayNum(closeBy)}`;
   else ticket = `${name}\n${buy ? "Buy" : "Sell"} to open 1 · limit $${fmt(r.mid)} (mid); expect fills near $${fmt(r.price)}\nBreakeven at expiry $${fmt(r.be)} (${pct(r.moveBE, 1, true)} from $${fmt(r.S)})\nExit plan: ${tgtTxt} · ${stpTxt} · otherwise close by ${dayNum(closeBy)}\nOCC ${r.raw[0].occ}`;
   const lvlNote = levelNote(sp, buy, isC);
+  // the minute re-quote re-renders this panel: keep a half-filled "Track this trade" form (values, focus) for the same contract
+  const jOld = $("#jtrack"), jKeep = jOld && jOld.dataset.id === id && jOld.dataset.wired && !state.jr.readonly ? jOld : null;
+  const jFocus = jKeep && jKeep.contains(document.activeElement) ? document.activeElement : null;
+  state.jr.formRow = r;
   d.innerHTML = `
   <div class="left">
     <div class="d-head"><h2>${esc(name)}</h2><span class="grade g${r.grade === "–" ? "x" : r.grade}">${r.grade}</span><span class="muted num">${esc(sp ? r.raw.map(L => L.occ).join(" / ") : r.raw[0].occ)}</span></div>
@@ -466,7 +473,14 @@ function select(id, quiet) {
       <div class="f"><label for="risk">Max risk per trade (%)</label><input id="risk" type="number" min="0.1" max="100" step="0.5" value="${loadNum("sf:risk", 2)}"></div>
       <div class="note" id="sizing"></div>
     </div>
+    ${trackFormHTML(r)}
   </div>`;
+  if (jKeep && $("#jtrack")) {
+    $("#jtrack").replaceWith(jKeep);
+    const ent = $("#jt-entry"); if (ent && !ent.dataset.edited) ent.value = r.price.toFixed(2);
+    if (jFocus) { try { jFocus.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  wireTrackForm();
   const why = [], parts = r.parts || {};
   const lbl = { ev: "expected value", planEv: "plan's expected result", win: "plan win rate", theoEdge: "price vs fair value", spread: "spread", liq: "liquidity", theta: "theta", ivRel: "IV vs 30d", ivTrend: "IV trend", pop: "P(profit)", lever: "leverage", flow: "volume/OI", volRank: "volume", trendFit: "trend fit", stab: "consistency" };
   Object.entries(parts).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => why.push(`<span><b>${lbl[k] || k}</b>: better than ${(v * 100).toFixed(0)}% of what's in this view</span>`));
@@ -508,7 +522,8 @@ function payoffSVG(r) {
   const ys = pts.map(p => p[1]), ymin = Math.min(...ys, 0), ymax = Math.max(...ys, 0);
   const X = S => pad + (S - lo) / (hi - lo) * (W - 2 * pad), Y = v => H - pad - (v - ymin) / ((ymax - ymin) || 1) * (H - 2 * pad);
   const path = pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ");
-  return `<svg class="payoff" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit and loss at expiry across stock prices">
+  return `<p class="note payoffcap">P/L at expiry per contract · breakeven $${fmt(r.be, 2)} · max ${money(ymax, 0)} / min ${money(ymin, 0)} in this range</p>
+  <svg class="payoff" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit and loss at expiry across stock prices">
     <line x1="${pad}" y1="${Y(0)}" x2="${W - pad}" y2="${Y(0)}" stroke="currentColor" stroke-opacity=".35"/>
     <line x1="${X(r.S)}" y1="${pad - 6}" x2="${X(r.S)}" y2="${H - pad}" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="3 3"/>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
@@ -516,8 +531,6 @@ function payoffSVG(r) {
     <text x="${X(r.S)}" y="${pad - 10}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".7">now $${fmt(r.S, 2)}</text>
     <text x="${pad}" y="${H - 8}" font-size="11" fill="currentColor" fill-opacity=".7">$${fmt(lo, 0)}</text>
     <text x="${W - pad}" y="${H - 8}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">$${fmt(hi, 0)}</text>
-    <text x="${W - pad}" y="${pad - 10}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">P/L at expiry per contract · BE $${fmt(r.be, 2)}</text>
-    <text x="${pad}" y="${pad - 10}" font-size="11" fill="currentColor" fill-opacity=".7">max ${money(ymax, 0)} / min ${money(ymin, 0)} in this range</text>
   </svg>`;
 }
 
@@ -611,7 +624,244 @@ function renderPositions(rows, accts) {
   sec.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+/* ---------- My trades: a private journal of the trades you actually took (Claude version: db + user capabilities) ----------
+   Each trade is one document at data/users/<your id>/journal/trades/<trade id>, private to you. Values come from Robinhood
+   quotes of the legs, combined like the engine's combos: long legs add, short legs subtract. */
+async function initJournal() {
+  if (!JOURNAL || !IN_CLAUDE) return;
+  let db = null, user = null;
+  try { [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]); } catch (e) { return; }
+  if (!db || !user) return;
+  let uid = null; try { uid = await user.id(); } catch (e) { uid = null; }
+  if (!uid) return;                                  // no identity here = no private subtree: no journal this visit
+  const J = state.jr;
+  try { J.col = db.doc("data/users/" + uid + "/journal").collection("trades"); } catch (e) { return; }
+  J.ready = true;
+  const box = $("#jbox");
+  box.addEventListener("click", e => { const b = e.target.closest("[data-act]"); if (b) jAction(b.dataset.act, b.dataset.id || "", b); });
+  box.addEventListener("input", e => { const id = e.target.dataset ? e.target.dataset.exit : null; if (id && J.mode[id]) J.mode[id].exit = e.target.value; });
+  box.addEventListener("keydown", e => { const id = e.target.dataset ? e.target.dataset.exit : null; if (id && e.key === "Enter") jAction("close-save", id, null); });
+  J.col.onSnapshot(snap => {
+    J.trades = snap.docs.filter(d => d.exists).map(d => Object.assign({}, d.data(), { id: d.id })).sort((a, b) => (b.created || 0) - (a.created || 0));
+    J.loaded = true; J.err = "";
+    renderJournal();
+    if (J.open && J.trades.some(t => t.status !== "closed" && (t.legs || []).some(L => L.instId && !J.quotes.has(L.instId)))) jRequote();
+  }, e => { J.err = jErrText(e); J.loaded = true; renderJournal(); });
+  addJournalButton();
+  if (state.sel) select(state.sel, true);
+  let wasOpen = false; try { wasOpen = localStorage.getItem("sf:journal") === "1"; } catch (e) {}
+  if (wasOpen) openJournal(false);
+  setInterval(() => { if (J.open && document.visibilityState === "visible" && marketHours()) jRequote(); }, 60 * 1000);
+}
+function jErrText(e) {
+  const c = e && e.code;
+  if (c === "quota_exceeded") return "Your journal is full. Delete some old trades, then save again.";
+  if (c === "invalid_argument") return "Saving trades isn't allowed at your access level on this page.";
+  if (c === "resource_exhausted") return "Too many saves at once. Wait a moment and try again.";
+  if (c === "revoked" || c === "not_granted" || c === "capability_disabled" || c === "capability_removed") return "Saving trades isn't available in this view.";
+  return "Couldn't reach your journal just now. Try again in a moment.";
+}
+async function jWrite(fn) {                          // one write; a transient failure is retried once after a short random delay
+  for (let tries = 0; ; tries++) {
+    try { return await fn(); }
+    catch (e) { if (e && e.code === "unavailable" && tries < 1) { await sleep(400 + Math.random() * 800); continue; } if (e && e.code === "invalid_argument") state.jr.readonly = true; throw e; }
+  }
+}
+function addJournalButton() {
+  if ($("#jr-btn")) return;
+  const b = document.createElement("button"); b.type = "button"; b.className = "btn sm"; b.id = "jr-btn"; b.textContent = "My trades";
+  b.addEventListener("click", () => { if (state.jr.open) closeJournal(); else openJournal(true); });
+  ($("#rh-pos") || $("#refresh")).after(b);
+}
+function openJournal(scroll) {
+  const J = state.jr; if (!J.ready) return;
+  J.open = true; $("#journal").hidden = false; try { localStorage.setItem("sf:journal", "1"); } catch (e) {}
+  renderJournal(); jRequote();
+  if (scroll) $("#journal").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function closeJournal() { state.jr.open = false; $("#journal").hidden = true; try { localStorage.setItem("sf:journal", "0"); } catch (e) {} }
+async function jRequote() {
+  const J = state.jr; if (!J.ready || J.qBusy) return;
+  const ids = [...new Set(J.trades.filter(t => t.status !== "closed").flatMap(t => (t.legs || []).map(L => L.instId)).filter(Boolean))];
+  if (!ids.length) return;
+  if (!state.mcp) { J.qErr = state.mcpChecked ? "Live values need the Robinhood connector, which isn't available in this view." : ""; renderJournal(); return; }
+  J.qBusy = true; renderJournal();
+  let fails = 0;
+  try {
+    for (let i = 0; i < ids.length; i += 50) {
+      try { const r = await rhCall("get_option_quotes", { instrument_ids: ids.slice(i, i + 50) }, false);
+        (r.results || []).forEach(res => { const u = res && (res.quote || res); if (u && u.instrument_id) J.quotes.set(u.instrument_id, { bid: +u.bid_price || 0, ask: +u.ask_price || 0, mark: +u.mark_price || 0, at: Date.now() }); }); }
+      catch (e) { fails++; J.qErr = AUTH_CODES[e && e.code] || "Robinhood quotes failed: " + ((e && (e.message || e.code)) || "error"); }
+    }
+    if (!fails) { J.qErr = ""; J.qAt = Date.now(); }
+  } finally { J.qBusy = false; renderJournal(); }
+}
+/* Value per share of the combo now: long legs add their bid/ask, short legs subtract their ask/bid (as the engine builds spreads).
+   "value" is the expected fill to close, halfway from the mid to the natural price: what selling (buys) or buying back (sales) gets. */
+function jValue(t) {
+  let bid = 0, ask = 0, mark = 0;
+  for (const L of t.legs || []) {
+    const u = state.jr.quotes.get(L.instId); if (!u) return null;
+    const q = +L.q || 0, m = u.mark > 0 ? u.mark : (u.bid + u.ask) / 2;
+    if (q > 0) { bid += q * u.bid; ask += q * u.ask; } else { bid += q * u.ask; ask += q * u.bid; }
+    mark += q * m;
+  }
+  bid = Math.max(0, bid); if (!(ask > 0) && !(mark > 0)) return null;
+  ask = Math.max(ask, bid); const mid = Math.min(ask, Math.max(bid, mark));
+  const value = t.side === "buy" ? mid - E.FILL * (mid - bid) : mid + E.FILL * (ask - mid);
+  return { bid, ask, mid, value: Math.max(0, value) };
+}
+function jPL(t, v) {
+  if (v == null || !(t.entry > 0)) return null;
+  const per = t.side === "buy" ? v - t.entry : t.entry - v;
+  return { per, usd: per * 100 * (t.qty || 1), pct: per / t.entry };
+}
+function jHow(t) {               // how a closed trade ended, measured against its own plan
+  const buy = t.side === "buy", x = t.exit; if (x == null) return "";
+  if (t.target != null && (buy ? x >= t.target - 0.005 : x <= t.target + 0.005)) return "target";
+  if (t.stop != null && (buy ? x <= t.stop + 0.005 : x >= t.stop - 0.005)) return "stop";
+  if (t.closeBy && t.closed >= t.closeBy) return "time";
+  return "early";
+}
+function jStatus(t, v, now) {
+  const buy = t.side === "buy";
+  if (t.status === "closed") { const h = jHow(t); return { tag: "Closed", cls: "x", sub: ({ target: "at the target", stop: "at the stop", time: "at the time limit", early: "before any exit level" })[h] || "" }; }
+  if (v != null && t.target != null && (buy ? v >= t.target : v <= t.target)) return { tag: "Target reached", cls: "good", sub: "the plan says take the profit" };
+  if (v != null && t.stop != null && (buy ? v <= t.stop : v >= t.stop)) return { tag: "Stop reached", cls: "bad", sub: "the plan says close it" };
+  if (t.exp && now >= t.exp) return { tag: "Expired", cls: "bad", sub: "record how it ended" };
+  if (t.closeBy && now >= t.closeBy) return { tag: "Past time limit", cls: "warn", sub: "the plan says close it" };
+  return { tag: "Open", cls: "fair", sub: v == null ? "no quote yet" : "within the plan" };
+}
+function jStats(closed) {
+  const rows = closed.map(t => ({ t, pl: jPL(t, t.exit) })).filter(x => x.pl); const n = rows.length; if (!n) return null;
+  const w = rows.filter(x => x.pl.per > 0).length, total = rows.reduce((s, x) => s + x.pl.usd, 0), pw = rows.filter(x => x.t.pWin != null);
+  return { n, w, rate: w / n, avgUsd: total / n, avgPct: rows.reduce((s, x) => s + x.pl.pct, 0) / n, total,
+    model: pw.length ? pw.reduce((s, x) => s + x.t.pWin, 0) / pw.length : null, byPlan: rows.filter(x => jHow(x.t) !== "early").length };
+}
+function renderJournal() {
+  const J = state.jr; if (!J.ready) return;
+  const open = J.trades.filter(t => t.status !== "closed"), closed = J.trades.filter(t => t.status === "closed"), now = Date.now();
+  const btn = $("#jr-btn"); if (btn) btn.textContent = "My trades" + (open.length ? ` (${open.length})` : "");
+  if (!J.open) return;
+  const box = $("#jbox"), ae = document.activeElement, keepFocus = ae && box.contains(ae) && ae.id ? ae.id : null;
+  let openPL = 0, priced = 0;
+  const trs = J.trades.map(t => {
+    const isClosed = t.status === "closed", v = isClosed ? null : jValue(t), val = isClosed ? t.exit : v ? v.value : null, pl = jPL(t, val), s = jStatus(t, val, now), m = J.mode[t.id] || {};
+    if (!isClosed && pl) { openPL += pl.usd; priced++; }
+    const sp = t.kind === "spread", tag = `<span class="tag ${t.isC ? "c" : "p"}">${t.isC ? "CALL" : "PUT"}${sp ? (t.side === "buy" ? " DEBIT" : " CREDIT") : ""}</span>${!sp && t.side === "sell" ? ' <span class="tag p">SHORT</span>' : ""}`;
+    const now$ = isClosed ? `${fmt(t.exit)}<br><span class="muted">exit ${t.closed ? day(t.closed) : ""}</span>` : v ? `${fmt(v.value)}<br><span class="muted">${fmt(v.bid)} / ${fmt(v.ask)}</span>` : "–";
+    let act;
+    if (m.k === "close") act = `<span class="jform"><label class="muted" for="jx-${esc(t.id)}">Exit $/share</label><input id="jx-${esc(t.id)}" data-exit="${esc(t.id)}" type="number" min="0" step="0.01" value="${esc(m.exit)}"><button class="btn sm primary" type="button" data-act="close-save" data-id="${esc(t.id)}">Record close</button><button class="btn sm" type="button" data-act="cancel" data-id="${esc(t.id)}">Cancel</button>${m.msg ? `<span class="warn">${esc(m.msg)}</span>` : ""}</span>`;
+    else if (m.k === "delete") act = `<span class="jform"><span class="warn">Delete this trade for good?</span><button class="btn sm" type="button" data-act="delete-yes" data-id="${esc(t.id)}">Delete</button><button class="btn sm" type="button" data-act="cancel" data-id="${esc(t.id)}">Keep it</button></span>`;
+    else act = `<span class="jform">${isClosed ? "" : `<button class="btn sm" type="button" data-act="close" data-id="${esc(t.id)}">Close</button>`}<button class="btn sm" type="button" data-act="delete" data-id="${esc(t.id)}">Delete</button></span>`;
+    if (J.readonly) act = "";
+    return `<tr class="${t.note ? "main" : ""}"><td class="l">${t.created ? day(t.created) : "–"}</td>
+      <td class="l"><b>${esc(t.label || t.sym)}</b> ${tag} ${t.grade ? `<span class="grade g${t.grade === "–" ? "x" : esc(t.grade)}">${esc(t.grade)}</span>` : ""}</td>
+      <td class="num">${esc(t.qty)}</td><td class="num">${fmt(t.entry)}<br><span class="muted">${t.side === "buy" ? "paid" : "credit"}</span></td><td class="num">${now$}</td>
+      <td class="num ${pl ? (pl.usd >= 0 ? "up" : "down") : ""}">${pl ? sgnMoney(pl.usd, 0) + `<br><span class="muted">${pct(pl.pct, 0, true)}</span>` : "–"}</td>
+      <td class="num">${t.target == null ? "–" : fmt(t.target)}</td><td class="num">${t.stop == null ? "none" : fmt(t.stop)}</td><td class="num">${t.closeBy ? day(t.closeBy) : "–"}</td>
+      <td class="num">${pct(t.pWin, 0)}</td>
+      <td class="l"><span class="verdict ${s.cls}">${s.tag}</span>${s.sub ? `<span class="jsub">${s.sub}</span>` : ""}</td><td class="l">${act}</td></tr>` +
+      (t.note ? `<tr class="noterow"><td colspan="12"><div class="posnotes"><span>Note: ${esc(t.note)}</span></div></td></tr>` : "");
+  }).join("");
+  const S = jStats(closed);
+  const stats = S ? `<div class="totals jstats"><span>Closed <b>${S.n}</b></span><span>Win rate <b>${pct(S.rate, 0)}</b> (${S.w} of ${S.n})</span><span>Model's average predicted win <b>${pct(S.model, 0)}</b></span>
+      <span>Average result <b class="${S.avgUsd >= 0 ? "up" : "down"}">${sgnMoney(S.avgUsd, 0)}</b> per trade (${pct(S.avgPct, 1, true)} of the entry price)</span><span>Total <b class="${S.total >= 0 ? "up" : "down"}">${sgnMoney(S.total, 0)}</b></span><span>Closed by the plan <b>${S.byPlan} of ${S.n}</b></span></div>
+      ${S.n < 20 ? `<p class="note">Fewer than 20 closed trades: the gap between your win rate and the model's is still mostly luck.</p>` : ""}`
+    : J.trades.length ? `<p class="note">Close a trade here when you exit it in Robinhood. Win rate and average result build from the closed ones, next to the win rate the model predicted.</p>` : "";
+  const qInfo = J.qBusy ? "updating quotes…" : J.qAt ? "quotes " + new Date(J.qAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : "";
+  box.innerHTML = `<div class="poshead"><h2>My trades <span class="muted" style="font-weight:500;font-size:13px">· ${open.length} open · ${closed.length} closed${priced ? ` · open P/L <span class="${openPL >= 0 ? "up" : "down"}">${sgnMoney(openPL, 0)}</span>` : ""}${qInfo ? " · " + qInfo : ""}</span></h2>
+      <div class="actions" style="margin:0"><button class="btn sm" type="button" data-act="refresh">Refresh</button><button class="btn sm" type="button" data-act="hide">Hide</button></div></div>
+    ${J.err ? `<p class="note warn">${esc(J.err)}</p>` : ""}${J.qErr ? `<p class="note warn">${esc(J.qErr)}</p>` : ""}
+    ${!J.loaded ? `<p class="note">Loading your trades…</p>` : !J.trades.length ? `<p class="note">No trades tracked yet. After you place one in Robinhood, open its row here and use <b>Track this trade</b> in the details panel. Your journal is private to you.</p>` : ""}
+    ${stats}
+    ${J.trades.length ? `<div class="postable"><table><thead><tr><th class="l">Logged</th><th class="l">Trade</th><th>Qty</th><th>Entry</th><th>Now / exit</th><th>P/L</th><th>Target</th><th>Stop</th><th>Close by</th><th>Model win %</th><th class="l">Vs the plan</th><th class="l"></th></tr></thead><tbody>${trs}</tbody></table></div>
+    <p class="note">Prices are per share; P/L is for all contracts. "Now" is what closing would get you at a limit halfway from the mid to the bid (buys) or the ask (sales), from Robinhood real-time quotes${marketHours() ? ", refreshed every minute" : ""}. Target, stop and close-by are the plan's exit levels from your entry. Your journal is private to you.</p>` : ""}`;
+  if (keepFocus) { const el = document.getElementById(keepFocus); if (el) { try { el.focus({ preventScroll: true }); } catch (e) {} } }
+}
+async function jAction(act, id, btn) {
+  const J = state.jr;
+  if (act === "refresh") return jRequote();
+  if (act === "hide") return closeJournal();
+  const t = J.trades.find(x => x.id === id); if (!t || J.readonly) return;
+  if (act === "close") { const v = jValue(t); J.mode[id] = { k: "close", exit: (v ? v.value : t.entry).toFixed(2) }; renderJournal(); const el = document.getElementById("jx-" + id); if (el) el.focus(); return; }
+  if (act === "delete") { J.mode[id] = { k: "delete" }; return renderJournal(); }
+  if (act === "cancel") { delete J.mode[id]; return renderJournal(); }
+  if (act === "close-save") {
+    const m = J.mode[id]; if (!m || m.busy) return;
+    const x = parseFloat(m.exit); if (!(x >= 0)) { m.msg = "Enter the exit price per share."; return renderJournal(); }
+    m.busy = true; if (btn) btn.disabled = true;
+    try { await jWrite(() => J.col.doc(id).update({ status: "closed", exit: +x.toFixed(4), closed: Date.now() })); delete J.mode[id]; J.err = ""; }
+    catch (e) { m.busy = false; J.err = jErrText(e); }
+    return renderJournal();
+  }
+  if (act === "delete-yes") {
+    const m = J.mode[id]; if (!m || m.busy) return; m.busy = true; if (btn) btn.disabled = true;
+    try { await jWrite(() => J.col.doc(id).delete()); delete J.mode[id]; J.err = ""; }
+    catch (e) { m.busy = false; J.err = jErrText(e); }
+    return renderJournal();
+  }
+}
+/* "Track this trade" in the details panel */
+function trackFormHTML(r) {
+  const J = state.jr; if (!JOURNAL || !J.ready) return "";
+  const head = `<div class="jtrack" id="jtrack" data-id="${esc(r.id)}"><p class="eyebrow">Track this trade</p>`;
+  if (J.readonly) return head + `<p class="note">Saving trades isn't allowed at your access level on this page.</p></div>`;
+  if (!r.raw.every(L => L.instId)) return head + `<p class="note">Tracking needs Robinhood real-time quotes for this contract, and they aren't loaded in this view.</p></div>`;
+  return head + `<p class="note">Placed it in Robinhood? Save it here to follow its live P/L against this plan, and to compare your results with the model's win rate. Private to you.</p>
+    <div class="jfields">
+      <div class="f"><label for="jt-qty">Contracts</label><input id="jt-qty" type="number" min="1" step="1" value="1"></div>
+      <div class="f"><label for="jt-entry">${r.side === "buy" ? "Paid" : "Credit"} per share ($)</label><input id="jt-entry" type="number" min="0" step="0.01" value="${r.price.toFixed(2)}"></div>
+      <div class="f jnote"><label for="jt-note">Note (optional)</label><input id="jt-note" type="text" maxlength="200" placeholder="Why you took it"></div>
+      <button class="btn primary" type="button" id="jt-save">Track this trade</button>
+    </div>
+    <span class="note" id="jt-msg" role="status"></span></div>`;
+}
+function wireTrackForm() {
+  const box = $("#jtrack"); if (!box || box.dataset.wired) return; box.dataset.wired = "1";
+  const ent = $("#jt-entry"); if (ent) ent.addEventListener("input", () => { ent.dataset.edited = "1"; });
+  const btn = $("#jt-save"); if (btn) btn.addEventListener("click", () => saveTrade(box.dataset.id, btn));
+}
+async function saveTrade(id, btn) {
+  const J = state.jr, msg = $("#jt-msg"); if (!J.ready || J.readonly || btn.disabled) return;
+  const r = state.rows.find(x => x.id === id) || (J.formRow && J.formRow.id === id ? J.formRow : null);
+  if (!r) { msg.textContent = "This contract is no longer in the list. Open it again and retry."; return; }
+  const qty = Math.round(+$("#jt-qty").value), entry = +(+$("#jt-entry").value).toFixed(4), note = String($("#jt-note").value || "").trim().slice(0, 200);
+  if (!(qty >= 1 && qty <= 100000)) { msg.textContent = "Contracts must be a whole number, 1 or more."; return; }
+  if (!(entry > 0)) { msg.textContent = "Enter the price per share you got, for example 1.25."; return; }
+  const plan = planNow(r.side), lv = E.planLevels(Object.assign({}, r, { price: entry }), plan), P = planFor(r, DRAWER_PATHS) || r.plan;   // the plan's levels, from your own entry
+  if (!lv) { msg.textContent = "Couldn't work out the plan's exit levels for that price."; return; }
+  const fin = x => (typeof x === "number" && isFinite(x)) ? x : null;
+  const closeBy = r.exp - Math.max(0, (r.dte - Math.min(plan.hold, r.dte))) * 864e5;
+  const tid = "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const body = { id: tid, created: Date.now(), sym: r.sym, label: structName(r), kind: r.kind, side: r.side, isC: !!r.isC, exp: r.exp,
+    legs: r.raw.map((L, i) => ({ occ: L.occ, instId: L.instId, K: L.K, isC: !!L.isC, q: r.legs[i] ? r.legs[i].q : (i ? -1 : 1) })),
+    qty, entry, note, status: "open",
+    target: fin(lv.target), stop: (r.side === "buy" ? lv.stop > 0 : isFinite(lv.stop)) ? fin(lv.stop) : null, hold: fin(lv.hold), closeBy: fin(closeBy),
+    plan: Object.assign({}, state.plan[r.side]), pWin: fin(P && P.pWin), planEv: fin(P && P.ev), ev: fin(r.ev), evPct: fin(r.evPct), grade: r.grade || null,
+    fillEst: fin(r.price), S: fin(r.S), lens: state.lens };
+  btn.disabled = true; msg.textContent = "Saving…";
+  try {
+    await jWrite(() => J.col.doc(tid).set(body));
+    msg.innerHTML = `Saved to My trades. <button class="btn sm" type="button" id="jt-open">Open My trades</button>`;
+    $("#jt-open").addEventListener("click", () => openJournal(true)); $("#jt-note").value = "";
+  } catch (e) { msg.textContent = jErrText(e); }
+  finally { btn.disabled = false; }
+}
+
 /* ---------- track record (public site and Mac; the Claude version can't load it) ---------- */
+/* Server mode: upcoming earnings from the daily GitHub job (earnings.json via /api/earnings) replace the built-in dates. */
+async function loadEarnings() {
+  if (state.mode !== "server") return;
+  try {
+    const j = await fetchJSON(state.apiBase + "/api/earnings", 30000);
+    if (!j || !j.d) return;
+    const m = E.earnMap(j, Date.now()); let changed = false;
+    for (const s in m) { const o = state.earn[s]; if (o && o.src === "robinhood") continue;
+      if (!o || o.t !== m[s].t || o.verified !== m[s].verified) { state.earn[s] = m[s]; changed = true; } }
+    if (changed && state.data) { state.earnVer++; reanalyze(); renderSymbols(); build(); if (state.sel) select(state.sel, true); }
+  } catch (e) { /* keep the built-in dates */ }
+}
 async function loadTrack() {
   const box = $("#trackbox");
   if (IN_CLAUDE) { box.innerHTML = `<div class="trackhead"><h2>Track record</h2></div><p class="note">A scheduled job logs the top A-grade picks every trading day and scores how they actually did. Claude's security rules stop this page from loading it here; it's on the public site at <b>strike-finder.onrender.com</b>, near the bottom.</p>`; return; }
@@ -741,9 +991,9 @@ function maybeReloadRange() {
 /* ---------- start ---------- */
 (async function start() {
   init(); renderLenses(); markSort();
-  if (IN_CLAUDE) { loadTrack(); await initClaude(); return; }
-  await loadServer(); loadTrack();
+  if (IN_CLAUDE) { loadTrack(); initJournal().catch(() => {}); await initClaude(); return; }
+  await loadServer(); loadTrack(); loadEarnings();
   setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server" && marketHours()) loadServer(); }, 5 * 60 * 1000);
-  setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server") loadTrack(); }, 30 * 60 * 1000);
+  setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server") { loadTrack(); loadEarnings(); } }, 30 * 60 * 1000);
 })();
 })();

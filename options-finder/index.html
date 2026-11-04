@@ -1,3 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
 <title>Strike Finder</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -115,6 +117,7 @@ td.sym-cell b{font-weight:700}
 .why{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:4px;font-size:13px;color:var(--fg-2)}
 .why b{color:var(--fg)}
 .payoff{width:100%;height:auto;max-width:100%;display:block;margin-top:6px}
+.payoffcap{margin:10px 0 0}
 .ticket{border:1px solid var(--line);background:var(--bg);border-radius:var(--radius);padding:10px 12px;font-family:var(--font-num);font-size:13px;white-space:pre-wrap;word-break:break-word;user-select:all}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .sizer{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end;margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
@@ -181,8 +184,115 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 .tracktable table{min-width:900px}
 .tracktable thead th{cursor:default;background:var(--panel)}
 .tracktable tbody tr{cursor:default} .tracktable tbody tr:hover{background:transparent}
+/* My trades journal (Claude version only) */
+.jtrack{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:6px}
+.jfields{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
+.jfields .f input[type=number]{width:96px}
+.jfields .jnote{flex:1 1 180px}
+.jform{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
+.jform input{width:84px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:4px 6px;font-family:var(--font-num)}
+.jsub{display:block;font-size:11.5px;color:var(--fg-3);margin-top:2px}
+.verdict.x{background:var(--panel-2);color:var(--fg-2)}
 @media (max-width:860px){ .drawer{grid-template-columns:1fr} .drawer .right{border-left:0;border-top:1px solid var(--line)} }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+
+/* ---- src/mobile.css ---- */
+/* Phone and narrow-width rules (inlined by build.py at the end of the main <style>). */
+
+/* ---- all widths: two small layout fixes the narrow screens made obvious ---- */
+/* symbol card: the RT dot and the "not equal" flag sit on the ticker's line instead of becoming their own grid rows */
+.sym{grid-template-columns:auto auto 1fr;align-items:baseline}
+.sym>.px,.sym>.iv{grid-column:1/-1}
+.sym>.warn{margin-left:4px}
+/* detail key/values: keep label, value and note together at the top of their cell when a row is tall */
+.kv>div{align-content:start}
+
+/* ---- tablet and narrow laptop (same breakpoint as the drawer stacking above) ---- */
+@media (max-width:860px){
+  /* results table scrolls sideways: keep the symbol column pinned so every row stays identifiable */
+  #tbl thead th:first-child,#tbl tbody td:first-child{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:inset -1px 0 0 var(--line-2)}
+  #tbl thead th:first-child{z-index:2}
+  #tbl tbody tr:hover td:first-child{background:var(--panel)}
+  #tbl tbody tr[aria-selected="true"] td:first-child{background:var(--accent-soft)}
+  /* position notes span the whole 1080px table: keep them inside the visible part of the scroller */
+  .postable tr.noterow .posnotes{position:sticky;left:8px;max-width:min(120ch,calc(100vw - 96px))}
+  .lens-row,.symbols .wrap,.tablewrap,.postable,.tracktable{overscroll-behavior-x:contain}
+}
+
+/* ---- touch: comfortable targets on phones and on any coarse-pointer device (tablets) ---- */
+@media (max-width:600px),(pointer:coarse){
+  .btn{min-height:40px;padding-block:8px}
+  .btn.sm{min-height:36px;padding:6px 12px;font-size:13px}
+  .lens{min-height:38px;padding-inline:14px}
+  .seg button{min-height:40px;padding:8px 12px}
+  .f input,.f select,.addsym input{min-height:40px}
+  .sym{min-height:52px}
+  .jform input{min-height:36px}
+}
+
+/* ---- phone ---- */
+@media (max-width:600px){
+  /* inputs at 16px so iOS doesn't zoom the page when one is focused; no desktop spin arrows eating the narrow number fields */
+  input,select{font-size:16px}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+
+  /* masthead: status text and Refresh share one line; long status messages wrap beside the button */
+  .mast .wrap{padding-block:14px 8px;gap:10px}
+  .brand p{font-size:13.5px}
+  .status{width:100%;flex-wrap:nowrap;justify-content:space-between;gap:12px}
+  .status>span{min-width:0;flex:1 1 auto}
+  .status>.btn{flex:none}
+
+  /* scroll strips run edge to edge so it's obvious they scroll */
+  .lens-row{margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px}
+  .addsym input{width:112px}
+  .lens-desc{font-size:13px}
+
+  /* filters: segmented controls full width, number filters in two even columns */
+  .filters .wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;align-items:end}
+  .filters .f:has(.seg),.filters .count{grid-column:1/-1}
+  .filters .seg{display:flex;width:100%}
+  .filters .seg button{flex:1 1 auto;line-height:1.2}
+  .filters .f input[type=number]{width:100%}
+  .filters .f>div:not(.seg){min-width:0}
+  .filters .f>div:not(.seg) input{flex:1 1 0;width:0;min-width:0}
+  .count{margin-left:0}
+
+  /* trade plan inputs: same two-column rhythm */
+  .planrow .wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;align-items:end}
+  .planrow .f input[type=number]{width:100%}
+  .planrow .hint{grid-column:1/-1}
+
+  /* results table: taller rows to tap */
+  tbody td{padding-block:9px}
+
+  /* detail drawer (already one column below 860px) */
+  .drawer{margin-block:12px 22px}
+  .drawer>div{padding:14px}
+  .d-head h2{font-size:18px}
+  .kv{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+  .kv .v{font-size:14px;overflow-wrap:anywhere}
+  .checks{grid-template-columns:1fr}
+  .ticket{font-size:12.5px;padding:10px}
+  .drawer .actions .btn{flex:1 1 auto;justify-content:center}
+  .drawer .actions .note{flex-basis:100%}
+  .sizer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+  .sizer .f input{width:100%}
+  .sizer .note{grid-column:1/-1}
+  /* "Track this trade" form (My trades journal) */
+  .jfields .f{flex:1 1 130px}
+  .jfields .f input[type=number],.jfields .f input{width:100%}
+  .jfields .jnote{flex-basis:100%}
+  .jfields .btn{flex:1 1 100%;justify-content:center}
+
+  /* positions and track record */
+  .posbox,.trackbox{padding:12px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card .v{font-size:18px}
+  .glossary dl{grid-template-columns:1fr}
+}
+
 </style>
 
 <header class="mast"><div class="wrap">
@@ -231,6 +341,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 </div></section>
 
 <section class="pos" id="pos" hidden aria-label="My positions"><div class="wrap"><div class="posbox" id="posbox"></div></div></section>
+<section class="pos" id="journal" hidden aria-label="My trades"><div class="wrap"><div class="posbox" id="jbox"></div></div></section>
 
 <section class="wrap" aria-label="Results">
   <div class="tablewrap">
@@ -255,7 +366,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
     <dl>
       <dt>The honest bottom line</dt><dd>No scanner can make options win almost every time. Options are priced close to fair, so the average trade loses roughly what it costs to get in and out. Win rate is easy to raise and doesn't mean profit: selling far out-of-the-money options wins most of the time and still loses money when the rare loss is large. This page shows expected value next to the win rate so the two can't be confused, and the Track record shows how its own picks actually did.</dd>
       <dt>EV (expected value)</dt><dd>What the trade is worth on average if you hold to expiry, minus what you pay, as a percent of the money at risk. It uses a volatility forecast: 60% the market's implied volatility, 40% how much the stock has actually moved lately (20- and 60-day, with jump days such as earnings gaps removed). Every strike is scaled by the same factor, so the model never claims to know the skew is mispriced, and scheduled events keep the market's implied jump. Positive EV means the option is cheap against that forecast after costs. About −1% to −3% is just the cost of trading a fairly priced option.</dd>
-      <dt>Win % and the trade plan</dt><dd>The plan is: take profit at the target, stop out at the stop, otherwise close after the hold limit (or at expiry if sooner). Each contract is simulated on hundreds of price paths (thousands in the details panel) at the forecast volatility, checked once a day at the close. Each leg is repriced at its own market IV, which rises into a scheduled event and is crushed after it. The earnings jump itself is drawn from the market's implied move. Entries and exits assume a limit fill halfway between the mid and the natural price. Win % is the share of paths that close with a profit. Buying with a ±50% plan typically wins around 40–45%, and selling credit with a 50% target around 65–75%, with average losses bigger than average wins.</dd>
+      <dt>Win % and the trade plan</dt><dd>The plan is: take profit at the target, stop out at the stop, otherwise close after the hold limit (or at expiry if sooner). Each contract is simulated on hundreds of price paths (thousands in the details panel), checked once a day at the close. Every leg moves with the same daily market shocks but at its own forecast volatility, plus its share of the market's implied earnings jump, and is repriced at its own market IV, which rises into a scheduled event and is crushed after it. That keeps the skew between strikes from showing up as fake profit: a fairly priced option or spread averages zero. Entries and exits assume a limit fill halfway between the mid and the natural price. Win % is the share of paths that close with a profit. Buying with a ±50% plan typically wins around 40–45%, and selling credit with a 50% target around 65–75%, with average losses bigger than average wins.</dd>
       <dt>Grade</dt><dd>Absolute checks, not ranks. Liquid and tight. Expected value no worse than about −5% after costs. The plan wins often enough: about 42% for single buys, 40% for debit spreads, 60% for sales. 21–120 days for a buy, 14–60 for a sale. Decay under control for buys. No earnings inside the window. Not fighting the trend. For spreads, a reward worth the risk: at least 0.8× for debit spreads, a credit of at least 20% of the width for credit spreads. A clears every check, B misses one, C misses two. The Quality filter hides everything below B, so an empty table means nothing good is on offer right now.</dd>
       <dt>Vertical spreads</dt><dd>Debit spreads buy one strike and sell a further one: cheaper, less time decay and less IV crush than a single option, with the gain capped at the width. Credit spreads sell one strike and buy a further one: they win more often, and the max loss is known before you enter. For each strike in the delta range the page pairs the standard partner, about 1:1 reward to risk for debit spreads, about a third of the width collected for credit spreads. Robinhood needs options level 3 for spreads.</dd>
       <dt>P(profit)</dt><dd>Chance the trade is profitable at expiry if held, at market implied volatility (Robinhood's own chance of profit when loaded from Robinhood). This is a different number from Win %, which follows the plan.</dd>
@@ -303,7 +414,8 @@ var Engine = (function () {
   }
   function bs(S, K, T, sig, isC) {
     if (!(S > 0) || !(K > 0)) return 0;
-    if (!(T > 1e-6) || !(sig > 1e-4)) return Math.max(0, isC ? S - K : K - S);
+    if (!(T > 1e-6)) return Math.max(0, isC ? S - K : K - S);
+    if (!(sig > 1e-4)) { var dk = K * Math.exp(-R * T); return Math.max(0, isC ? S - dk : dk - S); }
     var sq = sig * Math.sqrt(T), d1 = (Math.log(S / K) + (R + 0.5 * sig * sig) * T) / sq, d2 = d1 - sq, df = Math.exp(-R * T);
     return isC ? S * ncdf(d1) - K * df * ncdf(d2) : K * df * ncdf(-d2) - S * ncdf(-d1);
   }
@@ -382,12 +494,17 @@ var Engine = (function () {
 
   /* ---------- term structure and scheduled events ---------- */
   function termStructure(S, now) {
-    var by = {}, i, o, p;
-    for (i = 0; i < S.o.length; i++) {
-      o = S.o[i]; p = parseOCC(o[0]); if (!p) continue;
-      var iv = +o[5], ad = Math.abs(+o[8]); if (!(iv > 0.01 && iv < 5) || ad < 0.3 || ad > 0.7) continue;
+    var rows = [];
+    for (var i = 0; i < S.o.length; i++) { var o = S.o[i], p = parseOCC(o[0]); if (p) rows.push({ exp: p.exp, iv: +o[5], delta: +o[8] }); }
+    return termFrom(rows, now);
+  }
+  /* ATM implied vol per expiry: delta-weighted average of the 0.3–0.7 delta contracts. */
+  function termFrom(rows, now) {
+    var by = {}, i;
+    for (i = 0; i < rows.length; i++) {
+      var r = rows[i], iv = +r.iv, ad = Math.abs(+r.delta); if (!(iv > 0.01 && iv < 5) || ad < 0.3 || ad > 0.7) continue;
       var w = 1 - Math.abs(ad - 0.5) / 0.2; if (w <= 0) continue;
-      var g = by[p.exp] || (by[p.exp] = { exp: p.exp, s: 0, sw: 0 }); g.s += w * iv; g.sw += w;
+      var g = by[r.exp] || (by[r.exp] = { exp: r.exp, s: 0, sw: 0 }); g.s += w * iv; g.sw += w;
     }
     var pts = [];
     for (var k in by) { var gg = by[k], T = (gg.exp - now) / YEAR_MS; if (gg.sw > 0 && T >= 1.5 / 365) pts.push({ exp: gg.exp, T: T, iv: gg.s / gg.sw }); }
@@ -454,11 +571,12 @@ var Engine = (function () {
   }
   function analyzeSymbol(S, ctx) {
     var px0 = +S.px; if (!(px0 > 0) || !S.o) return null;
-    var now = ctx.now, ps = paritySpot(S, now), px = px0, mismatch = null;
-    if (ps && Math.abs(ps / px0 - 1) > 0.025) { px = ps; mismatch = { quoted: px0, implied: ps }; }
+    // Always price off the spot the option quotes imply (put-call parity), so call and put IVs at a strike agree;
+    // flag it when it's far from the stock quote.
+    var now = ctx.now, ps = paritySpot(S, now), px = ps || px0, mismatch = ps && Math.abs(ps / px0 - 1) > 0.025 ? { quoted: px0, implied: ps } : null;
     var pts = termStructure(S, now), earn = ctx.earn ? ctx.earn[S.s] : null;
-    var ev = NO_EARNINGS[S.s] && !earn ? null : detectEvent(pts, earn, now), h = S.hist || null, hv = realizedVol(h);   // funds have no earnings: term-structure bumps there aren't events
-    var A = { sym: S.s, px: px, pxQuoted: px0, mismatch: mismatch, dropped: 0, pts: pts, ev: ev, hist: h, hv: hv, trend: trendOf(px, h), iv30: S.iv30 ? S.iv30 / 100 : atmIVAt(pts, 30 / 365),
+    var h = S.hist || null, hv = realizedVol(h);
+    var A = { sym: S.s, px: px, pxQuoted: px0, mismatch: mismatch, dropped: 0, pts: pts, ev: null, hist: h, hv: hv, trend: trendOf(px, h), iv30: null,
       ivchg: S.ivchg != null ? +S.ivchg : null, chg: S.chg != null ? +S.chg : null, rt: !!S.rt, stab: S.h || null, legs: [] };
     for (var i = 0; i < S.o.length; i++) {
       var o = S.o[i], p = parseOCC(o[0]); if (!p) continue;
@@ -473,6 +591,10 @@ var Engine = (function () {
         gamma: +o[9] || 0, theta: +o[10] || 0, vega: +o[11] || 0, theo: +o[12] || 0, last: +o[13] || 0,
         copL: o[14] > 0 ? +o[14] : null, copS: o[15] > 0 ? +o[15] : null, instId: o[16] || null });
     }
+    // term structure, 30-day IV and events on the same basis as the legs (their own mid-implied vols)
+    var ptsMid = termFrom(A.legs, now); if (ptsMid.length >= 2) A.pts = ptsMid;
+    A.iv30 = atmIVAt(A.pts, 30 / 365) || (S.iv30 ? S.iv30 / 100 : null);
+    A.ev = NO_EARNINGS[S.s] && !earn ? null : detectEvent(A.pts, earn, now);   // funds have no earnings: term-structure bumps there aren't events
     return A;
   }
 
@@ -523,14 +645,31 @@ var Engine = (function () {
     return out;
   }
   /* Volatility model. Forecast diffusive vol blends implied (60%) with realized ex-jumps (40%); every strike is scaled by the same
-     factor so the model never claims to know the skew is mispriced. A scheduled event keeps the market's implied jump size. */
+     factor k, so the model never claims to know the skew is mispriced. A scheduled event keeps the market's implied jump, capped at
+     85% of a leg's implied variance so the forecast never sits above the market for no reason. */
+  var EV_CAP = 0.85;
   function volModel(st) {
-    var T = st.T, m = st.m || 0, ev2 = m * m / T, atm = st.atm || st.iv;
-    var atmDiff2 = Math.max(atm * atm - ev2, 0.3 * atm * atm);
+    var T = st.T, m = st.m || 0, atm = st.atm || st.iv;
+    var evTot = Math.min(m * m, EV_CAP * atm * atm * T);         // the event's variance (total over the life), capped
+    var atmDiff2 = atm * atm - evTot / T;
     var fd = st.hv > 0 ? Math.sqrt(W_IV * atmDiff2 + (1 - W_IV) * st.hv * st.hv) : Math.sqrt(atmDiff2);
-    var k = fd / Math.sqrt(atmDiff2);
-    for (var i = 0; i < st.legs.length; i++) { var L = st.legs[i]; L.diff2 = Math.max(L.iv * L.iv - ev2, 0.3 * L.iv * L.iv); L.sigF = Math.sqrt(k * k * L.diff2 + ev2); }
-    st.sigPath = fd; st.k = k; st.atmDiff = Math.sqrt(atmDiff2);
+    var k = fd / Math.sqrt(atmDiff2), i, L;
+    for (i = 0; i < st.legs.length; i++) {
+      L = st.legs[i]; L.ev2 = Math.min(evTot / T, EV_CAP * L.iv * L.iv); L.diff2 = L.iv * L.iv - L.ev2; L.evTot = L.ev2 * T;
+      L.sigF = Math.sqrt(k * k * L.diff2 + L.ev2);
+    }
+    st.k = k; st.atmDiff = Math.sqrt(atmDiff2);
+    // Simulation: each leg follows its own price path driven by the same market shocks, at its own forecast diffusive vol and with
+    // its own share of the event jump, and is repriced at its own market IV. Every leg (and so every spread) is then priced by the
+    // simulation exactly as the forecast prices it: skew can't leak in as fake profit or loss, and a fairly priced trade averages zero.
+    var wsum = 0, vsum = 0, mmax = 0, sq = Math.sqrt(T);
+    for (i = 0; i < st.legs.length; i++) {
+      L = st.legs[i]; L.sigP = k * Math.sqrt(L.diff2); L.mJ = Math.sqrt(L.evTot); if (L.mJ > mmax) mmax = L.mJ;
+      var s0 = Math.sqrt(L.diff2), d1 = (Math.log(st.S / L.K) + (R + s0 * s0 / 2) * T) / (s0 * sq), vg = Math.exp(-d1 * d1 / 2);
+      wsum += vg; vsum += vg * L.sigP;
+    }
+    st.sigPath = wsum > 0 ? vsum / wsum : st.legs[0].sigP;   // for display: vega-weighted forecast vol of the structure
+    st.mPath = mmax;
     return st;
   }
   function valueAt(legs, S, T, key) { var v = 0; for (var i = 0; i < legs.length; i++) { var L = legs[i]; v += L.q * bs(S, L.K, T, key ? L[key] : L.iv, L.isC); } return v; }
@@ -552,15 +691,16 @@ var Engine = (function () {
     st.ev = buy ? st.fair - st.price : st.price - st.fair;
     if (st.kind === "single") st.risk = buy ? st.price : (st.isC ? null : st.K - st.price);
     else st.risk = buy ? st.price : st.width - st.price;
-    st.evPct = buy ? (st.price > 0 ? st.ev / st.price : null) : (st.kind === "single" ? (st.price > 0 ? st.ev / st.price : null) : (st.risk > 0 ? st.ev / st.risk : null));
+    st.evBase = buy || st.kind === "single" ? st.price : st.risk;   // premium paid, premium received, or a credit spread's max loss
+    st.evPct = st.evBase > 0 ? st.ev / st.evBase : null;
     st.be = st.isC ? st.K + st.price : st.K - st.price;
     st.moveBE = (st.be - st.S) / st.S;
     var pMkt = probBeyond(st.S, st.be, st.T, st.iv, buy ? st.isC : !st.isC);
     st.pop = st.kind === "single" ? (buy ? (st.copL != null ? st.copL : pMkt) : (st.copS != null ? st.copS : pMkt)) : pMkt;
-    st.thetaPct = st.mid > 0 ? Math.abs(st.theta) / st.mid : 0;
+    st.thetaPct = st.mid > 0 ? Math.max(0, -st.theta) / st.mid : 0;   // daily decay of the combo's value (0 when it gains with time)
     st.lever = st.mid > 0 ? Math.abs(st.delta) * st.S / st.mid : 0;
     st.flow = st.oi > 0 ? st.vol / st.oi : (st.vol > 0 ? 5 : 0);
-    st.theoEdge = st.theo > 0 ? (buy ? (st.theo - st.ask) / st.ask : (st.bid - st.theo) / st.theo) : null;
+    st.theoEdge = st.theo > 0 && st.price > 0 ? (buy ? (st.theo - st.price) / st.price : (st.price - st.theo) / st.theo) : null;
     st.ivRel = A.iv30 ? st.iv / A.iv30 - 1 : 0;
     st.ivTrend = A.ivchg != null ? -A.ivchg / 100 : 0;
     st.trend = A.trend; st.trendFit = (st.isC ? 1 : -1) * (buy ? 1 : -1) * A.trend;
@@ -579,21 +719,27 @@ var Engine = (function () {
     var T0 = st.T; if (!(entry > 0) || !(T0 > 0)) return null;
     var hs = FILL * Math.max(0, (st.ask - Math.max(0, st.bid)) / 2);
     var horizon = Math.max(1, Math.min(horizonDays, T0 * 365)), expires = horizon >= T0 * 365 - 1e-9;
-    // monitor once per trading day, but on the options' calendar clock: total path variance = vol^2 x calendar time, as in the IVs
-    var steps = Math.max(1, Math.round(horizon * 5 / 7)), calStep = horizon / steps / 365, dtD = calStep;
-    var sig = st.sigPath || st.iv, drift = (R - 0.5 * sig * sig) * dtD, vol = sig * Math.sqrt(dtD);
-    var m = st.m || 0, tEv = (m > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null, legs = st.legs, buy = side === "buy";
+    // monitor once per trading day, on the options' calendar clock: total path variance = vol^2 x calendar time, as in the IVs
+    var steps = Math.max(1, Math.round(horizon * 5 / 7)), dt = horizon / steps / 365, sdt = Math.sqrt(dt);
+    var legs = st.legs, nL = legs.length, buy = side === "buy", i;
+    var tEv = (st.mPath > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null;
+    var drift = new Float64Array(nL), vol = new Float64Array(nL), jump = new Float64Array(nL), lnS = new Float64Array(nL), ln0 = Math.log(st.S);
+    for (i = 0; i < nL; i++) { var Lg = legs[i]; drift[i] = (R - 0.5 * Lg.sigP * Lg.sigP) * dt; vol[i] = Lg.sigP * sdt; jump[i] = Lg.mJ || 0; }
     var half = Math.ceil(nPaths / 2), stride = steps + 1, zs = normals(rng(hash(seed || st.id || "x")), half * stride);
-    var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL = 0, pls = [], dsum = 0;
+    var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL2 = 0, pls = [], dsum = 0;
     for (var p = 0; p < half; p++) for (var anti = 0; anti < 2; anti++) {
-      var sgn = anti ? -1 : 1, S = st.S, pl = 0, kind = "x", evDone = tEv == null, day = horizon;
+      var sgn = anti ? -1 : 1, pl = 0, kind = "x", evDone = tEv == null, day = horizon;
+      for (i = 0; i < nL; i++) lnS[i] = ln0;
       for (var k = 1; k <= steps; k++) {
-        S *= Math.exp(drift + vol * sgn * zs[p * stride + k - 1]);
-        var t = k * calStep;
-        if (!evDone && t >= tEv) { S *= Math.exp(-0.5 * m * m + m * sgn * zs[p * stride + steps]); evDone = true; }
-        var Tr = T0 - t, v = 0, i;
-        if (Tr <= 1e-6) v = intrinsic(legs, S);
-        else { var ev2r = evDone ? 0 : m * m / Tr; for (i = 0; i < legs.length; i++) { var L = legs[i]; v += L.q * bs(S, L.K, Tr, Math.sqrt(L.diff2 + ev2r), L.isC); } }
+        var z = sgn * zs[p * stride + k - 1], t = k * dt;
+        for (i = 0; i < nL; i++) lnS[i] += drift[i] + vol[i] * z;
+        if (!evDone && t >= tEv) { var ze = sgn * zs[p * stride + steps]; for (i = 0; i < nL; i++) lnS[i] += -0.5 * jump[i] * jump[i] + jump[i] * ze; evDone = true; }
+        var Tr = T0 - t, v = 0;
+        for (i = 0; i < nL; i++) {
+          var L = legs[i], Si = Math.exp(lnS[i]);
+          v += L.q * (Tr <= 1e-6 ? Math.max(0, L.isC ? Si - L.K : L.K - Si) : bs(Si, L.K, Tr, Math.sqrt(L.diff2 + (evDone ? 0 : L.evTot / Tr)), L.isC));
+        }
+        if (st.width) v = Math.min(Math.max(v, 0), st.width);   // a vertical lives between 0 and its width
         var last = k === steps, atExp = last && expires, x, disc = Math.exp(-R * t);   // P/L in today's dollars: a fairly priced trade averages zero
         if (buy) {
           x = Math.max(0, atExp ? v : v - hs);
@@ -605,13 +751,13 @@ var Engine = (function () {
         day = t * 365; break;
       }
       if (kind === "t") nT++; else if (kind === "s") nS++; else nX++;
-      if (pl > 0) { nW++; sumW += pl; } else { nL++; sumL += pl; }
+      if (pl > 0) { nW++; sumW += pl; } else { nL2++; sumL += pl; }
       sum += pl; dsum += day; pls.push(pl);
     }
     var n = half * 2; pls.sort(function (a, b) { return a - b; });
     function q(f) { return pls[Math.min(n - 1, Math.max(0, Math.floor(f * n)))]; }
     return { n: n, days: horizon, avgDays: dsum / n, pTarget: nT / n, pStop: nS / n, pTime: nX / n, pWin: nW / n, ev: sum / n,
-      avgWin: nW ? sumW / nW : 0, avgLoss: nL ? sumL / nL : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
+      avgWin: nW ? sumW / nW : 0, avgLoss: nL2 ? sumL / nL2 : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
   }
   /* Exit levels per share for a plan (fractions), shared by the simulation and the order ticket. */
   function planLevels(st, plan) {
@@ -698,7 +844,7 @@ var Engine = (function () {
     var comps = {
       ev: pctRank(rows, function (r) { return r.evPct; }, true),
       win: pctRank(rows, function (r) { return r.plan ? r.plan.pWin : null; }, true),
-      planEv: pctRank(rows, function (r) { return r.plan && r.price > 0 ? r.plan.ev / (r.risk > 0 ? r.risk : r.price) : null; }, true),
+      planEv: pctRank(rows, function (r) { return r.plan && r.evBase > 0 ? r.plan.ev / r.evBase : null; }, true),
       theoEdge: pctRank(rows, function (r) { return r.theoEdge; }, true),
       spread: pctRank(rows, function (r) { return r.spreadPct; }, false),
       liq: pctRank(rows, function (r) { return Math.log(1 + r.oiMin) + 0.6 * Math.log(1 + r.volMin) + 0.2 * Math.log(1 + r.bs + r.as); }, true),
@@ -727,7 +873,7 @@ var Engine = (function () {
 
   return { R: R, W_IV: W_IV, FILL: FILL, NO_EARNINGS: NO_EARNINGS, YEAR_MS: YEAR_MS, EARNINGS_SEED: EARNINGS_SEED, ncdf: ncdf, bs: bs, probBeyond: probBeyond, median: median, hash: hash,
     parseOCC: parseOCC, etTime: etTime, earnMap: earnMap, histStats: histStats, realizedVol: realizedVol, trendOf: trendOf,
-    paritySpot: paritySpot, termStructure: termStructure, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
+    paritySpot: paritySpot, termStructure: termStructure, termFrom: termFrom, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
     makeSingle: makeSingle, makeSpread: makeSpread, verticals: verticals, volModel: volModel, valueAt: valueAt, intrinsic: intrinsic,
     impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
     LENSES: LENSES, pctRank: pctRank, scoreRows: scoreRows, STRUCT_DEFAULTS: STRUCT_DEFAULTS, PLAN_DEFAULTS: PLAN_DEFAULTS };
@@ -758,6 +904,7 @@ const WATCH = ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "ME
 const CORE = ["SPY", "QQQ", "NVDA", "AMZN", "MSFT", "AAPL", "TSLA", "META"];
 const HIST = new Map();            // occ -> this session's scan-by-scan record, for the consistency stat
 const TABLE_PATHS = 400, DRAWER_PATHS = 4000;
+const JOURNAL = true;              // "My trades" journal (Claude version only, needs the db + user capabilities); false switches it off everywhere
 
 const state = {
   data: null, mode: null, syms: [], ver: 0, selected: new Set(), firstLoad: true,
@@ -765,7 +912,8 @@ const state = {
   plan: { buy: Object.assign({}, E.PLAN_DEFAULTS.buy), sell: Object.assign({}, E.PLAN_DEFAULTS.sell) },
   touched: {}, earn: E.earnMap(null, Date.now()), earnVer: 0, apiBase: null,
   mcp: null, busy: false, lastTick: 0, rt: new Map(), rtLoading: null, rtFail: new Map(), rtRange: null, rtAbort: null, accounts: null, extra: [],
-  simCache: new Map(), structCache: { key: null, list: [] }, rows: [], filteredCount: 0, qualityCount: 0, track: null
+  simCache: new Map(), structCache: { key: null, list: [] }, rows: [], filteredCount: 0, qualityCount: 0, track: null, mcpChecked: false,
+  jr: { ready: false, col: null, readonly: false, loaded: false, trades: [], quotes: new Map(), qAt: 0, qBusy: false, qErr: "", err: "", open: false, mode: {}, formRow: null }
 };
 
 /* ---------- small helpers ---------- */
@@ -1037,9 +1185,10 @@ function fallbackSnapshot(reason) {
 async function initClaude() {
   setStatus("Connecting to Robinhood…", "snap");
   let mcp = null; try { mcp = await window.claude.use("mcp"); } catch (e) { mcp = null; }
-  if (!mcp) { fallbackSnapshot("Robinhood isn't available in this view."); if (!state.data) setStatus("Robinhood isn't available in this view. Open the public site, strike-finder.onrender.com, for delayed data.", ""); return; }
+  state.mcpChecked = true;
+  if (!mcp) { if (state.jr.open) jRequote(); fallbackSnapshot("Robinhood isn't available in this view."); if (!state.data) setStatus("Robinhood isn't available in this view. Open the public site, strike-finder.onrender.com, for delayed data.", ""); return; }
   state.mcp = mcp; state.mode = "rt";
-  addRHButtons();
+  addRHButtons(); if (state.jr.open) jRequote();
   rhCall("get_accounts", {}, 3600e3).then(a => { state.accounts = (a.accounts || a.results || []).filter(x => x && x.account_number); }).catch(() => {});
   try { const x = JSON.parse(localStorage.getItem("sf:extra") || "[]"); if (Array.isArray(x)) state.extra = x.filter(s => /^[A-Z][A-Z0-9.]{0,6}$/.test(s)).slice(0, 12); } catch (e) {}
   await rhLoadAll([...new Set(CORE.concat(WATCH, state.extra))]);
@@ -1176,6 +1325,10 @@ function select(id, quiet) {
   if (sp) ticket = `${name}\n${buy ? leg(r.raw[0], "Buy") + " · " + leg(r.raw[1], "Sell") : leg(r.raw[0], "Sell") + " · " + leg(r.raw[1], "Buy")}\nNet ${buy ? "debit" : "credit"} limit $${fmt(r.mid)} (mid); expect fills near $${fmt(r.price)}\nMax gain ${money(r.maxGain * per, 0)} · max loss ${money(r.maxLoss * per, 0)} · breakeven $${fmt(r.be)}\nExit plan: ${tgtTxt} · ${stpTxt} · otherwise close by ${dayNum(closeBy)}`;
   else ticket = `${name}\n${buy ? "Buy" : "Sell"} to open 1 · limit $${fmt(r.mid)} (mid); expect fills near $${fmt(r.price)}\nBreakeven at expiry $${fmt(r.be)} (${pct(r.moveBE, 1, true)} from $${fmt(r.S)})\nExit plan: ${tgtTxt} · ${stpTxt} · otherwise close by ${dayNum(closeBy)}\nOCC ${r.raw[0].occ}`;
   const lvlNote = levelNote(sp, buy, isC);
+  // the minute re-quote re-renders this panel: keep a half-filled "Track this trade" form (values, focus) for the same contract
+  const jOld = $("#jtrack"), jKeep = jOld && jOld.dataset.id === id && jOld.dataset.wired && !state.jr.readonly ? jOld : null;
+  const jFocus = jKeep && jKeep.contains(document.activeElement) ? document.activeElement : null;
+  state.jr.formRow = r;
   d.innerHTML = `
   <div class="left">
     <div class="d-head"><h2>${esc(name)}</h2><span class="grade g${r.grade === "–" ? "x" : r.grade}">${r.grade}</span><span class="muted num">${esc(sp ? r.raw.map(L => L.occ).join(" / ") : r.raw[0].occ)}</span></div>
@@ -1205,7 +1358,14 @@ function select(id, quiet) {
       <div class="f"><label for="risk">Max risk per trade (%)</label><input id="risk" type="number" min="0.1" max="100" step="0.5" value="${loadNum("sf:risk", 2)}"></div>
       <div class="note" id="sizing"></div>
     </div>
+    ${trackFormHTML(r)}
   </div>`;
+  if (jKeep && $("#jtrack")) {
+    $("#jtrack").replaceWith(jKeep);
+    const ent = $("#jt-entry"); if (ent && !ent.dataset.edited) ent.value = r.price.toFixed(2);
+    if (jFocus) { try { jFocus.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  wireTrackForm();
   const why = [], parts = r.parts || {};
   const lbl = { ev: "expected value", planEv: "plan's expected result", win: "plan win rate", theoEdge: "price vs fair value", spread: "spread", liq: "liquidity", theta: "theta", ivRel: "IV vs 30d", ivTrend: "IV trend", pop: "P(profit)", lever: "leverage", flow: "volume/OI", volRank: "volume", trendFit: "trend fit", stab: "consistency" };
   Object.entries(parts).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => why.push(`<span><b>${lbl[k] || k}</b>: better than ${(v * 100).toFixed(0)}% of what's in this view</span>`));
@@ -1247,7 +1407,8 @@ function payoffSVG(r) {
   const ys = pts.map(p => p[1]), ymin = Math.min(...ys, 0), ymax = Math.max(...ys, 0);
   const X = S => pad + (S - lo) / (hi - lo) * (W - 2 * pad), Y = v => H - pad - (v - ymin) / ((ymax - ymin) || 1) * (H - 2 * pad);
   const path = pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ");
-  return `<svg class="payoff" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit and loss at expiry across stock prices">
+  return `<p class="note payoffcap">P/L at expiry per contract · breakeven $${fmt(r.be, 2)} · max ${money(ymax, 0)} / min ${money(ymin, 0)} in this range</p>
+  <svg class="payoff" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit and loss at expiry across stock prices">
     <line x1="${pad}" y1="${Y(0)}" x2="${W - pad}" y2="${Y(0)}" stroke="currentColor" stroke-opacity=".35"/>
     <line x1="${X(r.S)}" y1="${pad - 6}" x2="${X(r.S)}" y2="${H - pad}" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="3 3"/>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
@@ -1255,8 +1416,6 @@ function payoffSVG(r) {
     <text x="${X(r.S)}" y="${pad - 10}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".7">now $${fmt(r.S, 2)}</text>
     <text x="${pad}" y="${H - 8}" font-size="11" fill="currentColor" fill-opacity=".7">$${fmt(lo, 0)}</text>
     <text x="${W - pad}" y="${H - 8}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">$${fmt(hi, 0)}</text>
-    <text x="${W - pad}" y="${pad - 10}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".7">P/L at expiry per contract · BE $${fmt(r.be, 2)}</text>
-    <text x="${pad}" y="${pad - 10}" font-size="11" fill="currentColor" fill-opacity=".7">max ${money(ymax, 0)} / min ${money(ymin, 0)} in this range</text>
   </svg>`;
 }
 
@@ -1350,7 +1509,244 @@ function renderPositions(rows, accts) {
   sec.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+/* ---------- My trades: a private journal of the trades you actually took (Claude version: db + user capabilities) ----------
+   Each trade is one document at data/users/<your id>/journal/trades/<trade id>, private to you. Values come from Robinhood
+   quotes of the legs, combined like the engine's combos: long legs add, short legs subtract. */
+async function initJournal() {
+  if (!JOURNAL || !IN_CLAUDE) return;
+  let db = null, user = null;
+  try { [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]); } catch (e) { return; }
+  if (!db || !user) return;
+  let uid = null; try { uid = await user.id(); } catch (e) { uid = null; }
+  if (!uid) return;                                  // no identity here = no private subtree: no journal this visit
+  const J = state.jr;
+  try { J.col = db.doc("data/users/" + uid + "/journal").collection("trades"); } catch (e) { return; }
+  J.ready = true;
+  const box = $("#jbox");
+  box.addEventListener("click", e => { const b = e.target.closest("[data-act]"); if (b) jAction(b.dataset.act, b.dataset.id || "", b); });
+  box.addEventListener("input", e => { const id = e.target.dataset ? e.target.dataset.exit : null; if (id && J.mode[id]) J.mode[id].exit = e.target.value; });
+  box.addEventListener("keydown", e => { const id = e.target.dataset ? e.target.dataset.exit : null; if (id && e.key === "Enter") jAction("close-save", id, null); });
+  J.col.onSnapshot(snap => {
+    J.trades = snap.docs.filter(d => d.exists).map(d => Object.assign({}, d.data(), { id: d.id })).sort((a, b) => (b.created || 0) - (a.created || 0));
+    J.loaded = true; J.err = "";
+    renderJournal();
+    if (J.open && J.trades.some(t => t.status !== "closed" && (t.legs || []).some(L => L.instId && !J.quotes.has(L.instId)))) jRequote();
+  }, e => { J.err = jErrText(e); J.loaded = true; renderJournal(); });
+  addJournalButton();
+  if (state.sel) select(state.sel, true);
+  let wasOpen = false; try { wasOpen = localStorage.getItem("sf:journal") === "1"; } catch (e) {}
+  if (wasOpen) openJournal(false);
+  setInterval(() => { if (J.open && document.visibilityState === "visible" && marketHours()) jRequote(); }, 60 * 1000);
+}
+function jErrText(e) {
+  const c = e && e.code;
+  if (c === "quota_exceeded") return "Your journal is full. Delete some old trades, then save again.";
+  if (c === "invalid_argument") return "Saving trades isn't allowed at your access level on this page.";
+  if (c === "resource_exhausted") return "Too many saves at once. Wait a moment and try again.";
+  if (c === "revoked" || c === "not_granted" || c === "capability_disabled" || c === "capability_removed") return "Saving trades isn't available in this view.";
+  return "Couldn't reach your journal just now. Try again in a moment.";
+}
+async function jWrite(fn) {                          // one write; a transient failure is retried once after a short random delay
+  for (let tries = 0; ; tries++) {
+    try { return await fn(); }
+    catch (e) { if (e && e.code === "unavailable" && tries < 1) { await sleep(400 + Math.random() * 800); continue; } if (e && e.code === "invalid_argument") state.jr.readonly = true; throw e; }
+  }
+}
+function addJournalButton() {
+  if ($("#jr-btn")) return;
+  const b = document.createElement("button"); b.type = "button"; b.className = "btn sm"; b.id = "jr-btn"; b.textContent = "My trades";
+  b.addEventListener("click", () => { if (state.jr.open) closeJournal(); else openJournal(true); });
+  ($("#rh-pos") || $("#refresh")).after(b);
+}
+function openJournal(scroll) {
+  const J = state.jr; if (!J.ready) return;
+  J.open = true; $("#journal").hidden = false; try { localStorage.setItem("sf:journal", "1"); } catch (e) {}
+  renderJournal(); jRequote();
+  if (scroll) $("#journal").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function closeJournal() { state.jr.open = false; $("#journal").hidden = true; try { localStorage.setItem("sf:journal", "0"); } catch (e) {} }
+async function jRequote() {
+  const J = state.jr; if (!J.ready || J.qBusy) return;
+  const ids = [...new Set(J.trades.filter(t => t.status !== "closed").flatMap(t => (t.legs || []).map(L => L.instId)).filter(Boolean))];
+  if (!ids.length) return;
+  if (!state.mcp) { J.qErr = state.mcpChecked ? "Live values need the Robinhood connector, which isn't available in this view." : ""; renderJournal(); return; }
+  J.qBusy = true; renderJournal();
+  let fails = 0;
+  try {
+    for (let i = 0; i < ids.length; i += 50) {
+      try { const r = await rhCall("get_option_quotes", { instrument_ids: ids.slice(i, i + 50) }, false);
+        (r.results || []).forEach(res => { const u = res && (res.quote || res); if (u && u.instrument_id) J.quotes.set(u.instrument_id, { bid: +u.bid_price || 0, ask: +u.ask_price || 0, mark: +u.mark_price || 0, at: Date.now() }); }); }
+      catch (e) { fails++; J.qErr = AUTH_CODES[e && e.code] || "Robinhood quotes failed: " + ((e && (e.message || e.code)) || "error"); }
+    }
+    if (!fails) { J.qErr = ""; J.qAt = Date.now(); }
+  } finally { J.qBusy = false; renderJournal(); }
+}
+/* Value per share of the combo now: long legs add their bid/ask, short legs subtract their ask/bid (as the engine builds spreads).
+   "value" is the expected fill to close, halfway from the mid to the natural price: what selling (buys) or buying back (sales) gets. */
+function jValue(t) {
+  let bid = 0, ask = 0, mark = 0;
+  for (const L of t.legs || []) {
+    const u = state.jr.quotes.get(L.instId); if (!u) return null;
+    const q = +L.q || 0, m = u.mark > 0 ? u.mark : (u.bid + u.ask) / 2;
+    if (q > 0) { bid += q * u.bid; ask += q * u.ask; } else { bid += q * u.ask; ask += q * u.bid; }
+    mark += q * m;
+  }
+  bid = Math.max(0, bid); if (!(ask > 0) && !(mark > 0)) return null;
+  ask = Math.max(ask, bid); const mid = Math.min(ask, Math.max(bid, mark));
+  const value = t.side === "buy" ? mid - E.FILL * (mid - bid) : mid + E.FILL * (ask - mid);
+  return { bid, ask, mid, value: Math.max(0, value) };
+}
+function jPL(t, v) {
+  if (v == null || !(t.entry > 0)) return null;
+  const per = t.side === "buy" ? v - t.entry : t.entry - v;
+  return { per, usd: per * 100 * (t.qty || 1), pct: per / t.entry };
+}
+function jHow(t) {               // how a closed trade ended, measured against its own plan
+  const buy = t.side === "buy", x = t.exit; if (x == null) return "";
+  if (t.target != null && (buy ? x >= t.target - 0.005 : x <= t.target + 0.005)) return "target";
+  if (t.stop != null && (buy ? x <= t.stop + 0.005 : x >= t.stop - 0.005)) return "stop";
+  if (t.closeBy && t.closed >= t.closeBy) return "time";
+  return "early";
+}
+function jStatus(t, v, now) {
+  const buy = t.side === "buy";
+  if (t.status === "closed") { const h = jHow(t); return { tag: "Closed", cls: "x", sub: ({ target: "at the target", stop: "at the stop", time: "at the time limit", early: "before any exit level" })[h] || "" }; }
+  if (v != null && t.target != null && (buy ? v >= t.target : v <= t.target)) return { tag: "Target reached", cls: "good", sub: "the plan says take the profit" };
+  if (v != null && t.stop != null && (buy ? v <= t.stop : v >= t.stop)) return { tag: "Stop reached", cls: "bad", sub: "the plan says close it" };
+  if (t.exp && now >= t.exp) return { tag: "Expired", cls: "bad", sub: "record how it ended" };
+  if (t.closeBy && now >= t.closeBy) return { tag: "Past time limit", cls: "warn", sub: "the plan says close it" };
+  return { tag: "Open", cls: "fair", sub: v == null ? "no quote yet" : "within the plan" };
+}
+function jStats(closed) {
+  const rows = closed.map(t => ({ t, pl: jPL(t, t.exit) })).filter(x => x.pl); const n = rows.length; if (!n) return null;
+  const w = rows.filter(x => x.pl.per > 0).length, total = rows.reduce((s, x) => s + x.pl.usd, 0), pw = rows.filter(x => x.t.pWin != null);
+  return { n, w, rate: w / n, avgUsd: total / n, avgPct: rows.reduce((s, x) => s + x.pl.pct, 0) / n, total,
+    model: pw.length ? pw.reduce((s, x) => s + x.t.pWin, 0) / pw.length : null, byPlan: rows.filter(x => jHow(x.t) !== "early").length };
+}
+function renderJournal() {
+  const J = state.jr; if (!J.ready) return;
+  const open = J.trades.filter(t => t.status !== "closed"), closed = J.trades.filter(t => t.status === "closed"), now = Date.now();
+  const btn = $("#jr-btn"); if (btn) btn.textContent = "My trades" + (open.length ? ` (${open.length})` : "");
+  if (!J.open) return;
+  const box = $("#jbox"), ae = document.activeElement, keepFocus = ae && box.contains(ae) && ae.id ? ae.id : null;
+  let openPL = 0, priced = 0;
+  const trs = J.trades.map(t => {
+    const isClosed = t.status === "closed", v = isClosed ? null : jValue(t), val = isClosed ? t.exit : v ? v.value : null, pl = jPL(t, val), s = jStatus(t, val, now), m = J.mode[t.id] || {};
+    if (!isClosed && pl) { openPL += pl.usd; priced++; }
+    const sp = t.kind === "spread", tag = `<span class="tag ${t.isC ? "c" : "p"}">${t.isC ? "CALL" : "PUT"}${sp ? (t.side === "buy" ? " DEBIT" : " CREDIT") : ""}</span>${!sp && t.side === "sell" ? ' <span class="tag p">SHORT</span>' : ""}`;
+    const now$ = isClosed ? `${fmt(t.exit)}<br><span class="muted">exit ${t.closed ? day(t.closed) : ""}</span>` : v ? `${fmt(v.value)}<br><span class="muted">${fmt(v.bid)} / ${fmt(v.ask)}</span>` : "–";
+    let act;
+    if (m.k === "close") act = `<span class="jform"><label class="muted" for="jx-${esc(t.id)}">Exit $/share</label><input id="jx-${esc(t.id)}" data-exit="${esc(t.id)}" type="number" min="0" step="0.01" value="${esc(m.exit)}"><button class="btn sm primary" type="button" data-act="close-save" data-id="${esc(t.id)}">Record close</button><button class="btn sm" type="button" data-act="cancel" data-id="${esc(t.id)}">Cancel</button>${m.msg ? `<span class="warn">${esc(m.msg)}</span>` : ""}</span>`;
+    else if (m.k === "delete") act = `<span class="jform"><span class="warn">Delete this trade for good?</span><button class="btn sm" type="button" data-act="delete-yes" data-id="${esc(t.id)}">Delete</button><button class="btn sm" type="button" data-act="cancel" data-id="${esc(t.id)}">Keep it</button></span>`;
+    else act = `<span class="jform">${isClosed ? "" : `<button class="btn sm" type="button" data-act="close" data-id="${esc(t.id)}">Close</button>`}<button class="btn sm" type="button" data-act="delete" data-id="${esc(t.id)}">Delete</button></span>`;
+    if (J.readonly) act = "";
+    return `<tr class="${t.note ? "main" : ""}"><td class="l">${t.created ? day(t.created) : "–"}</td>
+      <td class="l"><b>${esc(t.label || t.sym)}</b> ${tag} ${t.grade ? `<span class="grade g${t.grade === "–" ? "x" : esc(t.grade)}">${esc(t.grade)}</span>` : ""}</td>
+      <td class="num">${esc(t.qty)}</td><td class="num">${fmt(t.entry)}<br><span class="muted">${t.side === "buy" ? "paid" : "credit"}</span></td><td class="num">${now$}</td>
+      <td class="num ${pl ? (pl.usd >= 0 ? "up" : "down") : ""}">${pl ? sgnMoney(pl.usd, 0) + `<br><span class="muted">${pct(pl.pct, 0, true)}</span>` : "–"}</td>
+      <td class="num">${t.target == null ? "–" : fmt(t.target)}</td><td class="num">${t.stop == null ? "none" : fmt(t.stop)}</td><td class="num">${t.closeBy ? day(t.closeBy) : "–"}</td>
+      <td class="num">${pct(t.pWin, 0)}</td>
+      <td class="l"><span class="verdict ${s.cls}">${s.tag}</span>${s.sub ? `<span class="jsub">${s.sub}</span>` : ""}</td><td class="l">${act}</td></tr>` +
+      (t.note ? `<tr class="noterow"><td colspan="12"><div class="posnotes"><span>Note: ${esc(t.note)}</span></div></td></tr>` : "");
+  }).join("");
+  const S = jStats(closed);
+  const stats = S ? `<div class="totals jstats"><span>Closed <b>${S.n}</b></span><span>Win rate <b>${pct(S.rate, 0)}</b> (${S.w} of ${S.n})</span><span>Model's average predicted win <b>${pct(S.model, 0)}</b></span>
+      <span>Average result <b class="${S.avgUsd >= 0 ? "up" : "down"}">${sgnMoney(S.avgUsd, 0)}</b> per trade (${pct(S.avgPct, 1, true)} of the entry price)</span><span>Total <b class="${S.total >= 0 ? "up" : "down"}">${sgnMoney(S.total, 0)}</b></span><span>Closed by the plan <b>${S.byPlan} of ${S.n}</b></span></div>
+      ${S.n < 20 ? `<p class="note">Fewer than 20 closed trades: the gap between your win rate and the model's is still mostly luck.</p>` : ""}`
+    : J.trades.length ? `<p class="note">Close a trade here when you exit it in Robinhood. Win rate and average result build from the closed ones, next to the win rate the model predicted.</p>` : "";
+  const qInfo = J.qBusy ? "updating quotes…" : J.qAt ? "quotes " + new Date(J.qAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : "";
+  box.innerHTML = `<div class="poshead"><h2>My trades <span class="muted" style="font-weight:500;font-size:13px">· ${open.length} open · ${closed.length} closed${priced ? ` · open P/L <span class="${openPL >= 0 ? "up" : "down"}">${sgnMoney(openPL, 0)}</span>` : ""}${qInfo ? " · " + qInfo : ""}</span></h2>
+      <div class="actions" style="margin:0"><button class="btn sm" type="button" data-act="refresh">Refresh</button><button class="btn sm" type="button" data-act="hide">Hide</button></div></div>
+    ${J.err ? `<p class="note warn">${esc(J.err)}</p>` : ""}${J.qErr ? `<p class="note warn">${esc(J.qErr)}</p>` : ""}
+    ${!J.loaded ? `<p class="note">Loading your trades…</p>` : !J.trades.length ? `<p class="note">No trades tracked yet. After you place one in Robinhood, open its row here and use <b>Track this trade</b> in the details panel. Your journal is private to you.</p>` : ""}
+    ${stats}
+    ${J.trades.length ? `<div class="postable"><table><thead><tr><th class="l">Logged</th><th class="l">Trade</th><th>Qty</th><th>Entry</th><th>Now / exit</th><th>P/L</th><th>Target</th><th>Stop</th><th>Close by</th><th>Model win %</th><th class="l">Vs the plan</th><th class="l"></th></tr></thead><tbody>${trs}</tbody></table></div>
+    <p class="note">Prices are per share; P/L is for all contracts. "Now" is what closing would get you at a limit halfway from the mid to the bid (buys) or the ask (sales), from Robinhood real-time quotes${marketHours() ? ", refreshed every minute" : ""}. Target, stop and close-by are the plan's exit levels from your entry. Your journal is private to you.</p>` : ""}`;
+  if (keepFocus) { const el = document.getElementById(keepFocus); if (el) { try { el.focus({ preventScroll: true }); } catch (e) {} } }
+}
+async function jAction(act, id, btn) {
+  const J = state.jr;
+  if (act === "refresh") return jRequote();
+  if (act === "hide") return closeJournal();
+  const t = J.trades.find(x => x.id === id); if (!t || J.readonly) return;
+  if (act === "close") { const v = jValue(t); J.mode[id] = { k: "close", exit: (v ? v.value : t.entry).toFixed(2) }; renderJournal(); const el = document.getElementById("jx-" + id); if (el) el.focus(); return; }
+  if (act === "delete") { J.mode[id] = { k: "delete" }; return renderJournal(); }
+  if (act === "cancel") { delete J.mode[id]; return renderJournal(); }
+  if (act === "close-save") {
+    const m = J.mode[id]; if (!m || m.busy) return;
+    const x = parseFloat(m.exit); if (!(x >= 0)) { m.msg = "Enter the exit price per share."; return renderJournal(); }
+    m.busy = true; if (btn) btn.disabled = true;
+    try { await jWrite(() => J.col.doc(id).update({ status: "closed", exit: +x.toFixed(4), closed: Date.now() })); delete J.mode[id]; J.err = ""; }
+    catch (e) { m.busy = false; J.err = jErrText(e); }
+    return renderJournal();
+  }
+  if (act === "delete-yes") {
+    const m = J.mode[id]; if (!m || m.busy) return; m.busy = true; if (btn) btn.disabled = true;
+    try { await jWrite(() => J.col.doc(id).delete()); delete J.mode[id]; J.err = ""; }
+    catch (e) { m.busy = false; J.err = jErrText(e); }
+    return renderJournal();
+  }
+}
+/* "Track this trade" in the details panel */
+function trackFormHTML(r) {
+  const J = state.jr; if (!JOURNAL || !J.ready) return "";
+  const head = `<div class="jtrack" id="jtrack" data-id="${esc(r.id)}"><p class="eyebrow">Track this trade</p>`;
+  if (J.readonly) return head + `<p class="note">Saving trades isn't allowed at your access level on this page.</p></div>`;
+  if (!r.raw.every(L => L.instId)) return head + `<p class="note">Tracking needs Robinhood real-time quotes for this contract, and they aren't loaded in this view.</p></div>`;
+  return head + `<p class="note">Placed it in Robinhood? Save it here to follow its live P/L against this plan, and to compare your results with the model's win rate. Private to you.</p>
+    <div class="jfields">
+      <div class="f"><label for="jt-qty">Contracts</label><input id="jt-qty" type="number" min="1" step="1" value="1"></div>
+      <div class="f"><label for="jt-entry">${r.side === "buy" ? "Paid" : "Credit"} per share ($)</label><input id="jt-entry" type="number" min="0" step="0.01" value="${r.price.toFixed(2)}"></div>
+      <div class="f jnote"><label for="jt-note">Note (optional)</label><input id="jt-note" type="text" maxlength="200" placeholder="Why you took it"></div>
+      <button class="btn primary" type="button" id="jt-save">Track this trade</button>
+    </div>
+    <span class="note" id="jt-msg" role="status"></span></div>`;
+}
+function wireTrackForm() {
+  const box = $("#jtrack"); if (!box || box.dataset.wired) return; box.dataset.wired = "1";
+  const ent = $("#jt-entry"); if (ent) ent.addEventListener("input", () => { ent.dataset.edited = "1"; });
+  const btn = $("#jt-save"); if (btn) btn.addEventListener("click", () => saveTrade(box.dataset.id, btn));
+}
+async function saveTrade(id, btn) {
+  const J = state.jr, msg = $("#jt-msg"); if (!J.ready || J.readonly || btn.disabled) return;
+  const r = state.rows.find(x => x.id === id) || (J.formRow && J.formRow.id === id ? J.formRow : null);
+  if (!r) { msg.textContent = "This contract is no longer in the list. Open it again and retry."; return; }
+  const qty = Math.round(+$("#jt-qty").value), entry = +(+$("#jt-entry").value).toFixed(4), note = String($("#jt-note").value || "").trim().slice(0, 200);
+  if (!(qty >= 1 && qty <= 100000)) { msg.textContent = "Contracts must be a whole number, 1 or more."; return; }
+  if (!(entry > 0)) { msg.textContent = "Enter the price per share you got, for example 1.25."; return; }
+  const plan = planNow(r.side), lv = E.planLevels(Object.assign({}, r, { price: entry }), plan), P = planFor(r, DRAWER_PATHS) || r.plan;   // the plan's levels, from your own entry
+  if (!lv) { msg.textContent = "Couldn't work out the plan's exit levels for that price."; return; }
+  const fin = x => (typeof x === "number" && isFinite(x)) ? x : null;
+  const closeBy = r.exp - Math.max(0, (r.dte - Math.min(plan.hold, r.dte))) * 864e5;
+  const tid = "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const body = { id: tid, created: Date.now(), sym: r.sym, label: structName(r), kind: r.kind, side: r.side, isC: !!r.isC, exp: r.exp,
+    legs: r.raw.map((L, i) => ({ occ: L.occ, instId: L.instId, K: L.K, isC: !!L.isC, q: r.legs[i] ? r.legs[i].q : (i ? -1 : 1) })),
+    qty, entry, note, status: "open",
+    target: fin(lv.target), stop: (r.side === "buy" ? lv.stop > 0 : isFinite(lv.stop)) ? fin(lv.stop) : null, hold: fin(lv.hold), closeBy: fin(closeBy),
+    plan: Object.assign({}, state.plan[r.side]), pWin: fin(P && P.pWin), planEv: fin(P && P.ev), ev: fin(r.ev), evPct: fin(r.evPct), grade: r.grade || null,
+    fillEst: fin(r.price), S: fin(r.S), lens: state.lens };
+  btn.disabled = true; msg.textContent = "Saving…";
+  try {
+    await jWrite(() => J.col.doc(tid).set(body));
+    msg.innerHTML = `Saved to My trades. <button class="btn sm" type="button" id="jt-open">Open My trades</button>`;
+    $("#jt-open").addEventListener("click", () => openJournal(true)); $("#jt-note").value = "";
+  } catch (e) { msg.textContent = jErrText(e); }
+  finally { btn.disabled = false; }
+}
+
 /* ---------- track record (public site and Mac; the Claude version can't load it) ---------- */
+/* Server mode: upcoming earnings from the daily GitHub job (earnings.json via /api/earnings) replace the built-in dates. */
+async function loadEarnings() {
+  if (state.mode !== "server") return;
+  try {
+    const j = await fetchJSON(state.apiBase + "/api/earnings", 30000);
+    if (!j || !j.d) return;
+    const m = E.earnMap(j, Date.now()); let changed = false;
+    for (const s in m) { const o = state.earn[s]; if (o && o.src === "robinhood") continue;
+      if (!o || o.t !== m[s].t || o.verified !== m[s].verified) { state.earn[s] = m[s]; changed = true; } }
+    if (changed && state.data) { state.earnVer++; reanalyze(); renderSymbols(); build(); if (state.sel) select(state.sel, true); }
+  } catch (e) { /* keep the built-in dates */ }
+}
 async function loadTrack() {
   const box = $("#trackbox");
   if (IN_CLAUDE) { box.innerHTML = `<div class="trackhead"><h2>Track record</h2></div><p class="note">A scheduled job logs the top A-grade picks every trading day and scores how they actually did. Claude's security rules stop this page from loading it here; it's on the public site at <b>strike-finder.onrender.com</b>, near the bottom.</p>`; return; }
@@ -1480,10 +1876,10 @@ function maybeReloadRange() {
 /* ---------- start ---------- */
 (async function start() {
   init(); renderLenses(); markSort();
-  if (IN_CLAUDE) { loadTrack(); await initClaude(); return; }
-  await loadServer(); loadTrack();
+  if (IN_CLAUDE) { loadTrack(); initJournal().catch(() => {}); await initClaude(); return; }
+  await loadServer(); loadTrack(); loadEarnings();
   setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server" && marketHours()) loadServer(); }, 5 * 60 * 1000);
-  setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server") loadTrack(); }, 30 * 60 * 1000);
+  setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server") { loadTrack(); loadEarnings(); } }, 30 * 60 * 1000);
 })();
 })();
 

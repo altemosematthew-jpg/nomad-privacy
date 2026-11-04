@@ -25,7 +25,8 @@ var Engine = (function () {
   }
   function bs(S, K, T, sig, isC) {
     if (!(S > 0) || !(K > 0)) return 0;
-    if (!(T > 1e-6) || !(sig > 1e-4)) return Math.max(0, isC ? S - K : K - S);
+    if (!(T > 1e-6)) return Math.max(0, isC ? S - K : K - S);
+    if (!(sig > 1e-4)) { var dk = K * Math.exp(-R * T); return Math.max(0, isC ? S - dk : dk - S); }
     var sq = sig * Math.sqrt(T), d1 = (Math.log(S / K) + (R + 0.5 * sig * sig) * T) / sq, d2 = d1 - sq, df = Math.exp(-R * T);
     return isC ? S * ncdf(d1) - K * df * ncdf(d2) : K * df * ncdf(-d2) - S * ncdf(-d1);
   }
@@ -104,12 +105,17 @@ var Engine = (function () {
 
   /* ---------- term structure and scheduled events ---------- */
   function termStructure(S, now) {
-    var by = {}, i, o, p;
-    for (i = 0; i < S.o.length; i++) {
-      o = S.o[i]; p = parseOCC(o[0]); if (!p) continue;
-      var iv = +o[5], ad = Math.abs(+o[8]); if (!(iv > 0.01 && iv < 5) || ad < 0.3 || ad > 0.7) continue;
+    var rows = [];
+    for (var i = 0; i < S.o.length; i++) { var o = S.o[i], p = parseOCC(o[0]); if (p) rows.push({ exp: p.exp, iv: +o[5], delta: +o[8] }); }
+    return termFrom(rows, now);
+  }
+  /* ATM implied vol per expiry: delta-weighted average of the 0.3–0.7 delta contracts. */
+  function termFrom(rows, now) {
+    var by = {}, i;
+    for (i = 0; i < rows.length; i++) {
+      var r = rows[i], iv = +r.iv, ad = Math.abs(+r.delta); if (!(iv > 0.01 && iv < 5) || ad < 0.3 || ad > 0.7) continue;
       var w = 1 - Math.abs(ad - 0.5) / 0.2; if (w <= 0) continue;
-      var g = by[p.exp] || (by[p.exp] = { exp: p.exp, s: 0, sw: 0 }); g.s += w * iv; g.sw += w;
+      var g = by[r.exp] || (by[r.exp] = { exp: r.exp, s: 0, sw: 0 }); g.s += w * iv; g.sw += w;
     }
     var pts = [];
     for (var k in by) { var gg = by[k], T = (gg.exp - now) / YEAR_MS; if (gg.sw > 0 && T >= 1.5 / 365) pts.push({ exp: gg.exp, T: T, iv: gg.s / gg.sw }); }
@@ -176,11 +182,12 @@ var Engine = (function () {
   }
   function analyzeSymbol(S, ctx) {
     var px0 = +S.px; if (!(px0 > 0) || !S.o) return null;
-    var now = ctx.now, ps = paritySpot(S, now), px = px0, mismatch = null;
-    if (ps && Math.abs(ps / px0 - 1) > 0.025) { px = ps; mismatch = { quoted: px0, implied: ps }; }
+    // Always price off the spot the option quotes imply (put-call parity), so call and put IVs at a strike agree;
+    // flag it when it's far from the stock quote.
+    var now = ctx.now, ps = paritySpot(S, now), px = ps || px0, mismatch = ps && Math.abs(ps / px0 - 1) > 0.025 ? { quoted: px0, implied: ps } : null;
     var pts = termStructure(S, now), earn = ctx.earn ? ctx.earn[S.s] : null;
-    var ev = NO_EARNINGS[S.s] && !earn ? null : detectEvent(pts, earn, now), h = S.hist || null, hv = realizedVol(h);   // funds have no earnings: term-structure bumps there aren't events
-    var A = { sym: S.s, px: px, pxQuoted: px0, mismatch: mismatch, dropped: 0, pts: pts, ev: ev, hist: h, hv: hv, trend: trendOf(px, h), iv30: S.iv30 ? S.iv30 / 100 : atmIVAt(pts, 30 / 365),
+    var h = S.hist || null, hv = realizedVol(h);
+    var A = { sym: S.s, px: px, pxQuoted: px0, mismatch: mismatch, dropped: 0, pts: pts, ev: null, hist: h, hv: hv, trend: trendOf(px, h), iv30: null,
       ivchg: S.ivchg != null ? +S.ivchg : null, chg: S.chg != null ? +S.chg : null, rt: !!S.rt, stab: S.h || null, legs: [] };
     for (var i = 0; i < S.o.length; i++) {
       var o = S.o[i], p = parseOCC(o[0]); if (!p) continue;
@@ -195,6 +202,10 @@ var Engine = (function () {
         gamma: +o[9] || 0, theta: +o[10] || 0, vega: +o[11] || 0, theo: +o[12] || 0, last: +o[13] || 0,
         copL: o[14] > 0 ? +o[14] : null, copS: o[15] > 0 ? +o[15] : null, instId: o[16] || null });
     }
+    // term structure, 30-day IV and events on the same basis as the legs (their own mid-implied vols)
+    var ptsMid = termFrom(A.legs, now); if (ptsMid.length >= 2) A.pts = ptsMid;
+    A.iv30 = atmIVAt(A.pts, 30 / 365) || (S.iv30 ? S.iv30 / 100 : null);
+    A.ev = NO_EARNINGS[S.s] && !earn ? null : detectEvent(A.pts, earn, now);   // funds have no earnings: term-structure bumps there aren't events
     return A;
   }
 
@@ -245,14 +256,31 @@ var Engine = (function () {
     return out;
   }
   /* Volatility model. Forecast diffusive vol blends implied (60%) with realized ex-jumps (40%); every strike is scaled by the same
-     factor so the model never claims to know the skew is mispriced. A scheduled event keeps the market's implied jump size. */
+     factor k, so the model never claims to know the skew is mispriced. A scheduled event keeps the market's implied jump, capped at
+     85% of a leg's implied variance so the forecast never sits above the market for no reason. */
+  var EV_CAP = 0.85;
   function volModel(st) {
-    var T = st.T, m = st.m || 0, ev2 = m * m / T, atm = st.atm || st.iv;
-    var atmDiff2 = Math.max(atm * atm - ev2, 0.3 * atm * atm);
+    var T = st.T, m = st.m || 0, atm = st.atm || st.iv;
+    var evTot = Math.min(m * m, EV_CAP * atm * atm * T);         // the event's variance (total over the life), capped
+    var atmDiff2 = atm * atm - evTot / T;
     var fd = st.hv > 0 ? Math.sqrt(W_IV * atmDiff2 + (1 - W_IV) * st.hv * st.hv) : Math.sqrt(atmDiff2);
-    var k = fd / Math.sqrt(atmDiff2);
-    for (var i = 0; i < st.legs.length; i++) { var L = st.legs[i]; L.diff2 = Math.max(L.iv * L.iv - ev2, 0.3 * L.iv * L.iv); L.sigF = Math.sqrt(k * k * L.diff2 + ev2); }
-    st.sigPath = fd; st.k = k; st.atmDiff = Math.sqrt(atmDiff2);
+    var k = fd / Math.sqrt(atmDiff2), i, L;
+    for (i = 0; i < st.legs.length; i++) {
+      L = st.legs[i]; L.ev2 = Math.min(evTot / T, EV_CAP * L.iv * L.iv); L.diff2 = L.iv * L.iv - L.ev2; L.evTot = L.ev2 * T;
+      L.sigF = Math.sqrt(k * k * L.diff2 + L.ev2);
+    }
+    st.k = k; st.atmDiff = Math.sqrt(atmDiff2);
+    // Simulation: each leg follows its own price path driven by the same market shocks, at its own forecast diffusive vol and with
+    // its own share of the event jump, and is repriced at its own market IV. Every leg (and so every spread) is then priced by the
+    // simulation exactly as the forecast prices it: skew can't leak in as fake profit or loss, and a fairly priced trade averages zero.
+    var wsum = 0, vsum = 0, mmax = 0, sq = Math.sqrt(T);
+    for (i = 0; i < st.legs.length; i++) {
+      L = st.legs[i]; L.sigP = k * Math.sqrt(L.diff2); L.mJ = Math.sqrt(L.evTot); if (L.mJ > mmax) mmax = L.mJ;
+      var s0 = Math.sqrt(L.diff2), d1 = (Math.log(st.S / L.K) + (R + s0 * s0 / 2) * T) / (s0 * sq), vg = Math.exp(-d1 * d1 / 2);
+      wsum += vg; vsum += vg * L.sigP;
+    }
+    st.sigPath = wsum > 0 ? vsum / wsum : st.legs[0].sigP;   // for display: vega-weighted forecast vol of the structure
+    st.mPath = mmax;
     return st;
   }
   function valueAt(legs, S, T, key) { var v = 0; for (var i = 0; i < legs.length; i++) { var L = legs[i]; v += L.q * bs(S, L.K, T, key ? L[key] : L.iv, L.isC); } return v; }
@@ -274,15 +302,16 @@ var Engine = (function () {
     st.ev = buy ? st.fair - st.price : st.price - st.fair;
     if (st.kind === "single") st.risk = buy ? st.price : (st.isC ? null : st.K - st.price);
     else st.risk = buy ? st.price : st.width - st.price;
-    st.evPct = buy ? (st.price > 0 ? st.ev / st.price : null) : (st.kind === "single" ? (st.price > 0 ? st.ev / st.price : null) : (st.risk > 0 ? st.ev / st.risk : null));
+    st.evBase = buy || st.kind === "single" ? st.price : st.risk;   // premium paid, premium received, or a credit spread's max loss
+    st.evPct = st.evBase > 0 ? st.ev / st.evBase : null;
     st.be = st.isC ? st.K + st.price : st.K - st.price;
     st.moveBE = (st.be - st.S) / st.S;
     var pMkt = probBeyond(st.S, st.be, st.T, st.iv, buy ? st.isC : !st.isC);
     st.pop = st.kind === "single" ? (buy ? (st.copL != null ? st.copL : pMkt) : (st.copS != null ? st.copS : pMkt)) : pMkt;
-    st.thetaPct = st.mid > 0 ? Math.abs(st.theta) / st.mid : 0;
+    st.thetaPct = st.mid > 0 ? Math.max(0, -st.theta) / st.mid : 0;   // daily decay of the combo's value (0 when it gains with time)
     st.lever = st.mid > 0 ? Math.abs(st.delta) * st.S / st.mid : 0;
     st.flow = st.oi > 0 ? st.vol / st.oi : (st.vol > 0 ? 5 : 0);
-    st.theoEdge = st.theo > 0 ? (buy ? (st.theo - st.ask) / st.ask : (st.bid - st.theo) / st.theo) : null;
+    st.theoEdge = st.theo > 0 && st.price > 0 ? (buy ? (st.theo - st.price) / st.price : (st.price - st.theo) / st.theo) : null;
     st.ivRel = A.iv30 ? st.iv / A.iv30 - 1 : 0;
     st.ivTrend = A.ivchg != null ? -A.ivchg / 100 : 0;
     st.trend = A.trend; st.trendFit = (st.isC ? 1 : -1) * (buy ? 1 : -1) * A.trend;
@@ -301,21 +330,27 @@ var Engine = (function () {
     var T0 = st.T; if (!(entry > 0) || !(T0 > 0)) return null;
     var hs = FILL * Math.max(0, (st.ask - Math.max(0, st.bid)) / 2);
     var horizon = Math.max(1, Math.min(horizonDays, T0 * 365)), expires = horizon >= T0 * 365 - 1e-9;
-    // monitor once per trading day, but on the options' calendar clock: total path variance = vol^2 x calendar time, as in the IVs
-    var steps = Math.max(1, Math.round(horizon * 5 / 7)), calStep = horizon / steps / 365, dtD = calStep;
-    var sig = st.sigPath || st.iv, drift = (R - 0.5 * sig * sig) * dtD, vol = sig * Math.sqrt(dtD);
-    var m = st.m || 0, tEv = (m > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null, legs = st.legs, buy = side === "buy";
+    // monitor once per trading day, on the options' calendar clock: total path variance = vol^2 x calendar time, as in the IVs
+    var steps = Math.max(1, Math.round(horizon * 5 / 7)), dt = horizon / steps / 365, sdt = Math.sqrt(dt);
+    var legs = st.legs, nL = legs.length, buy = side === "buy", i;
+    var tEv = (st.mPath > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null;
+    var drift = new Float64Array(nL), vol = new Float64Array(nL), jump = new Float64Array(nL), lnS = new Float64Array(nL), ln0 = Math.log(st.S);
+    for (i = 0; i < nL; i++) { var Lg = legs[i]; drift[i] = (R - 0.5 * Lg.sigP * Lg.sigP) * dt; vol[i] = Lg.sigP * sdt; jump[i] = Lg.mJ || 0; }
     var half = Math.ceil(nPaths / 2), stride = steps + 1, zs = normals(rng(hash(seed || st.id || "x")), half * stride);
-    var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL = 0, pls = [], dsum = 0;
+    var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL2 = 0, pls = [], dsum = 0;
     for (var p = 0; p < half; p++) for (var anti = 0; anti < 2; anti++) {
-      var sgn = anti ? -1 : 1, S = st.S, pl = 0, kind = "x", evDone = tEv == null, day = horizon;
+      var sgn = anti ? -1 : 1, pl = 0, kind = "x", evDone = tEv == null, day = horizon;
+      for (i = 0; i < nL; i++) lnS[i] = ln0;
       for (var k = 1; k <= steps; k++) {
-        S *= Math.exp(drift + vol * sgn * zs[p * stride + k - 1]);
-        var t = k * calStep;
-        if (!evDone && t >= tEv) { S *= Math.exp(-0.5 * m * m + m * sgn * zs[p * stride + steps]); evDone = true; }
-        var Tr = T0 - t, v = 0, i;
-        if (Tr <= 1e-6) v = intrinsic(legs, S);
-        else { var ev2r = evDone ? 0 : m * m / Tr; for (i = 0; i < legs.length; i++) { var L = legs[i]; v += L.q * bs(S, L.K, Tr, Math.sqrt(L.diff2 + ev2r), L.isC); } }
+        var z = sgn * zs[p * stride + k - 1], t = k * dt;
+        for (i = 0; i < nL; i++) lnS[i] += drift[i] + vol[i] * z;
+        if (!evDone && t >= tEv) { var ze = sgn * zs[p * stride + steps]; for (i = 0; i < nL; i++) lnS[i] += -0.5 * jump[i] * jump[i] + jump[i] * ze; evDone = true; }
+        var Tr = T0 - t, v = 0;
+        for (i = 0; i < nL; i++) {
+          var L = legs[i], Si = Math.exp(lnS[i]);
+          v += L.q * (Tr <= 1e-6 ? Math.max(0, L.isC ? Si - L.K : L.K - Si) : bs(Si, L.K, Tr, Math.sqrt(L.diff2 + (evDone ? 0 : L.evTot / Tr)), L.isC));
+        }
+        if (st.width) v = Math.min(Math.max(v, 0), st.width);   // a vertical lives between 0 and its width
         var last = k === steps, atExp = last && expires, x, disc = Math.exp(-R * t);   // P/L in today's dollars: a fairly priced trade averages zero
         if (buy) {
           x = Math.max(0, atExp ? v : v - hs);
@@ -327,13 +362,13 @@ var Engine = (function () {
         day = t * 365; break;
       }
       if (kind === "t") nT++; else if (kind === "s") nS++; else nX++;
-      if (pl > 0) { nW++; sumW += pl; } else { nL++; sumL += pl; }
+      if (pl > 0) { nW++; sumW += pl; } else { nL2++; sumL += pl; }
       sum += pl; dsum += day; pls.push(pl);
     }
     var n = half * 2; pls.sort(function (a, b) { return a - b; });
     function q(f) { return pls[Math.min(n - 1, Math.max(0, Math.floor(f * n)))]; }
     return { n: n, days: horizon, avgDays: dsum / n, pTarget: nT / n, pStop: nS / n, pTime: nX / n, pWin: nW / n, ev: sum / n,
-      avgWin: nW ? sumW / nW : 0, avgLoss: nL ? sumL / nL : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
+      avgWin: nW ? sumW / nW : 0, avgLoss: nL2 ? sumL / nL2 : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
   }
   /* Exit levels per share for a plan (fractions), shared by the simulation and the order ticket. */
   function planLevels(st, plan) {
@@ -420,7 +455,7 @@ var Engine = (function () {
     var comps = {
       ev: pctRank(rows, function (r) { return r.evPct; }, true),
       win: pctRank(rows, function (r) { return r.plan ? r.plan.pWin : null; }, true),
-      planEv: pctRank(rows, function (r) { return r.plan && r.price > 0 ? r.plan.ev / (r.risk > 0 ? r.risk : r.price) : null; }, true),
+      planEv: pctRank(rows, function (r) { return r.plan && r.evBase > 0 ? r.plan.ev / r.evBase : null; }, true),
       theoEdge: pctRank(rows, function (r) { return r.theoEdge; }, true),
       spread: pctRank(rows, function (r) { return r.spreadPct; }, false),
       liq: pctRank(rows, function (r) { return Math.log(1 + r.oiMin) + 0.6 * Math.log(1 + r.volMin) + 0.2 * Math.log(1 + r.bs + r.as); }, true),
@@ -449,7 +484,7 @@ var Engine = (function () {
 
   return { R: R, W_IV: W_IV, FILL: FILL, NO_EARNINGS: NO_EARNINGS, YEAR_MS: YEAR_MS, EARNINGS_SEED: EARNINGS_SEED, ncdf: ncdf, bs: bs, probBeyond: probBeyond, median: median, hash: hash,
     parseOCC: parseOCC, etTime: etTime, earnMap: earnMap, histStats: histStats, realizedVol: realizedVol, trendOf: trendOf,
-    paritySpot: paritySpot, termStructure: termStructure, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
+    paritySpot: paritySpot, termStructure: termStructure, termFrom: termFrom, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
     makeSingle: makeSingle, makeSpread: makeSpread, verticals: verticals, volModel: volModel, valueAt: valueAt, intrinsic: intrinsic,
     impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
     LENSES: LENSES, pctRank: pctRank, scoreRows: scoreRows, STRUCT_DEFAULTS: STRUCT_DEFAULTS, PLAN_DEFAULTS: PLAN_DEFAULTS };

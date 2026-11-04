@@ -1,0 +1,95 @@
+/* Phone and narrow-width rules (inlined by build.py at the end of the main <style>). */
+
+/* ---- all widths: two small layout fixes the narrow screens made obvious ---- */
+/* symbol card: the RT dot and the "not equal" flag sit on the ticker's line instead of becoming their own grid rows */
+.sym{grid-template-columns:auto auto 1fr;align-items:baseline}
+.sym>.px,.sym>.iv{grid-column:1/-1}
+.sym>.warn{margin-left:4px}
+/* detail key/values: keep label, value and note together at the top of their cell when a row is tall */
+.kv>div{align-content:start}
+
+/* ---- tablet and narrow laptop (same breakpoint as the drawer stacking above) ---- */
+@media (max-width:860px){
+  /* results table scrolls sideways: keep the symbol column pinned so every row stays identifiable */
+  #tbl thead th:first-child,#tbl tbody td:first-child{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:inset -1px 0 0 var(--line-2)}
+  #tbl thead th:first-child{z-index:2}
+  #tbl tbody tr:hover td:first-child{background:var(--panel)}
+  #tbl tbody tr[aria-selected="true"] td:first-child{background:var(--accent-soft)}
+  /* position notes span the whole 1080px table: keep them inside the visible part of the scroller */
+  .postable tr.noterow .posnotes{position:sticky;left:8px;max-width:min(120ch,calc(100vw - 96px))}
+  .lens-row,.symbols .wrap,.tablewrap,.postable,.tracktable{overscroll-behavior-x:contain}
+}
+
+/* ---- touch: comfortable targets on phones and on any coarse-pointer device (tablets) ---- */
+@media (max-width:600px),(pointer:coarse){
+  .btn{min-height:40px;padding-block:8px}
+  .btn.sm{min-height:36px;padding:6px 12px;font-size:13px}
+  .lens{min-height:38px;padding-inline:14px}
+  .seg button{min-height:40px;padding:8px 12px}
+  .f input,.f select,.addsym input{min-height:40px}
+  .sym{min-height:52px}
+  .jform input{min-height:36px}
+}
+
+/* ---- phone ---- */
+@media (max-width:600px){
+  /* inputs at 16px so iOS doesn't zoom the page when one is focused; no desktop spin arrows eating the narrow number fields */
+  input,select{font-size:16px}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+
+  /* masthead: status text and Refresh share one line; long status messages wrap beside the button */
+  .mast .wrap{padding-block:14px 8px;gap:10px}
+  .brand p{font-size:13.5px}
+  .status{width:100%;flex-wrap:nowrap;justify-content:space-between;gap:12px}
+  .status>span{min-width:0;flex:1 1 auto}
+  .status>.btn{flex:none}
+
+  /* scroll strips run edge to edge so it's obvious they scroll */
+  .lens-row{margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px}
+  .addsym input{width:112px}
+  .lens-desc{font-size:13px}
+
+  /* filters: segmented controls full width, number filters in two even columns */
+  .filters .wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;align-items:end}
+  .filters .f:has(.seg),.filters .count{grid-column:1/-1}
+  .filters .seg{display:flex;width:100%}
+  .filters .seg button{flex:1 1 auto;line-height:1.2}
+  .filters .f input[type=number]{width:100%}
+  .filters .f>div:not(.seg){min-width:0}
+  .filters .f>div:not(.seg) input{flex:1 1 0;width:0;min-width:0}
+  .count{margin-left:0}
+
+  /* trade plan inputs: same two-column rhythm */
+  .planrow .wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;align-items:end}
+  .planrow .f input[type=number]{width:100%}
+  .planrow .hint{grid-column:1/-1}
+
+  /* results table: taller rows to tap */
+  tbody td{padding-block:9px}
+
+  /* detail drawer (already one column below 860px) */
+  .drawer{margin-block:12px 22px}
+  .drawer>div{padding:14px}
+  .d-head h2{font-size:18px}
+  .kv{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+  .kv .v{font-size:14px;overflow-wrap:anywhere}
+  .checks{grid-template-columns:1fr}
+  .ticket{font-size:12.5px;padding:10px}
+  .drawer .actions .btn{flex:1 1 auto;justify-content:center}
+  .drawer .actions .note{flex-basis:100%}
+  .sizer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+  .sizer .f input{width:100%}
+  .sizer .note{grid-column:1/-1}
+  /* "Track this trade" form (My trades journal) */
+  .jfields .f{flex:1 1 130px}
+  .jfields .f input[type=number],.jfields .f input{width:100%}
+  .jfields .jnote{flex-basis:100%}
+  .jfields .btn{flex:1 1 100%;justify-content:center}
+
+  /* positions and track record */
+  .posbox,.trackbox{padding:12px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card .v{font-size:18px}
+  .glossary dl{grid-template-columns:1fr}
+}

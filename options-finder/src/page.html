@@ -115,6 +115,7 @@ td.sym-cell b{font-weight:700}
 .why{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:4px;font-size:13px;color:var(--fg-2)}
 .why b{color:var(--fg)}
 .payoff{width:100%;height:auto;max-width:100%;display:block;margin-top:6px}
+.payoffcap{margin:10px 0 0}
 .ticket{border:1px solid var(--line);background:var(--bg);border-radius:var(--radius);padding:10px 12px;font-family:var(--font-num);font-size:13px;white-space:pre-wrap;word-break:break-word;user-select:all}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .sizer{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end;margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
@@ -181,6 +182,15 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 .tracktable table{min-width:900px}
 .tracktable thead th{cursor:default;background:var(--panel)}
 .tracktable tbody tr{cursor:default} .tracktable tbody tr:hover{background:transparent}
+/* My trades journal (Claude version only) */
+.jtrack{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:6px}
+.jfields{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
+.jfields .f input[type=number]{width:96px}
+.jfields .jnote{flex:1 1 180px}
+.jform{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
+.jform input{width:84px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:4px 6px;font-family:var(--font-num)}
+.jsub{display:block;font-size:11.5px;color:var(--fg-3);margin-top:2px}
+.verdict.x{background:var(--panel-2);color:var(--fg-2)}
 @media (max-width:860px){ .drawer{grid-template-columns:1fr} .drawer .right{border-left:0;border-top:1px solid var(--line)} }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
 </style>
@@ -231,6 +241,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 </div></section>
 
 <section class="pos" id="pos" hidden aria-label="My positions"><div class="wrap"><div class="posbox" id="posbox"></div></div></section>
+<section class="pos" id="journal" hidden aria-label="My trades"><div class="wrap"><div class="posbox" id="jbox"></div></div></section>
 
 <section class="wrap" aria-label="Results">
   <div class="tablewrap">
@@ -255,7 +266,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
     <dl>
       <dt>The honest bottom line</dt><dd>No scanner can make options win almost every time. Options are priced close to fair, so the average trade loses roughly what it costs to get in and out. Win rate is easy to raise and doesn't mean profit: selling far out-of-the-money options wins most of the time and still loses money when the rare loss is large. This page shows expected value next to the win rate so the two can't be confused, and the Track record shows how its own picks actually did.</dd>
       <dt>EV (expected value)</dt><dd>What the trade is worth on average if you hold to expiry, minus what you pay, as a percent of the money at risk. It uses a volatility forecast: 60% the market's implied volatility, 40% how much the stock has actually moved lately (20- and 60-day, with jump days such as earnings gaps removed). Every strike is scaled by the same factor, so the model never claims to know the skew is mispriced, and scheduled events keep the market's implied jump. Positive EV means the option is cheap against that forecast after costs. About −1% to −3% is just the cost of trading a fairly priced option.</dd>
-      <dt>Win % and the trade plan</dt><dd>The plan is: take profit at the target, stop out at the stop, otherwise close after the hold limit (or at expiry if sooner). Each contract is simulated on hundreds of price paths (thousands in the details panel) at the forecast volatility, checked once a day at the close. Each leg is repriced at its own market IV, which rises into a scheduled event and is crushed after it. The earnings jump itself is drawn from the market's implied move. Entries and exits assume a limit fill halfway between the mid and the natural price. Win % is the share of paths that close with a profit. Buying with a ±50% plan typically wins around 40–45%, and selling credit with a 50% target around 65–75%, with average losses bigger than average wins.</dd>
+      <dt>Win % and the trade plan</dt><dd>The plan is: take profit at the target, stop out at the stop, otherwise close after the hold limit (or at expiry if sooner). Each contract is simulated on hundreds of price paths (thousands in the details panel), checked once a day at the close. Every leg moves with the same daily market shocks but at its own forecast volatility, plus its share of the market's implied earnings jump, and is repriced at its own market IV, which rises into a scheduled event and is crushed after it. That keeps the skew between strikes from showing up as fake profit: a fairly priced option or spread averages zero. Entries and exits assume a limit fill halfway between the mid and the natural price. Win % is the share of paths that close with a profit. Buying with a ±50% plan typically wins around 40–45%, and selling credit with a 50% target around 65–75%, with average losses bigger than average wins.</dd>
       <dt>Grade</dt><dd>Absolute checks, not ranks. Liquid and tight. Expected value no worse than about −5% after costs. The plan wins often enough: about 42% for single buys, 40% for debit spreads, 60% for sales. 21–120 days for a buy, 14–60 for a sale. Decay under control for buys. No earnings inside the window. Not fighting the trend. For spreads, a reward worth the risk: at least 0.8× for debit spreads, a credit of at least 20% of the width for credit spreads. A clears every check, B misses one, C misses two. The Quality filter hides everything below B, so an empty table means nothing good is on offer right now.</dd>
       <dt>Vertical spreads</dt><dd>Debit spreads buy one strike and sell a further one: cheaper, less time decay and less IV crush than a single option, with the gain capped at the width. Credit spreads sell one strike and buy a further one: they win more often, and the max loss is known before you enter. For each strike in the delta range the page pairs the standard partner, about 1:1 reward to risk for debit spreads, about a third of the width collected for credit spreads. Robinhood needs options level 3 for spreads.</dd>
       <dt>P(profit)</dt><dd>Chance the trade is profitable at expiry if held, at market implied volatility (Robinhood's own chance of profit when loaded from Robinhood). This is a different number from Win %, which follows the plan.</dd>

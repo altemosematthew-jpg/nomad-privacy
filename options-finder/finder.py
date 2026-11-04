@@ -16,6 +16,7 @@ Endpoints
   GET /api/watchlist         the configured watchlist
   GET /api/hist?symbol=SPY   price-history stats (cached 6 h)
   GET /api/track             the daily track record (from GitHub, cached 10 min)
+  GET /api/earnings          upcoming earnings dates (from GitHub, cached 1 h)
   GET /api/health            {"ok": true, ...}
 
 No API keys.  Data is delayed and for information only; nothing here places
@@ -163,6 +164,33 @@ def track():
         except Exception:
             data = _track["data"] or {"version": 1, "picks": [], "updated": None}
     _track.update(ts=time.time(), data=data)
+    return data
+
+
+# ---------- earnings dates: the calendar the daily GitHub Action keeps (cached 1 h) ----------
+EARNINGS_URL = os.environ.get("EARNINGS_URL", "https://raw.githubusercontent.com/altemosematthew-jpg/nomad-privacy/main/options-finder/earnings.json")
+EARNINGS_TTL = 3600
+_earn = {"ts": 0.0, "data": None}
+
+
+def earnings():
+    """{"asOf", "source", "d": {SYM: [date, "am"|"pm", verified]}}; on a failed fetch the last good copy, retried in 5 min."""
+    if _earn["data"] is not None and time.time() - _earn["ts"] < EARNINGS_TTL:
+        return _earn["data"]
+    ts = time.time()
+    try:
+        data = fetch_json(EARNINGS_URL + "?t=%d" % int(time.time() // EARNINGS_TTL))
+        if not isinstance(data, dict) or not isinstance(data.get("d"), dict):
+            raise ValueError("unexpected earnings.json")
+    except Exception:
+        ts = time.time() - EARNINGS_TTL + 300
+        data = _earn["data"]
+        if data is None:
+            try:
+                data = json.loads((HERE / "earnings.json").read_text())
+            except Exception:
+                data = {"asOf": None, "source": None, "d": {}}
+    _earn.update(ts=ts, data=data)
     return data
 
 
@@ -354,6 +382,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(scan())
             elif u.path == "/api/track":
                 self._json(track())
+            elif u.path == "/api/earnings":
+                self._json(earnings())
             else:
                 self._json({"error": "not found"}, 404)
         except urllib.error.HTTPError as e:
