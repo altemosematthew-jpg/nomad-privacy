@@ -13,10 +13,11 @@ counts as holding the report) and its symbol is listed in timingUnknown.
 Free, keyless sources, tried in this order:
   1. Nasdaq per-symbol earnings date  api.nasdaq.com/api/analyst/SYM/earnings-date
      (date, confirmed vs. estimated, timing once confirmed; one request per stock)
-  2. Nasdaq earnings calendar          api.nasdaq.com/api/calendar/earnings?date=YYYY-MM-DD
-     (the time of day for dates from 1; the whole window, one request per weekday, if 1 fails)
-  3. Yahoo Finance quote               one request for every symbol still missing
-A symbol every source failed on keeps its previous entry while that date is still ahead.
+  2. Yahoo Finance quote               one request for all of them (cookie + crumb, no key):
+     fills the weeks after a report when Nasdaq has no date yet; a confirmed date beats an estimate
+  3. Nasdaq earnings calendar          api.nasdaq.com/api/calendar/earnings?date=YYYY-MM-DD
+     (the time of day for dates still missing it; the whole window, one request per weekday, if 1 and 2 fail)
+A stock no source has a date for (failed, or not set yet after a report) keeps its previous entry while that date is ahead.
 
   python3 options-finder/earnings_fetch.py             # write options-finder/earnings.json
   python3 options-finder/earnings_fetch.py --probe     # first print what each source returns
@@ -50,7 +51,7 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 NASDAQ = {"User-Agent": UA, "Accept": "application/json, text/plain, */*", "Accept-Language": "en-US,en;q=0.9",
           "Accept-Encoding": "gzip, deflate", "Origin": "https://www.nasdaq.com", "Referer": "https://www.nasdaq.com/"}
 BROWSER = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9", "Accept-Encoding": "gzip, deflate"}
-SOURCE_NAMES = {"nasdaq": "Nasdaq earnings date", "calendar": "Nasdaq earnings calendar", "yahoo": "Yahoo Finance",
+SOURCE_NAMES = {"nasdaq": "Nasdaq earnings date", "yahoo": "Yahoo Finance", "calendar": "Nasdaq earnings calendar",
                 "previous": "previous run"}
 
 
@@ -107,7 +108,7 @@ def why(e):
 
 # ---------- 1. Nasdaq per-symbol earnings date ----------
 def nasdaq_symbol(sym, tries=3):
-    """(date, "am"|"pm"|None, confirmed, text) or None when Nasdaq lists no date."""
+    """(date | None when Nasdaq lists none, "am"|"pm"|None, confirmed, the text it was read from)."""
     raw = json.loads(get("https://api.nasdaq.com/api/analyst/%s/earnings-date" % urllib.parse.quote(sym.lower()), NASDAQ, tries=tries))
     data = (raw or {}).get("data") or {}
     text = " ".join(str(data.get(k) or "") for k in ("announcement", "reportText")).strip()
@@ -123,7 +124,7 @@ def nasdaq_symbol(sym, tries=3):
             except ValueError:
                 d = None
     if not d:
-        return None
+        return None, None, False, text
     low = text.lower()
     timing = ("am" if re.search(r"before (the )?(market|bell|open)|pre-?market", low)
               else "pm" if re.search(r"after (the )?(market|bell|close)|after-?hours|post-?market", low) else None)
@@ -215,28 +216,57 @@ def main(argv):
     except Exception:
         prev = {}
     found = {}       # sym -> [date, timing|None, confirmed, source]
-    answered = set()  # symbols some source answered for, with or without a date in the window
+    answered = set()  # symbols some source gave a date for, in the window or not
+    reached = []      # sources that answered at all
 
     def keep(s, d, timing, confirmed, src):
         answered.add(s)
         if d and today <= d <= horizon:
             found[s] = [d, timing, bool(confirmed), src]
 
-    # 1. Nasdaq, one request per stock
-    fails = 0
+    def show(r):
+        return (r[0].isoformat() + " " + str(r[1]) + (" confirmed" if r[2] else " estimated")) if r else "no date"
+
+    # 1. Nasdaq, one request per stock (it has no date for a while after a report)
+    nq, fails = {}, 0
     for i, s in enumerate(syms):
         if i >= 2 and fails == i:
             log("nasdaq earnings-date: first %d requests failed, skipping the rest" % i)
             break
         try:
             r = nasdaq_symbol(s)
-            keep(s, r and r[0], r and r[1], r and r[2], "nasdaq")
-            log("  %-5s %s" % (s, (r[0].isoformat() + " " + str(r[1]) + (" confirmed" if r[2] else " estimated")) if r else "no date"))
+            nq[s] = r[:3] if r[0] else None
+            reached.append("nasdaq")
+            log("  %-5s nasdaq %s" % (s, show(nq[s]) if r[0] else "no date: " + (r[3][:110] or "(empty)")))
         except Exception as e:
             fails += 1
             log("  %-5s nasdaq earnings-date failed: %s" % (s, why(e)))
+    # 2. Yahoo, one request for every stock: fills Nasdaq's gaps and may know a confirmed date Nasdaq still estimates
+    yh = {}
+    try:
+        got = yahoo(syms)
+        yh = {s: got[s] for s in syms if s in got}
+        reached.append("yahoo")
+        log("yahoo: " + ", ".join("%s %s" % (s, show(v)) for s, v in yh.items()))
+    except Exception as e:
+        log("yahoo failed: %s" % why(e))
+    for s in syms:   # a confirmed date beats an estimate; Nasdaq breaks ties
+        if not (nq.get(s) or yh.get(s)):
+            continue
+        answered.add(s)
+        cands = [(2 if r[2] else 1, pref, r, src) for r, pref, src in ((nq.get(s), 1, "nasdaq"), (yh.get(s), 0, "yahoo"))
+                 if r and r[0] and today <= r[0] <= horizon]
+        if not cands:
+            continue
+        cands.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        r, src = cands[0][2], cands[0][3]
+        timing = r[1]
+        for c in cands[1:]:
+            if timing is None and c[2][0] == r[0] and c[2][1]:
+                timing, src = c[2][1], src + "+" + c[3]
+        keep(s, r[0], timing, r[2], src)
 
-    # 2. Nasdaq calendar: the time of day for dates still missing it, or the whole window if 1 failed
+    # 3. Nasdaq calendar: the time of day for dates still missing it, or the whole window if most stocks still lack a date
     if len(answered) >= len(syms) / 2:
         days, full = sorted({v[0] for v in found.values() if v[1] is None}), False
     else:
@@ -249,6 +279,7 @@ def main(argv):
         try:
             rows = nasdaq_calendar(day)
             ok_days += 1
+            reached.append("calendar")
         except Exception as e:
             fails += 1
             log("  calendar %s failed: %s" % (day, why(e)))
@@ -262,36 +293,20 @@ def main(argv):
                 cur[3] = cur[3] if cur[3] == "calendar" else cur[3] + "+calendar"
             elif full and s not in found and s not in answered:
                 keep(s, day, rows[s], False, "calendar")
-    if full and ok_days >= 0.9 * len(days):   # the scan covered the window: listed nowhere means no date in it
-        answered.update(syms)
     log("nasdaq calendar: %d of %d days read%s" % (ok_days, len(days), " (full window)" if full else ""))
 
-    # 3. Yahoo for whatever is still missing
-    missing = [s for s in syms if s not in answered]
-    if missing:
-        try:
-            for s, r in yahoo(missing).items():
-                if s in missing:
-                    keep(s, r and r[0], r and r[1], r and r[2], "yahoo")
-            log("yahoo: answered %d of %d" % (len([s for s in missing if s in answered]), len(missing)))
-        except Exception as e:
-            log("yahoo failed: %s" % why(e))
-
-    if not answered:
+    if not reached:
         log("No source answered; leaving %s as it was." % out_path)
         return 1
-    for s in syms:   # failed everywhere: keep the last known date while it is still ahead
+    for s in syms:   # no source has a date (failed, or not set yet after a report): keep the last one while it is ahead
         p = prev.get(s)
         if s not in answered and isinstance(p, list) and len(p) >= 3 and str(p[0]) >= today.isoformat():
             found[s] = [date.fromisoformat(p[0]), p[1], bool(p[2]), "previous"]
             log("  %-5s kept the previous entry %s" % (s, p))
 
     entries = sorted(found.items(), key=lambda kv: kv[0])
-    srcs = []
-    for _, v in entries:
-        for k in v[3].split("+"):
-            if SOURCE_NAMES[k] not in srcs:
-                srcs.append(SOURCE_NAMES[k])
+    used = {k for _, v in entries for k in v[3].split("+")}
+    srcs = [name for k, name in SOURCE_NAMES.items() if k in used]
     unknown = [s for s, v in entries if v[1] is None]
     body = ",\n".join("  %s: %s" % (json.dumps(s), json.dumps([v[0].isoformat(), v[1] or "am", v[2]])) for s, v in entries)
     text = '{"asOf": %s, "source": %s, "timingUnknown": %s, "d": {\n%s\n}}\n' % (
