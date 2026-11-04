@@ -14,6 +14,8 @@ Endpoints
   GET /api/chain?symbol=SPY  one symbol's full compact chain (cached 60 s)
   GET /api/scan              every watchlist symbol, compact (cached 120 s)
   GET /api/watchlist         the configured watchlist
+  GET /api/hist?symbol=SPY   price-history stats (cached 6 h)
+  GET /api/track             the daily track record (from GitHub, cached 10 min)
   GET /api/health            {"ok": true, ...}
 
 No API keys.  Data is delayed and for information only; nothing here places
@@ -105,8 +107,23 @@ def hist_stats(closes):
     def ret(n):
         return c[-1] / c[-1 - n] - 1 if len(c) > n else None
 
+    def hvx(n):
+        # realized vol with jump days (earnings gaps) removed: |r - median| > 4 robust sigmas (same rule as the page's engine)
+        if len(c) < n + 1:
+            return None
+        a = [math.log(c[i] / c[i - 1]) for i in range(len(c) - n, len(c))]
+        s = sorted(a)
+        med = (s[(n - 1) // 2] + s[n // 2]) / 2
+        d = sorted(abs(x - med) for x in a)
+        mad = (d[(n - 1) // 2] + d[n // 2]) / 2 * 1.4826
+        cut = 4 * max(mad, 0.002)
+        b = [x for x in a if abs(x - med) <= cut]
+        use = b if len(b) >= math.ceil(n * 0.8) else a
+        m = sum(use) / len(use)
+        return math.sqrt(sum((x - m) ** 2 for x in use) / (len(use) - 1) * 252)
+
     y = c[-252:]
-    return {"last": c[-1], "sma20": sma(20), "sma50": sma(50), "sma200": sma(200), "hv20": hv(20), "hv60": hv(60),
+    return {"last": c[-1], "sma20": sma(20), "sma50": sma(50), "sma200": sma(200), "hv20": hv(20), "hv60": hv(60), "hv20x": hvx(20), "hv60x": hvx(60),
             "ret1m": ret(21), "ret3m": ret(63), "hi52": max(y), "lo52": min(y), "n": len(c), "src": "cboe"}
 
 
@@ -126,6 +143,27 @@ def hist(sym: str):
     with _cache_lock:
         _hist_cache[sym] = (time.time(), out)
     return out
+
+
+# ---------- track record: the ledger the daily GitHub Action keeps (cached 10 min) ----------
+TRACK_URL = os.environ.get("TRACK_URL", "https://raw.githubusercontent.com/altemosematthew-jpg/nomad-privacy/main/options-finder/track/ledger.json")
+_track = {"ts": 0.0, "data": None}
+
+
+def track():
+    if _track["data"] is not None and time.time() - _track["ts"] < 600:
+        return _track["data"]
+    data = None
+    try:
+        data = fetch_json(TRACK_URL + "?t=%d" % int(time.time() // 600))
+    except Exception:
+        local = HERE / "track" / "ledger.json"
+        try:
+            data = json.loads(local.read_text())
+        except Exception:
+            data = _track["data"] or {"version": 1, "picks": [], "updated": None}
+    _track.update(ts=time.time(), data=data)
+    return data
 
 
 # ---------- consistency: how each contract's edge has held up across scans while this server is awake ----------
@@ -314,6 +352,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"symbol": sym, "hist": hist(sym)})
             elif u.path == "/api/scan":
                 self._json(scan())
+            elif u.path == "/api/track":
+                self._json(track())
             else:
                 self._json({"error": "not found"}, 404)
         except urllib.error.HTTPError as e:

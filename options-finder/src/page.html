@@ -1,0 +1,284 @@
+<title>Strike Finder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: dark-first trading desk. Masthead with data status -> lens tabs (what "best" means) -> filter rail -> dense sortable table -> detail drawer with payoff and the Robinhood hand-off. */
+:root{
+  --bg:#0e1116; --panel:#151a21; --panel-2:#1b222b; --fg:#e7ecf2; --fg-2:#a6b0bd; --fg-3:#6f7a88;
+  --line:#2a333f; --line-2:#1f2731; --accent:#f5b84b; --accent-ink:#0e1116; --accent-soft:#3a2d12;
+  --up:#4fd18b; --down:#f0634f; --warn:#f5b84b; --info:#7fb3ff;
+  --font-ui:"Archivo","Helvetica Neue",Arial,sans-serif; --font-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --radius:4px; color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f5f7; --panel:#ffffff; --panel-2:#eef1f5; --fg:#141a22; --fg-2:#4d5866; --fg-3:#7d8794;
+    --line:#d3d9e1; --line-2:#e4e8ee; --accent:#b8740a; --accent-ink:#ffffff; --accent-soft:#fdf0d5;
+    --up:#167a46; --down:#c23d2b; --warn:#b8740a; --info:#2458c5; color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f4f5f7; --panel:#ffffff; --panel-2:#eef1f5; --fg:#141a22; --fg-2:#4d5866; --fg-3:#7d8794;
+  --line:#d3d9e1; --line-2:#e4e8ee; --accent:#b8740a; --accent-ink:#ffffff; --accent-soft:#fdf0d5;
+  --up:#167a46; --down:#c23d2b; --warn:#b8740a; --info:#2458c5; color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.15}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--fg-3)} .warn{color:var(--warn)}
+.eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);font-weight:600}
+
+/* masthead */
+.mast .wrap{padding-block:18px 10px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;justify-content:space-between}
+.brand{display:grid;gap:2px}
+.brand h1{font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em}
+.brand h1 em{font-style:normal;color:var(--accent)}
+.brand p{color:var(--fg-2);max-width:60ch}
+.status{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg-2)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--fg-3);margin-right:6px;vertical-align:middle}
+.dot.live{background:var(--up)} .dot.snap{background:var(--warn)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:var(--radius);padding:7px 11px;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--fg-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:4px 8px;font-size:12px}
+
+/* symbol strip */
+.symbols .wrap{padding-block:8px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;align-items:center}
+.sym{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:6px 10px;display:grid;gap:1px;cursor:pointer;min-width:92px;text-align:left}
+.sym[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sym b{font-weight:700;font-size:13px}
+.sym .px{font-size:12px}
+.sym .iv{font-size:11px;color:var(--fg-3)}
+.addsym{flex:none;display:flex;gap:6px;align-items:center}
+.addsym input{width:90px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:7px 8px;text-transform:uppercase}
+
+/* lenses */
+.lenses .wrap{padding-block:12px 4px;display:grid;gap:8px}
+.lens-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.lens{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--fg-2)}
+.lens[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.lens-desc{font-size:13px;color:var(--fg-2);max-width:90ch}
+
+/* filters */
+.filters .wrap{padding-block:8px 10px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
+.f{display:grid;gap:3px;min-width:0}
+.f label{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.f input,.f select{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:6px 8px;width:100%;min-width:0}
+.f input[type=number]{width:84px;font-family:var(--font-num)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;padding:6px 10px;font-size:13px;color:var(--fg-2);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--fg);font-weight:600}
+.count{margin-left:auto;font-size:12.5px;color:var(--fg-2)}
+
+/* table */
+.tablewrap{overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:1320px;font-size:13px}
+thead th{position:sticky;top:0;background:var(--bg);text-align:right;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-3);padding:8px 8px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+thead th.l,td.l{text-align:left}
+thead th[aria-sort="descending"]::after{content:" \25BE";color:var(--accent)} thead th[aria-sort="ascending"]::after{content:" \25B4";color:var(--accent)}
+tbody td{padding:7px 8px;border-bottom:1px solid var(--line-2);text-align:right;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel)}
+tbody tr[aria-selected="true"]{background:var(--accent-soft)}
+td.sym-cell b{font-weight:700}
+.tag{display:inline-block;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.tag.c{background:rgba(79,209,139,.16);color:var(--up)} .tag.p{background:rgba(240,99,79,.16);color:var(--down)}
+.grade{display:inline-block;min-width:24px;text-align:center;border-radius:3px;padding:1px 6px;font-weight:800;font-size:12px;cursor:help}
+.gA{background:rgba(79,209,139,.18);color:var(--up)} .gB{background:rgba(127,179,255,.16);color:var(--info)} .gC{background:rgba(245,184,75,.18);color:var(--warn)} .gx{color:var(--fg-3)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:3px 14px;margin-top:10px;border-top:1px solid var(--line-2);padding-top:10px;font-size:12.5px}
+.checks span.ok{color:var(--up)} .checks span.no{color:var(--down)}
+.rtdot{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.06em;color:var(--up);margin-left:4px;vertical-align:middle}
+.bar{display:inline-block;width:46px;height:6px;background:var(--line-2);border-radius:3px;vertical-align:middle;margin-left:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.empty{padding:28px 0;color:var(--fg-2);display:grid;gap:6px}
+
+/* detail drawer */
+.drawer{border:1px solid var(--line);background:var(--panel);border-radius:6px;margin-block:14px 26px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0}
+.drawer>div{padding:16px;min-width:0}
+.drawer .right{border-left:1px solid var(--line)}
+.d-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:10px}
+.d-head h2{font-size:20px;font-weight:800}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px 16px;margin-top:8px}
+.kv div{display:grid;gap:1px;min-width:0}
+.kv .k{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.kv .v{font-size:15px;font-weight:600}
+.kv .s{font-size:12px;color:var(--fg-2)}
+.why{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:4px;font-size:13px;color:var(--fg-2)}
+.why b{color:var(--fg)}
+.payoff{width:100%;height:auto;max-width:100%;display:block;margin-top:6px}
+.ticket{border:1px solid var(--line);background:var(--bg);border-radius:var(--radius);padding:10px 12px;font-family:var(--font-num);font-size:13px;white-space:pre-wrap;word-break:break-word;user-select:all}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.sizer{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end;margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
+.note{font-size:12.5px;color:var(--fg-2)}
+.steps{margin:8px 0 0;padding-left:18px;color:var(--fg-2);font-size:13px;display:grid;gap:3px}
+
+/* glossary + footer */
+.glossary .wrap{padding-block:10px 20px}
+.glossary details{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:0 14px}
+.glossary summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
+.glossary summary::-webkit-details-marker{display:none}
+.glossary dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 24px;margin:0;padding:0 0 14px;border-top:1px solid var(--line-2);padding-top:12px}
+.glossary dt{font-weight:700;font-size:13px}
+.glossary dd{margin:2px 0 0;font-size:13px;color:var(--fg-2)}
+footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:grid;gap:4px;border-top:1px solid var(--line)}
+/* event badge + positions panel */
+.ev{display:inline-block;margin-left:5px;color:var(--warn);font-weight:700;cursor:help}
+.pos .wrap{padding-block:12px 4px}
+.posbox{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:14px 16px;display:grid;gap:10px}
+.poshead{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between}
+.poshead h2{font-size:18px;font-weight:800}
+.postable{overflow-x:auto;border-top:1px solid var(--line-2)}
+.postable table{min-width:1080px}
+.postable thead th{cursor:default;background:var(--panel)}
+.postable tbody tr{cursor:default}
+.postable tbody tr:hover{background:transparent}
+.postable tbody tr.noterow td{white-space:normal;text-align:left;padding-top:0;padding-bottom:12px}
+.postable tbody tr.main td{border-bottom:0;padding-bottom:4px}
+.verdict{display:inline-block;border-radius:3px;padding:2px 7px;font-size:11px;font-weight:700;letter-spacing:.03em;white-space:nowrap}
+.verdict.good{background:rgba(79,209,139,.16);color:var(--up)} .verdict.fair{background:rgba(127,179,255,.16);color:var(--info)}
+.verdict.warn{background:rgba(245,184,75,.18);color:var(--warn)} .verdict.bad{background:rgba(240,99,79,.16);color:var(--down)}
+.posnotes{display:grid;gap:4px;font-size:12.5px;color:var(--fg-2);max-width:120ch}
+.posnotes b{color:var(--fg)}
+.totals{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--fg-2)}
+.totals b{color:var(--fg);font-family:var(--font-num)}
+/* plan, structure, grades, track record */
+.planrow .wrap{padding-block:0 10px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
+.planrow .f input[type=number]{width:72px}
+.planrow .hint{font-size:12.5px;color:var(--fg-2);max-width:70ch}
+.grade{display:inline-block;min-width:24px;text-align:center;border-radius:3px;padding:1px 6px;font-weight:800;font-size:12px;cursor:help}
+.gA{background:rgba(79,209,139,.18);color:var(--up)} .gB{background:rgba(127,179,255,.16);color:var(--info)} .gC{background:rgba(245,184,75,.18);color:var(--warn)} .gx{color:var(--fg-3)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:3px 14px;margin-top:10px;border-top:1px solid var(--line-2);padding-top:10px;font-size:12.5px}
+.checks span.ok{color:var(--up)} .checks span.no{color:var(--down)}
+.rtdot{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.06em;color:var(--up);margin-left:4px;vertical-align:middle}
+.sym.loading{opacity:.55} .sym.stale{opacity:.6;border-style:dashed}
+.plan{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px;display:grid;gap:6px}
+.planbar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--line-2)}
+.planbar i{display:block;height:100%}
+.planbar .t{background:var(--up)} .planbar .x{background:var(--fg-3)} .planbar .s{background:var(--down)}
+.planlegend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--fg-2)}
+.planlegend b{color:var(--fg);font-family:var(--font-num)}
+.callout{border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--bg);border-radius:var(--radius);padding:8px 10px;font-size:12.5px;color:var(--fg-2)}
+.callout b{color:var(--fg)}
+.track .wrap{padding-block:6px 18px}
+.trackbox{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:14px 16px;display:grid;gap:12px}
+.trackhead{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+.trackhead h2{font-size:18px;font-weight:800}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.card{border:1px solid var(--line-2);border-radius:6px;padding:10px 12px;background:var(--bg);display:grid;gap:2px}
+.card .k{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.card .v{font-size:20px;font-weight:700;font-family:var(--font-num)}
+.card .s{font-size:12px;color:var(--fg-2)}
+.tracktable{overflow-x:auto;border-top:1px solid var(--line-2)}
+.tracktable table{min-width:900px}
+.tracktable thead th{cursor:default;background:var(--panel)}
+.tracktable tbody tr{cursor:default} .tracktable tbody tr:hover{background:transparent}
+@media (max-width:860px){ .drawer{grid-template-columns:1fr} .drawer .right{border-left:0;border-top:1px solid var(--line)} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+
+<header class="mast"><div class="wrap">
+  <div class="brand">
+    <h1>Strike <em>Finder</em></h1>
+    <p>Scans every listed call, put and vertical spread on your watchlist. For each one it works out the expected value after the bid/ask cost, simulates a trade plan (take profit, stop, time limit) on price paths to get an honest win rate, and grades it against absolute checks. Then it hands the exact order to Robinhood.</p>
+  </div>
+  <div class="status">
+    <span><i class="dot" id="dot"></i><span id="status-text">Loading…</span></span>
+    <button class="btn sm" id="refresh" type="button">Refresh</button>
+  </div>
+</div></header>
+
+<section class="symbols" aria-label="Watchlist"><div class="wrap" id="symstrip"></div></section>
+
+<section class="lenses"><div class="wrap">
+  <div class="lens-row" id="lenses" role="group" aria-label="Ranking lens"></div>
+  <p class="lens-desc" id="lens-desc"></p>
+</div></section>
+
+<section class="filters"><div class="wrap">
+  <div class="f"><label>I want to</label>
+    <div class="seg" id="side"><button type="button" data-v="buy" aria-pressed="true">Buy</button><button type="button" data-v="sell" aria-pressed="false">Sell (collect premium)</button></div></div>
+  <div class="f"><label>Structure</label>
+    <div class="seg" id="struct"><button type="button" data-v="single" aria-pressed="true">Single options</button><button type="button" data-v="spread" aria-pressed="false">Vertical spreads</button></div></div>
+  <div class="f"><label>Type</label>
+    <div class="seg" id="type"><button type="button" data-v="both" aria-pressed="true">Calls + puts</button><button type="button" data-v="C" aria-pressed="false">Calls</button><button type="button" data-v="P" aria-pressed="false">Puts</button></div></div>
+  <div class="f"><label>Quality</label>
+    <div class="seg" id="quality"><button type="button" data-v="ab" aria-pressed="true">A–B only</button><button type="button" data-v="a" aria-pressed="false">A only</button><button type="button" data-v="all" aria-pressed="false">All</button></div></div>
+  <div class="f"><label>Earnings ⚡</label>
+    <div class="seg" id="evfilter"><button type="button" data-v="all" aria-pressed="true">Show all</button><button type="button" data-v="avoid" aria-pressed="false">Avoid</button><button type="button" data-v="only" aria-pressed="false">Only earnings plays</button></div></div>
+  <div class="f"><label for="dte-min">Days to expiry</label><div style="display:flex;gap:4px;align-items:center"><input id="dte-min" type="number" min="0" max="365" value="14"><span class="muted">to</span><input id="dte-max" type="number" min="1" max="365" value="90"></div></div>
+  <div class="f"><label for="delta-min" id="delta-label">|Delta|</label><div style="display:flex;gap:4px;align-items:center"><input id="delta-min" type="number" min="0" max="1" step="0.05" value="0.20"><span class="muted">to</span><input id="delta-max" type="number" min="0" max="1" step="0.05" value="0.70"></div></div>
+  <div class="f"><label for="max-price" id="price-label">Max cost / contract ($)</label><input id="max-price" type="number" min="0" step="50" value="2000"></div>
+  <div class="f"><label for="min-oi">Min open interest</label><input id="min-oi" type="number" min="0" step="50" value="300"></div>
+  <div class="f"><label for="max-spread">Max spread %</label><input id="max-spread" type="number" min="0" max="100" step="1" value="10"></div>
+  <div class="f"><label for="per-sym">Per symbol</label><select id="per-sym"><option value="3">Top 3</option><option value="5" selected>Top 5</option><option value="10">Top 10</option><option value="999">All</option></select></div>
+  <span class="count" id="count"></span>
+</div></section>
+
+<section class="planrow" aria-label="Trade plan"><div class="wrap">
+  <div class="f"><label for="plan-target" id="plan-target-label">Take profit at +%</label><input id="plan-target" type="number" min="5" max="1000" step="5" value="50"></div>
+  <div class="f"><label for="plan-stop" id="plan-stop-label">Stop loss at −%</label><input id="plan-stop" type="number" min="5" max="2000" step="5" value="50"></div>
+  <div class="f"><label for="plan-hold">Hold at most (days)</label><input id="plan-hold" type="number" min="1" max="365" step="1" value="21"></div>
+  <p class="hint" id="plan-hint"></p>
+</div></section>
+
+<section class="pos" id="pos" hidden aria-label="My positions"><div class="wrap"><div class="posbox" id="posbox"></div></div></section>
+
+<section class="wrap" aria-label="Results">
+  <div class="tablewrap">
+    <table id="tbl">
+      <thead><tr>
+        <th class="l" data-k="sym">Symbol</th><th class="l" data-k="type">Type</th><th data-k="dte">Exp · DTE</th><th data-k="K">Strike</th>
+        <th data-k="mid">Bid / Ask</th><th data-k="spreadPct">Spread</th><th data-k="iv">IV</th><th data-k="ivRel">IV vs 30d</th>
+        <th data-k="delta">Δ</th><th data-k="pop">P(profit)</th><th data-k="moveBE">Move to BE</th><th data-k="thetaPct">Theta/day</th>
+        <th data-k="theoEdge">vs fair</th><th data-k="evPct">EV</th><th data-k="win">Win %</th><th data-k="oiMin">OI</th><th data-k="volMin">Vol</th><th data-k="score" aria-sort="descending">Score</th><th class="l" data-k="grade">Grade</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="empty" id="empty" hidden><b>Nothing clears the quality bar right now.</b><span>That is an answer, not a bug: on these filters nothing is both fairly priced and likely enough to work. Set Quality to All to see what is being screened out and why, or widen the days, delta or price limits.</span></div>
+  <div class="drawer" id="drawer" hidden></div>
+</section>
+
+<section class="track" id="track" aria-label="Track record"><div class="wrap"><div class="trackbox" id="trackbox"></div></div></section>
+
+<section class="glossary"><div class="wrap">
+  <details><summary>How the numbers are computed, and what "best" means in each lens</summary>
+    <dl>
+      <dt>The honest bottom line</dt><dd>No scanner can make options win almost every time. Options are priced close to fair, so the average trade loses roughly what it costs to get in and out. Win rate is easy to raise and doesn't mean profit: selling far out-of-the-money options wins most of the time and still loses money when the rare loss is large. This page shows expected value next to the win rate so the two can't be confused, and the Track record shows how its own picks actually did.</dd>
+      <dt>EV (expected value)</dt><dd>What the trade is worth on average if you hold to expiry, minus what you pay, as a percent of the money at risk. It uses a volatility forecast: 60% the market's implied volatility, 40% how much the stock has actually moved lately (20- and 60-day, with jump days such as earnings gaps removed). Every strike is scaled by the same factor, so the model never claims to know the skew is mispriced, and scheduled events keep the market's implied jump. Positive EV means the option is cheap against that forecast after costs. About −1% to −3% is just the cost of trading a fairly priced option.</dd>
+      <dt>Win % and the trade plan</dt><dd>The plan is: take profit at the target, stop out at the stop, otherwise close after the hold limit (or at expiry if sooner). Each contract is simulated on hundreds of price paths (thousands in the details panel) at the forecast volatility, checked once a day at the close. Each leg is repriced at its own market IV, which rises into a scheduled event and is crushed after it. The earnings jump itself is drawn from the market's implied move. Entries and exits assume a limit fill halfway between the mid and the natural price. Win % is the share of paths that close with a profit. Buying with a ±50% plan typically wins around 40–45%, and selling credit with a 50% target around 65–75%, with average losses bigger than average wins.</dd>
+      <dt>Grade</dt><dd>Absolute checks, not ranks. Liquid and tight. Expected value no worse than about −5% after costs. The plan wins often enough: about 42% for single buys, 40% for debit spreads, 60% for sales. 21–120 days for a buy, 14–60 for a sale. Decay under control for buys. No earnings inside the window. Not fighting the trend. For spreads, a reward worth the risk: at least 0.8× for debit spreads, a credit of at least 20% of the width for credit spreads. A clears every check, B misses one, C misses two. The Quality filter hides everything below B, so an empty table means nothing good is on offer right now.</dd>
+      <dt>Vertical spreads</dt><dd>Debit spreads buy one strike and sell a further one: cheaper, less time decay and less IV crush than a single option, with the gain capped at the width. Credit spreads sell one strike and buy a further one: they win more often, and the max loss is known before you enter. For each strike in the delta range the page pairs the standard partner, about 1:1 reward to risk for debit spreads, about a third of the width collected for credit spreads. Robinhood needs options level 3 for spreads.</dd>
+      <dt>P(profit)</dt><dd>Chance the trade is profitable at expiry if held, at market implied volatility (Robinhood's own chance of profit when loaded from Robinhood). This is a different number from Win %, which follows the plan.</dd>
+      <dt>⚡ Earnings / event</dt><dd>A scheduled earnings date (Robinhood's calendar when loaded there, otherwise a built-in list) or a spike in the chain's forward variance between two expiries. Either way, the size of that spike is the market's implied move for the event. Buying through it bets on a bigger move than that, then IV collapses.</dd>
+      <dt>vs fair</dt><dd>Against the data source's own model price: Cboe's theoretical value, or Robinhood's mark in real-time mode (where it reduces to the half spread you give up).</dd>
+      <dt>Trend</dt><dd>Up when the price is above its 20-day average and the 20-day is above the 50-day, Down when both are reversed, Mixed otherwise. A bullish trade fights a downtrend and a bearish one fights an uptrend.</dd>
+      <dt>Consistency</dt><dd>How often a contract has looked under-priced across repeated scans. One cheap print is often a stale quote. Cheap scan after scan is more likely real.</dd>
+      <dt>Track record</dt><dd>Every trading day at about 2:45 PM ET, a scheduled job (no Claude involved) logs the top A-grade picks from the same engine and marks every open pick once a day: buys exit at the bid, sales buy back at the ask, using the default plan. It shows win rate, average result and how the model's predicted win rate compares with what actually happened. A few weeks of picks are needed before the numbers mean much.</dd>
+      <dt>My positions</dt><dd>Reads your open option positions from Robinhood (in your browser, with your login). For each one: P/L, the move needed to reach your cost, decay, chance of profit, the expected value of holding versus selling at the bid now, and the chance it trades back to your cost at some close before expiry. These are odds, not instructions.</dd>
+      <dt>Data</dt><dd>In the Claude version, Robinhood real-time quotes for the whole watchlist, re-quoted every minute while the market is open. On the public site, Cboe quotes delayed about 15 minutes, refreshed every 5 minutes. Nothing here is advice.</dd>
+    </dl>
+  </details>
+</div></section>
+
+<footer><div class="wrap">
+  <p><b>Not investment advice.</b> Options can lose their entire premium, and short options can lose more than the premium received. Every probability here is a model estimate. Confirm the live price inside Robinhood before you submit an order, and size every trade so a full loss is one you can take.</p>
+  <p id="foot-src"></p>
+</div></footer>
+
+<!--SNAPSHOT-->
+<script>
+/*ENGINE*/
+</script>
+<script>
+/*APP*/
+</script>

@@ -1,10 +1,39 @@
 name: Strike Finder track record
+# Every trading day near the close: mark open picks, close them per the plan, log today's A-grade picks.
+# 19:45 UTC = 2:45 PM EST / 3:45 PM EDT. The script itself skips holidays and anything outside market hours.
 on:
-  workflow_dispatch: {}
+  schedule:
+    - cron: "45 19 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Check data access and the engine without writing the ledger"
+        type: boolean
+        default: true
 permissions:
   contents: write
+concurrency:
+  group: track-record
+  cancel-in-progress: false
 jobs:
   track:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - run: echo "placeholder; the tracker is added in the next commit"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fetch today's chains
+        run: python3 options-finder/tracker_scan.py "$RUNNER_TEMP/scan.json"
+      - name: Mark open picks and log today's picks
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
+        run: node options-finder/track.js "$RUNNER_TEMP/scan.json" options-finder/track/ledger.json options-finder/index.html
+      - name: Commit the ledger
+        if: github.event_name == 'schedule' || !inputs.dry_run
+        run: |
+          git config user.name "strike-finder-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add options-finder/track/ledger.json
+          if git diff --cached --quiet; then echo "no change"; else git commit -m "Track record $(date -u +%F)" && git push; fi
