@@ -70,19 +70,20 @@ for (const p of ledger.picks) {
   else if (held >= p.hold || today >= p.closeBy) { close(p, "time", v); closed++; }
 }
 
-// 2. today's picks
-let added = 0;
-if (inSession && !ledger.picks.some(p => p.date === today)) {
+// 2. today's picks (also computed in a dry run, for the diagnostics)
+function computePicks() {
   const earn = E.earnMap(null, now), syms = (scan.symbols || []).map(S => E.analyzeSymbol(S, { now, earn })).filter(Boolean);
-  const openIds = new Set(ledger.picks.filter(p => p.status === "open").map(p => p.structId));
+  const openIds = new Set(ledger.picks.filter(p => p.status === "open").map(p => p.structId)), picks = [], stats = {};
   for (const C of CATS) {
     const d = E.STRUCT_DEFAULTS[C.struct + "|" + C.side];
     const f = { types: "both", dteMin: 14, dteMax: 90, dMin: d.dMin, dMax: d.dMax, maxPrice: 2000, minOI: 300, maxSpread: d.maxSpread / 100, evMode: "all" };
     let rows = [];
     for (const A of syms) { const list = C.struct === "single" ? A.legs.map(L => E.makeSingle(L, A, C.side)) : E.verticals(A, C.side, f); for (const st of list) if (E.prefilter(st, f)) rows.push(st); }
+    const nFilt = rows.length;
     rows = rows.filter(st => { st.plan = null; return E.grade(st).fails.filter(k => k !== "odds").length === 0; });
     for (const st of rows) { st.plan = E.simulate(st, PLAN[C.side], 400, st.sym + "|" + st.exp + "|" + C.side); const G = E.grade(st); st.grade = G.g; }
     rows = rows.filter(st => st.grade === "A");
+    stats[C.cat] = { filtered: nFilt, gradeA: rows.length };
     E.scoreRows(rows, "durable"); rows.sort((a, b) => b.score - a.score);
     const used = new Set();
     for (const st of rows) {
@@ -90,17 +91,26 @@ if (inSession && !ledger.picks.some(p => p.date === today)) {
       const lv = E.planLevels(st, PLAN[C.side]), expD = etDay(st.exp), mon = new Date(st.exp).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" });
       const k = x => (x % 1 ? x.toFixed(2) : String(x));
       const label = st.kind === "single" ? `${st.sym} ${mon} $${k(st.K)} ${st.isC ? "Call" : "Put"}` : `${st.sym} ${mon} $${k(st.K)}/$${k(st.K2)} ${st.isC ? "Call" : "Put"} ${C.side === "buy" ? "debit" : "credit"} spread`;
-      ledger.picks.push({ id: today + "|" + C.cat + "|" + st.id, structId: st.id, date: today, cat: C.cat, side: C.side, kind: st.kind, sym: st.sym, label, exp: expD,
+      picks.push({ id: today + "|" + C.cat + "|" + st.id, structId: st.id, date: today, cat: C.cat, side: C.side, kind: st.kind, sym: st.sym, label, exp: expD,
         legs: st.legs.map((l, i) => ({ occ: st.raw[i].occ, q: l.q, K: l.K, isC: l.isC })), entry: r4(lv.entry), target: r4(lv.target), stop: isFinite(lv.stop) ? r4(lv.stop) : null,
         hold: PLAN[C.side].hold, closeBy: etDay(now + PLAN[C.side].hold * 864e5), risk: r4(st.risk), width: st.width || null, px: r4(st.S), grade: st.grade, score: r4(st.score),
         ev: r4(st.ev), evPct: r4(st.evPct), pWin: r4(st.plan.pWin), planEv: r4(st.plan.ev), pop: r4(st.pop), iv: r4(st.iv), sigPath: r4(st.sigPath),
         status: "open", marks: [], exit: null, pl: null, plPct: null, closed: null });
-      added++;
     }
   }
+  return { picks, stats, syms };
+}
+let added = 0;
+if (inSession && !ledger.picks.some(p => p.date === today)) { const r = computePicks(); r.picks.forEach(p => ledger.picks.push(p)); added = r.picks.length; }
+if (DRY) {
+  const r = computePicks(), pc = x => x == null ? "–" : (x * 100).toFixed(1) + "%";
+  console.log("--- symbols ---");
+  for (const A of r.syms) console.log(`${A.sym.padEnd(5)} $${A.px.toFixed(2)}${A.mismatch ? " (stock quote $" + A.pxQuoted.toFixed(2) + " out of sync)" : ""} · realized ${pc(A.hv)} · iv30 ${pc(A.iv30)} · ${A.legs.length} legs${A.dropped ? " (" + A.dropped + " dropped)" : ""} · trend ${A.trend} · event ${A.ev ? (A.ev.src === "iv" ? etDay(A.ev.from) + "→" + etDay(A.ev.to) : "earnings " + etDay(A.ev.at)) + " ±" + pc(A.ev.move) : "none"}`);
+  console.log("--- would log ---", JSON.stringify(r.stats));
+  for (const p of r.picks) console.log(`${p.cat.padEnd(12)} ${p.label.padEnd(46)} entry ${p.entry} · EV ${pc(p.evPct)} · plan win ${pc(p.pWin)} · plan EV $${(p.planEv * 100).toFixed(0)} · P(profit) ${pc(p.pop)}`);
 }
 ledger.updated = new Date(now).toISOString();
 const out = JSON.stringify(ledger, (k, v) => (v === Infinity ? null : v), 1);
 if (!DRY) fs.writeFileSync(ledgerPath, out + "\n");
 console.log(`${today}${inSession ? "" : " (outside market hours: nothing logged or marked)"}${DRY ? " [dry run, ledger not written]" : ""}: ${scan.symbols ? scan.symbols.length : 0} symbols · marked ${marked} · closed ${closed} · added ${added} · ${ledger.picks.length} picks total`);
-if (DRY) { const sample = []; const earn = E.earnMap(null, now); for (const S of (scan.symbols || []).slice(0, 3)) { const A = E.analyzeSymbol(S, { now, earn }); if (A) sample.push(`${A.sym} $${A.px.toFixed(2)} hv ${A.hv ? (A.hv * 100).toFixed(0) + "%" : "–"} legs ${A.legs.length}${A.ev ? " event" : ""}`); } console.log("engine check:", sample.join(" | ")); }
+

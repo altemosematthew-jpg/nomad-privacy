@@ -126,15 +126,16 @@ var Engine = (function () {
     }
     return pts[n - 1].iv;
   }
-  /* Forward variance between consecutive expiries. A spike well above the chain's typical level is a scheduled jump
-     (earnings); its excess variance is the market's implied move for that event. */
+  /* Forward variance between consecutive expiries. A spike that stands out from its neighbouring intervals is a scheduled jump
+     (earnings); its excess variance is the market's implied move. Expiries under 5 days out are noisy, so a spike there must be huge. */
   function detectEvent(pts, earn, now) {
-    var fw = [], prev = 0;
-    for (var i = 0; i < pts.length; i++) {
+    var fw = [], prev = 0, i;
+    for (i = 0; i < pts.length; i++) {
       var v = Math.max(pts[i].iv * pts[i].iv * pts[i].T, prev), t0 = i ? pts[i - 1].T : 0;
       fw.push({ t0: t0, t1: pts[i].T, e0: i ? pts[i - 1].exp : now, e1: pts[i].exp, f: (v - prev) / Math.max(pts[i].T - t0, 1e-6) }); prev = v;
     }
-    var base = fw.length >= 3 ? median(fw.map(function (x) { return x.f; })) : fw.length ? Math.min.apply(null, fw.map(function (x) { return x.f; })) : 0;
+    var SHORT = 5 / 365, usable = fw.filter(function (x) { return x.t1 >= SHORT; });
+    var base = usable.length >= 3 ? median(usable.map(function (x) { return x.f; })) : fw.length ? median(fw.map(function (x) { return x.f; })) : 0;
     function excess(x) { return Math.max(0, (x.f - base) * (x.t1 - x.t0)); }
     if (earn && earn.t > now) {
       var tE = (earn.t - now) / YEAR_MS, hit = null;
@@ -143,7 +144,16 @@ var Engine = (function () {
       return { src: "calendar", tEvent: tE, at: earn.t, date: earn.date, timing: earn.timing, verified: earn.verified, move: mv && mv >= 0.005 ? mv : null };
     }
     var best = null;
-    for (i = 0; i < fw.length; i++) { var ex = excess(fw[i]); if (fw[i].f > 1.5 * base && ex >= 0.0004 && (!best || ex > best.ex)) best = { x: fw[i], ex: ex }; }
+    for (i = 0; i < fw.length; i++) {
+      var x = fw[i], ex = excess(x), ok;
+      if (x.t1 < SHORT) ok = x.f > 2 * base && ex >= 0.0016;
+      else {
+        var L = i > 0 ? fw[i - 1].f : base, Rn = i + 1 < fw.length ? fw[i + 1].f : null;
+        var ref = Math.max(base, Rn != null ? (L + Rn) / 2 : L);
+        ok = x.f > 1.25 * ref && ex >= 0.0009;
+      }
+      if (ok && (!best || ex > best.ex)) best = { x: x, ex: ex };
+    }
     if (!best) return null;
     return { src: "iv", tEvent: (best.x.t0 + best.x.t1) / 2, tFrom: best.x.t0, tTo: best.x.t1, from: best.x.e0, to: best.x.e1, move: Math.sqrt(best.ex) };
   }
