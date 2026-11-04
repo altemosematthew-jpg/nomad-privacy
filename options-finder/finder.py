@@ -22,6 +22,7 @@ orders.  Standard library only, Python 3.9+.
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import sys
@@ -30,7 +31,9 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import deque
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -38,6 +41,9 @@ HERE = Path(__file__).resolve().parent
 PORT = int(os.environ.get("PORT", os.environ.get("FINDER_PORT", "8765")))
 HOST = os.environ.get("HOST", "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
 CBOE = "https://cdn.cboe.com/api/global/delayed_quotes/options/{sym}.json"
+CBOE_HIST = "https://cdn.cboe.com/api/global/delayed_quotes/charts/historical/{sym}.json"
+# The Mac mini copy pings the public server so Render's free tier stays awake (set to "" to disable).
+KEEPALIVE_URL = os.environ.get("KEEPALIVE_URL", "" if os.environ.get("PORT") else "https://strike-finder.onrender.com/api/health")
 DEFAULT_WATCHLIST = ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA",
                      "AMD", "NFLX", "AVGO", "COIN", "PLTR", "SOFI", "F", "BAC", "INTC", "HOOD",
                      "MRVL", "MU", "UBER", "ARM"]
@@ -63,12 +69,106 @@ def watchlist():
     return DEFAULT_WATCHLIST
 
 
-def fetch_cboe(sym: str) -> dict:
-    req = urllib.request.Request(CBOE.format(sym=urllib.parse.quote(sym)),
-                                 headers={"User-Agent": "Mozilla/5.0 (options-finder; personal use)",
-                                          "Accept": "application/json"})
+def fetch_json(url: str) -> dict:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (options-finder; personal use)",
+                                               "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=20) as r:
         return json.loads(r.read().decode("utf-8"))
+
+
+def fetch_cboe(sym: str) -> dict:
+    return fetch_json(CBOE.format(sym=urllib.parse.quote(sym)))
+
+
+# ---------- price history: trend and realized volatility per symbol (cached 6 h) ----------
+_hist_cache = {}
+HIST_TTL = 6 * 3600
+
+
+def hist_stats(closes):
+    """Trend/vol stats from daily closes (oldest first): moving averages, realized vol, returns, 52-week range."""
+    c = [float(x) for x in closes if x and float(x) > 0]
+    if len(c) < 25:
+        return None
+
+    def sma(n):
+        return sum(c[-n:]) / n if len(c) >= n else None
+
+    def hv(n):
+        if len(c) < n + 1:
+            return None
+        rets = [math.log(c[i] / c[i - 1]) for i in range(len(c) - n, len(c))]
+        m = sum(rets) / n
+        var = sum((r - m) ** 2 for r in rets) / (n - 1)
+        return math.sqrt(var * 252)
+
+    def ret(n):
+        return c[-1] / c[-1 - n] - 1 if len(c) > n else None
+
+    y = c[-252:]
+    return {"last": c[-1], "sma20": sma(20), "sma50": sma(50), "sma200": sma(200), "hv20": hv(20), "hv60": hv(60),
+            "ret1m": ret(21), "ret3m": ret(63), "hi52": max(y), "lo52": min(y), "n": len(c), "src": "cboe"}
+
+
+def hist(sym: str):
+    with _cache_lock:
+        hit = _hist_cache.get(sym)
+        if hit and time.time() - hit[0] < HIST_TTL:
+            return hit[1]
+    out = None
+    try:
+        raw = fetch_json(CBOE_HIST.format(sym=urllib.parse.quote(sym)))
+        rows = raw.get("data") or raw.get("prices") or []
+        closes = [r.get("close") for r in rows if isinstance(r, dict)]
+        out = hist_stats(closes)
+    except Exception:
+        out = None
+    with _cache_lock:
+        _hist_cache[sym] = (time.time(), out)
+    return out
+
+
+# ---------- consistency: how each contract's edge has held up across scans while this server is awake ----------
+_stab = {}             # occ -> deque of (ts, buyer edge, seller edge, spread%)
+_stab_lock = threading.Lock()
+STAB_KEEP = 36
+
+
+def stab_update(results):
+    now = time.time()
+    with _stab_lock:
+        for S in results:
+            for o in S["o"]:
+                occ, bid, ask, theo = o[0], o[1], o[2], o[12]
+                mid = (bid + ask) / 2 or ask
+                tb = (theo - ask) / ask if theo > 0 and ask > 0 else None
+                ts_ = (bid - theo) / theo if theo > 0 else None
+                sp = (ask - bid) / mid if mid > 0 else None
+                d = _stab.get(occ)
+                if d is None:
+                    d = _stab[occ] = deque(maxlen=STAB_KEEP)
+                if not d or now - d[-1][0] >= 100:
+                    d.append((now, tb, ts_, sp))
+        if len(_stab) > 60000:   # forget contracts not seen for a day
+            for occ in [k for k, d in _stab.items() if now - d[-1][0] > 86400]:
+                del _stab[occ]
+
+
+def stab_for(S):
+    """{occ: [n, mean buyer edge, share of scans with buyer edge > 0, mean seller edge, share > 0, mean spread]} for contracts seen twice or more."""
+    out = {}
+    with _stab_lock:
+        for o in S["o"]:
+            d = _stab.get(o[0])
+            if not d or len(d) < 2:
+                continue
+            tb = [x[1] for x in d if x[1] is not None]
+            ts_ = [x[2] for x in d if x[2] is not None]
+            sp = [x[3] for x in d if x[3] is not None]
+            mean = lambda a: round(sum(a) / len(a), 4) if a else None
+            pos = lambda a: round(sum(1 for v in a if v > 0) / len(a), 3) if a else None
+            out[o[0]] = [len(d), mean(tb), pos(tb), mean(ts_), pos(ts_), mean(sp)]
+    return out
 
 
 def compact(sym: str, raw: dict) -> dict:
@@ -116,6 +216,9 @@ def chain(sym: str) -> dict:
         if hit and time.time() - hit[0] < CHAIN_TTL:
             return hit[1]
     data = compact(sym, fetch_cboe(sym))
+    data["hist"] = hist(sym)
+    stab_update([data])
+    data["h"] = stab_for(data)
     with _cache_lock:
         _cache[sym] = (time.time(), data)
     return data
@@ -145,7 +248,7 @@ def scan() -> dict:
                 else:
                     errors[s] = err
         out = {"generated": int(time.time()), "watchlist": wl, "symbols": results, "errors": errors,
-               "source": "Cboe delayed quotes (15 min)", "live": True}
+               "source": "Cboe delayed quotes (15 min)", "live": True, "stab_scans": max([len(d) for d in list(_stab.values())[:2000]] or [0])}
         _scan_cache.update(ts=time.time(), data=out)
         try:
             DATA_DIR.mkdir(exist_ok=True)
@@ -215,11 +318,41 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"error": f"{type(e).__name__}: {e}"[:200]}, 500)
 
 
+def market_hours() -> bool:
+    try:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(ZoneInfo("America/New_York"))
+    except Exception:
+        return True
+    t = now.hour * 60 + now.minute
+    return now.weekday() < 5 and 9 * 60 + 25 <= t <= 16 * 60 + 20
+
+
+def background():
+    """Keep scanning every 5 minutes in market hours so the consistency stats build up, and keep the public server awake from the Mac."""
+    time.sleep(1)
+    last_scan = 0.0
+    last_ping = 0.0
+    while True:
+        try:
+            if time.time() - last_scan >= 300 and (market_hours() or last_scan == 0):
+                scan()
+                last_scan = time.time()
+            if KEEPALIVE_URL and time.time() - last_ping >= 600:
+                try:
+                    urllib.request.urlopen(KEEPALIVE_URL, timeout=90).read()
+                except Exception:
+                    pass
+                last_ping = time.time()
+        except Exception:
+            pass
+        time.sleep(20)
+
+
 def main():
     srv = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Options Finder: http://{HOST}:{PORT}  (Ctrl-C to stop)", flush=True)
-    # warm the scan in the background so the first page load is fast
-    threading.Thread(target=lambda: (time.sleep(1), scan()), daemon=True).start()
+    threading.Thread(target=background, daemon=True).start()
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
