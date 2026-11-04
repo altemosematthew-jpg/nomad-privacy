@@ -8,7 +8,7 @@ Options scanner for US stocks. For every listed call, put and vertical spread on
 
 | Where | Data | Notes |
 |---|---|---|
-| Claude artifact | **Robinhood real-time** for the whole watchlist (re-quoted every minute in market hours), plus My positions | Needs the Robinhood connector; calls run in your browser with your login. Claude's page security blocks outside servers, so the track record isn't shown there |
+| Claude artifact | **Robinhood real-time** for the whole watchlist (re-quoted every minute in market hours), plus My positions and a private **My trades** journal | Needs the Robinhood connector; calls run in your browser with your login. Claude's page security blocks outside servers, so the track record isn't shown there |
 | https://strike-finder.onrender.com | Cboe delayed (15 min), 24 symbols, price history, consistency stats, **track record** | Free tier: first load after idle takes ~45 s. The Mac copy pings it every 10 min |
 | Mac mini, http://127.0.0.1:8765 | Same as the public server, no cold start | `Start Options Finder.command` / `Stop Options Finder.command` |
 
@@ -26,10 +26,22 @@ Options scanner for US stocks. For every listed call, put and vertical spread on
 
 `.github/workflows/track.yml` runs every trading day at 19:45 UTC (2:45 PM EST / 3:45 PM EDT): `tracker_scan.py` pulls the chains (Cboe directly, else the public server), then `track.js` loads the engine straight out of `index.html`, marks every open pick at today's quotes, closes it per the default plan (+50%/−50%/21 days for buys; keep 50% / stop at a 200% loss / 21 days for sales), and logs the day's top A-grade picks: 4 single buys, 3 debit spreads, 3 credit spreads, one per symbol. The ledger is `track/ledger.json`; the page reads it through `/api/track`. Run it by hand from the Actions tab (dry run by default).
 
+## My trades (Claude version)
+
+Open a contract, then **Track this trade** at the bottom of the details panel saves it with your fill price, the plan's target, stop and close-by date, and the model's win %. **My trades** re-quotes every saved trade from Robinhood, shows P/L, flags when a target, stop or time limit is hit, and keeps score of closed trades against what the model predicted. Trades are stored privately per person in the artifact's own storage (`data/users/<id>/journal/trades/...`); turn it off with `const JOURNAL = false` in `src/app.js`.
+
+## Earnings dates
+
+`.github/workflows/earnings.yml` runs `earnings_fetch.py` daily at 11:00 UTC: next earnings dates from Nasdaq and Yahoo (no keys; a confirmed date beats an estimate, then the earlier date wins) into `earnings.json`. The public site reads it through `/api/earnings` and the tracker reads the file directly; both fall back to the built-in list. The Claude version uses Robinhood's earnings data.
+
+## Diagnostics
+
+Actions → **diag** → Run workflow runs `diag.js` on a fresh scan (read-only): EV and win-rate distributions by type, days and IV, the top picks with every input, and anything that looks like a data artifact.
+
 ## Building and deploying
 
-Edit `src/page.html`, `src/engine.js`, `src/app.js`, then `python3 build.py` → `index.html` (public site, Mac, tracker) and `snapshot.html` (Claude artifact; not committed). Render does **not** auto-deploy on push: Render dashboard → strike-finder → **Manual Deploy → Deploy latest commit**.
+Edit `src/page.html`, `src/engine.js`, `src/app.js`, `src/mobile.css` (phone and narrow-screen rules), then `python3 build.py` → `index.html` (public site, Mac, tracker) and `snapshot.html` (Claude artifact; not committed). Render does **not** auto-deploy on push: Render dashboard → strike-finder → **Manual Deploy → Deploy latest commit**.
 
 ## Server endpoints (finder.py, stdlib only)
 
-`/api/scan` (watchlist, cached 120 s) · `/api/chain?symbol=X` · `/api/hist?symbol=X` · `/api/track` · `/api/health`. CORS open.
+`/api/scan` (watchlist, cached 120 s) · `/api/chain?symbol=X` · `/api/hist?symbol=X` · `/api/track` · `/api/earnings` · `/api/health`. CORS open.
