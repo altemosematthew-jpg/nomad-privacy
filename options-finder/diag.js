@@ -262,4 +262,15 @@ safe("noise", () => {
   }
 });
 console.log("\ndone2");
+/* ---------- 11. A grades by symbol and expiry (calendar cross-check) ---------- */
+safe("byexp", () => {
+  sect("A GRADES BY SYMBOL|EXPIRY");
+  for (const C of CATS) { const cnt = {}; for (const st of ROWS[C.cat]) if (st.grade === "A") { const k = st.sym + "|" + etDay(st.exp).slice(5); cnt[k] = (cnt[k] || 0) + 1; }
+    console.log(`## ${C.cat}: ${JSON.stringify(cnt)}`); }
+  const mu = []; for (const C of CATS) for (const st of ROWS[C.cat]) if (st.sym === "MU" && st.grade === "A" && etDay(st.exp) >= "2026-12-16") mu.push(st);
+  console.log(`MU A-grade rows expiring on/after 2026-12-16 (earnings.json date; engine seed says 12-23): ${mu.length}`);
+  mu.slice(0, 6).forEach(st => console.log("  " + describe(st).split("\n")[0]));
+});
+console.log("\ndone3");
+
 
