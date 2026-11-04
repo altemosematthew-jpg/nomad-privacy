@@ -64,21 +64,25 @@ safe("symbols", () => {
 /* ---------- 2. every structure the tracker could pick, all four categories, with plans simulated for all ---------- */
 const CATS = [{ cat: "single-buy", struct: "single", side: "buy", n: 4 }, { cat: "single-sell", struct: "single", side: "sell", n: 0 },
   { cat: "spread-buy", struct: "spread", side: "buy", n: 3 }, { cat: "spread-sell", struct: "spread", side: "sell", n: 3 }];
-const ROWS = {};
-const t0 = Date.now();
-for (const C of CATS) {
-  const d = E.STRUCT_DEFAULTS[C.struct + "|" + C.side];
-  const f = { types: "both", dteMin: 14, dteMax: 90, dMin: d.dMin, dMax: d.dMax, maxPrice: 2000, minOI: 300, maxSpread: d.maxSpread / 100, evMode: "all" };
-  const rows = [];
-  for (const A of syms) { const list = C.struct === "single" ? A.legs.map(L => E.makeSingle(L, A, C.side)) : E.verticals(A, C.side, f); for (const st of list) if (E.prefilter(st, f)) rows.push(st); }
-  for (const st of rows) {
-    st.plan = E.simulate(st, PLAN[C.side], PATHS, st.sym + "|" + st.exp + "|" + C.side);
-    const G = E.grade(st); st.grade = G.g; st.fails = G.fails; st.cat = C.cat;
-    st.planEvPct = st.plan && st.price > 0 ? st.plan.ev / (st.risk > 0 ? st.risk : st.price) : null;
-    st.skew = st.atm > 0 ? st.iv / st.atm : null;
+function build(list, paths, seedSuffix) {
+  const out = {};
+  for (const C of CATS) {
+    const d = E.STRUCT_DEFAULTS[C.struct + "|" + C.side];
+    const f = { types: "both", dteMin: 14, dteMax: 90, dMin: d.dMin, dMax: d.dMax, maxPrice: 2000, minOI: 300, maxSpread: d.maxSpread / 100, evMode: "all" };
+    const rows = [];
+    for (const A of list) { const l2 = C.struct === "single" ? A.legs.map(L => E.makeSingle(L, A, C.side)) : E.verticals(A, C.side, f); for (const st of l2) if (E.prefilter(st, f)) rows.push(st); }
+    for (const st of rows) {
+      st.plan = E.simulate(st, PLAN[C.side], paths, st.sym + "|" + st.exp + "|" + C.side + (seedSuffix || ""));
+      const G = E.grade(st); st.grade = G.g; st.fails = G.fails; st.cat = C.cat;
+      st.planEvPct = st.plan && st.price > 0 ? st.plan.ev / (st.risk > 0 ? st.risk : st.price) : null;
+      st.skew = st.atm > 0 ? st.iv / st.atm : null;
+    }
+    out[C.cat] = rows;
   }
-  ROWS[C.cat] = rows;
+  return out;
 }
+const t0 = Date.now();
+const ROWS = build(syms, PATHS);
 console.log(`\n(simulated ${Object.values(ROWS).reduce((s, r) => s + r.length, 0)} structures × ${PATHS} paths in ${((Date.now() - t0) / 1000).toFixed(1)} s)`);
 
 function describe(st) {
@@ -212,3 +216,50 @@ safe("events", () => {
   }
 });
 console.log("\ndone");
+/* ---------- 9. the same scan with the stock price replaced by the options' own parity spot ---------- */
+safe("parity", () => {
+  sect("RE-RUN WITH PARITY SPOT FORCED FOR EVERY SYMBOL (isolates the stock-quote/option-quote mismatch)");
+  const syms2 = (scan.symbols || []).map(S => { const ps = E.paritySpot(S, now); return E.analyzeSymbol(Object.assign({}, S, { px: ps || S.px }), { now, earn }); }).filter(Boolean);
+  console.log("inverted/source IV −1, |Δ| .25–.75, calls/puts: " + syms2.map(A => { const c = [], p = [];
+    for (const L of A.legs) if (L.ivSrc > 0 && L.dte >= 7 && L.dte <= 120 && Math.abs(L.delta) >= .25 && Math.abs(L.delta) <= .75) (L.isC ? c : p).push(L.iv / L.ivSrc - 1);
+    return `${A.sym} ${pc(med(c))}/${pc(med(p))} drop${A.dropped}`; }).join(" | "));
+  const R2 = build(syms2, PATHS);
+  for (const C of CATS) {
+    const rows = R2[C.cat], g = { A: 0, B: 0, C: 0, "–": 0 }; for (const st of rows) g[st.grade]++;
+    console.log(`## ${C.cat}: ${rows.length} rows · grades ${JSON.stringify(g)} · EV% med ${pc(med(rows.map(r => r.evPct)))} · planEV% med ${pc(med(rows.map(r => r.planEvPct)))}`);
+    for (const T of ["C", "P"]) { const s = rows.filter(r => r.type === T);
+      console.log(`  [${T}] n${s.length} EV% med ${pc(med(s.map(r => r.evPct)))} · planEV% med ${pc(med(s.map(r => r.planEvPct)))} · win med ${pc(med(s.map(r => r.plan && r.plan.pWin)))} · A ${s.filter(r => r.grade === "A").length}`); }
+    const A = rows.filter(st => st.grade === "A"); E.scoreRows(A, "durable"); A.sort((a, b) => b.score - a.score);
+    const cnt = {}; for (const st of A) cnt[st.sym] = (cnt[st.sym] || 0) + 1;
+    console.log(`  A by symbol ${JSON.stringify(cnt)}`);
+    A.slice(0, 5).forEach((st, i) => console.log(`  ${i + 1}. ${st.sym} ${st.type}${st.K}${st.K2 != null ? "/" + st.K2 : ""} ${etDay(st.exp)} S ${f2(st.S)} fill ${f3(st.price)} fair ${f3(st.fair)} EV% ${pc(st.evPct)} iv ${pc(st.iv)} atm ${pc(st.atm)} win ${pc(st.plan.pWin)} planEV% ${pc(st.planEvPct)}`));
+  }
+  // what happened to the main run's top picks
+  for (const C of CATS) {
+    const A = ROWS[C.cat].filter(st => st.grade === "A"); E.scoreRows(A, "durable"); A.sort((a, b) => b.score - a.score);
+    const by = new Map(R2[C.cat].map(st => [st.id, st]));
+    console.log(`  ${C.cat} main-run top 6 under parity spot: ` + A.slice(0, 6).map(st => { const t = by.get(st.id);
+      return `${st.sym} ${st.type}${st.K}${st.K2 != null ? "/" + st.K2 : ""} ${etDay(st.exp).slice(5)}: EV ${pc(st.evPct)}→${t ? pc(t.evPct) : "gone"} win ${pc(st.plan.pWin)}→${t ? pc(t.plan.pWin) : "–"} planEV ${pc(st.planEvPct)}→${t ? pc(t.planEvPct) : "–"} grade A→${t ? t.grade : "–"}`; }).join(" | "));
+  }
+});
+
+/* ---------- 10. Monte Carlo noise in the plan numbers that grade and rank the picks ---------- */
+safe("noise", () => {
+  sect("PLAN NOISE: main-run top 8 A per category re-simulated with 4 other seeds (400 paths) and once with 8000 paths");
+  for (const C of CATS) {
+    const A = ROWS[C.cat].filter(st => st.grade === "A"); E.scoreRows(A, "durable"); A.sort((a, b) => b.score - a.score);
+    const thr = C.side === "sell" ? E.ODDS.sell : C.struct === "spread" ? E.ODDS.spreadBuy : E.ODDS.singleBuy;
+    let flips = 0;
+    const lines = A.slice(0, 8).map(st => {
+      const den = st.risk > 0 ? st.risk : st.price, w = [], e = [];
+      for (let k = 1; k <= 4; k++) { const p = E.simulate(st, PLAN[C.side], 400, st.sym + "|" + st.exp + "|" + C.side + "#" + k); w.push(p.pWin); e.push(p.ev / den); }
+      const big = E.simulate(st, PLAN[C.side], 8000, st.id + "|big");
+      if (big.pWin < thr) flips++;
+      return `${st.sym} ${st.type}${st.K}${st.K2 != null ? "/" + st.K2 : ""} ${etDay(st.exp).slice(5)} win ${pc(st.plan.pWin)} [${w.map(pc).join(" ")}] 8k ${pc(big.pWin)} · planEV ${pc(st.planEvPct)} [${e.map(pc).join(" ")}] 8k ${pc(big.ev / den)}`;
+    });
+    console.log(`## ${C.cat} (odds threshold ${pc(thr)}; ${flips} of ${lines.length} fall below it at 8000 paths)`);
+    lines.forEach(l => console.log("  " + l));
+  }
+});
+console.log("\ndone2");
+
