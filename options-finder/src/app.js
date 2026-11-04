@@ -335,7 +335,7 @@ function structures(f) {
   state.structCache = { key, list }; return list;
 }
 function planFor(st, n) {
-  const p = state.plan[st.side], key = [st.id, st.side, p.target, p.stop, p.hold, n, st.price.toFixed(4), st.S.toFixed(3)].join("|");
+  const p = state.plan[st.side], key = [st.id, st.side, p.target, p.stop, p.hold, n, st.price.toFixed(4), st.S.toFixed(3), state.earnVer].join("|");
   let r = state.simCache.get(key); if (r !== undefined) return r;
   r = E.simulate(st, planNow(st.side), n, st.sym + "|" + st.exp + "|" + st.side);   // shared paths per symbol and expiry: fair comparisons between strikes
   state.simCache.set(key, r); return r;
@@ -419,7 +419,7 @@ function select(id, quiet) {
     ["P(profit) at expiry", pct(r.pop, 0), r.copL != null || r.copS != null ? "Robinhood's chance of profit" : "at market implied volatility"],
     ["Volatility", `IV ${pct(r.iv, 1)}`, `forecast ${pct(r.sigPath, 1)} · realized (jumps removed) ${r.hv ? pct(r.hv, 0) : "–"}${H && H.hv20 ? ` · raw 20d ${pct(H.hv20, 0)}` : ""}`],
     ["Event", ev ? (ev.src === "calendar" ? "Earnings " + day(ev.at) : "Event " + day(ev.from) + "–" + day(ev.to)) : "None in the window", ev ? (ev.move ? `market's implied move ±${pct(ev.move, 1)}` : "implied move not measurable from this chain") : ""],
-    ["Trend", `<span class="${r.trend > 0 ? "up" : r.trend < 0 ? "down" : ""}">${r.trend > 0 ? "Up" : r.trend < 0 ? "Down" : "Mixed"}</span>${r.trendFit === 1 ? " · with this trade" : r.trendFit === -1 ? " · against this trade" : ""}`, H ? `20d $${fmt(H.sma20, 0)} · 50d $${fmt(H.sma50, 0)} · 1-mo ${pct(H.ret1m, 1, true)} · 3-mo ${pct(H.ret3m, 1, true)}` : "no price history"],
+    ["Trend", `<span class="${r.trend > 0 ? "up" : r.trend < 0 ? "down" : ""}">${!H ? "Unknown" : r.trend > 0 ? "Up" : r.trend < 0 ? "Down" : "Mixed"}</span>${r.trendFit === 1 ? " · with this trade" : r.trendFit === -1 ? " · against this trade" : ""}`, H ? `20d $${fmt(H.sma20, 0)} · 50d $${fmt(H.sma50, 0)} · 1-mo ${pct(H.ret1m, 1, true)} · 3-mo ${pct(H.ret3m, 1, true)}` : "no price history"],
     ["Δ · Γ · Θ · V", `${fmt(r.delta, 2)} · ${fmt(r.gamma, 3)} · ${fmt(r.theta, 3)} · ${fmt(r.vega, 3)}`, `theta ${money(Math.abs(r.theta) * per, 2)}/day per contract (${pct(r.thetaPct, 1)})`],
     ["Expected move by expiry", "±$" + fmt(r.expMove, 2), pct(r.expMove / r.S, 1) + " (one standard deviation, market IV)"],
     ["Open interest · Volume", `${r.oiMin.toLocaleString()} · ${r.volMin.toLocaleString()}`, sp ? "the thinner leg" : `sizes ${r.bs} × ${r.as}`]
@@ -441,7 +441,7 @@ function select(id, quiet) {
   else ticket = `${name}\n${buy ? "Buy" : "Sell"} to open 1 · limit $${fmt(r.mid)} (mid); expect fills near $${fmt(r.price)}\nBreakeven at expiry $${fmt(r.be)} (${pct(r.moveBE, 1, true)} from $${fmt(r.S)})\nExit plan: ${tgtTxt} · ${stpTxt} · otherwise close by ${dayNum(closeBy)}\nOCC ${r.raw[0].occ}`;
   const lvlNote = levelNote(sp, buy, isC);
   // the minute re-quote re-renders this panel: keep a half-filled "Track this trade" form (values, focus) for the same contract
-  const jOld = $("#jtrack"), jKeep = jOld && jOld.dataset.id === id && jOld.dataset.wired && !state.jr.readonly ? jOld : null;
+  const jOld = $("#jtrack"), jKeep = jOld && jOld.dataset.id === id && jOld.dataset.side === r.side && jOld.dataset.wired && !state.jr.readonly ? jOld : null;
   const jFocus = jKeep && jKeep.contains(document.activeElement) ? document.activeElement : null;
   state.jr.formRow = r;
   d.innerHTML = `
@@ -502,7 +502,7 @@ function select(id, quiet) {
     else if (!isC) { perC = Math.max(r.price * Math.min(plan.stop, 5) * per, 1); what = "the plan's stop loss"; }
     else { $("#sizing").textContent = "Covered calls need 100 shares per contract; size by the shares you own."; return; }
     const n = Math.floor((acct * risk) / perC);
-    $("#sizing").textContent = `${n} contract${n === 1 ? "" : "s"} keeps ${what} (${money(perC, 0)} each) within ${money(acct * risk, 0)}.` + (!buy && !sp && !isC ? ` Cash to secure each: ${money((r.K - r.price) * per, 0)}.` : "");
+    $("#sizing").textContent = (n > 0 ? `${n} contract${n === 1 ? "" : "s"} keeps ${what} (${money(perC, 0)} each) within ${money(acct * risk, 0)}.` : `Even 1 contract puts more than ${money(acct * risk, 0)} at risk (${money(perC, 0)} each). Raise the risk % or pick a cheaper contract.`) + (!buy && !sp && !isC ? ` Cash to secure each: ${money((r.K - r.price) * per, 0)}.` : "");
   };
   $("#acct").addEventListener("input", sizing); $("#risk").addEventListener("input", sizing); sizing();
   // "↑ Results" / "Close": one delegated listener on #drawer itself, wired once (the minute re-quote only swaps its innerHTML)
@@ -512,7 +512,7 @@ function select(id, quiet) {
     if (b.dataset.nav === "close") { state.sel = null; d.hidden = true; document.querySelectorAll('#rows tr[aria-selected="true"]').forEach(x => x.setAttribute("aria-selected", "false")); }
     if (tr) tr.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   }); }
-  if (!quiet) d.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  if (!quiet) d.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 function levelNote(sp, buy, isC) {
   if (!state.accounts || !state.accounts.length || (!sp && buy)) return "";
@@ -813,7 +813,7 @@ async function jAction(act, id, btn) {
 /* "Track this trade" in the details panel */
 function trackFormHTML(r) {
   const J = state.jr; if (!JOURNAL || !J.ready) return "";
-  const head = `<div class="jtrack" id="jtrack" data-id="${esc(r.id)}"><p class="eyebrow">Track this trade</p>`;
+  const head = `<div class="jtrack" id="jtrack" data-id="${esc(r.id)}" data-side="${r.side}"><p class="eyebrow">Track this trade</p>`;
   if (J.readonly) return head + `<p class="note">Saving trades isn't allowed at your access level on this page.</p></div>`;
   if (!r.raw.every(L => L.instId)) return head + `<p class="note">Tracking needs Robinhood real-time quotes for this contract, and they aren't loaded in this view.</p></div>`;
   return head + `<p class="note">Placed it in Robinhood? Save it here to follow its live P/L against this plan, and to compare your results with the model's win rate. Private to you.</p>
@@ -986,7 +986,7 @@ function init() {
     planHint(); clearTimeout(pt); pt = setTimeout(() => { build(); if (state.sel) select(state.sel, true); }, 350);
   }));
   document.querySelectorAll("#tbl thead th").forEach(th => th.addEventListener("click", () => { const k = th.dataset.k; if (state.sortK === k) state.sortDir *= -1; else { state.sortK = k; state.sortDir = (k === "sym" || k === "type" || k === "grade") ? 1 : -1; } markSort(); build(); }));
-  $("#refresh").addEventListener("click", async () => { if (state.mcp) { if (state.rt.size) rhRequote(true); else rhLoadAll([...new Set(CORE.concat(WATCH, state.extra))]); } else { setStatus("Refreshing…", "live"); await loadServer(); } });
+  $("#refresh").addEventListener("click", async () => { if (state.mcp) { if (state.rt.size) rhRequote(true); else rhLoadAll([...new Set(CORE.concat(WATCH, state.extra))]); } else if (IN_CLAUDE) { setStatus("Checking for Robinhood…", "live"); await initClaude(); } else { setStatus("Refreshing…", "live"); await loadServer(); } });
   applyDefaults();
 }
 let rangeTimer = null;

@@ -350,7 +350,7 @@ var Engine = (function () {
           var L = legs[i], Si = Math.exp(lnS[i]);
           v += L.q * (Tr <= 1e-6 ? Math.max(0, L.isC ? Si - L.K : L.K - Si) : bs(Si, L.K, Tr, Math.sqrt(L.diff2 + (evDone ? 0 : L.evTot / Tr)), L.isC));
         }
-        if (st.width) v = Math.min(Math.max(v, 0), st.width);   // a vertical lives between 0 and its width
+        // no clamp to [0, width] here: each leg rides its own path, and clamping their sum would cut one tail and bias fair spreads
         var last = k === steps, atExp = last && expires, x, disc = Math.exp(-R * t);   // P/L in today's dollars: a fairly priced trade averages zero
         if (buy) {
           x = Math.max(0, atExp ? v : v - hs);
@@ -366,7 +366,8 @@ var Engine = (function () {
       sum += pl; dsum += day; pls.push(pl);
     }
     var n = half * 2; pls.sort(function (a, b) { return a - b; });
-    function q(f) { return pls[Math.min(n - 1, Math.max(0, Math.floor(f * n)))]; }
+    var plHi = st.width ? (buy ? st.width - entry : entry) : Infinity, plLo = st.width ? (buy ? -entry : entry - st.width) : -Infinity;   // shown percentiles stay inside the spread's max gain/loss
+    function q(f) { return Math.min(plHi, Math.max(plLo, pls[Math.min(n - 1, Math.max(0, Math.floor(f * n)))])); }
     return { n: n, days: horizon, avgDays: dsum / n, pTarget: nT / n, pStop: nS / n, pTime: nX / n, pWin: nW / n, ev: sum / n,
       avgWin: nW ? sumW / nW : 0, avgLoss: nL2 ? sumL / nL2 : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
   }
@@ -386,7 +387,7 @@ var Engine = (function () {
   /* ---------- grades: absolute checks ---------- */
   var CHECKS = {
     liquid: ["liquid, tight market", "thin or wide market"],
-    priced: ["expected value at or above about break-even after costs", "expected value clearly negative after costs"],
+    priced: ["expected value no worse than about −5% after costs", "expected value clearly negative after costs"],
     odds: ["the plan wins often enough", "the plan loses too often"],
     time: ["the right amount of time for the plan", "too little (or too much) time"],
     decay: ["decay under control", "decay too fast"],
