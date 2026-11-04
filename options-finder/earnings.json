@@ -1,6 +1,17 @@
-{"asOf": "2026-11-04", "source": "Nasdaq earnings date", "timingUnknown": ["AVGO", "MRVL", "MU"], "d": {
-  "AVGO": ["2026-12-10", "am", false],
-  "MRVL": ["2026-12-01", "am", false],
+{"asOf": "2026-11-04", "source": "Nasdaq earnings date + Yahoo Finance", "timingUnknown": ["MU"], "d": {
+  "AAPL": ["2027-01-28", "pm", false],
+  "ARM": ["2026-11-04", "pm", true],
+  "AVGO": ["2026-12-09", "pm", true],
+  "BAC": ["2027-01-15", "am", true],
+  "INTC": ["2027-01-28", "pm", false],
+  "META": ["2027-01-27", "pm", false],
+  "MRVL": ["2026-12-01", "pm", false],
+  "MSFT": ["2027-01-27", "pm", false],
   "MU": ["2026-12-16", "am", false],
-  "NVDA": ["2026-11-17", "pm", true]
+  "NFLX": ["2027-01-19", "pm", false],
+  "NVDA": ["2026-11-17", "pm", true],
+  "PLTR": ["2027-02-01", "pm", false],
+  "SOFI": ["2027-01-29", "am", false],
+  "TSLA": ["2027-01-27", "pm", false],
+  "UBER": ["2026-11-04", "am", true]
 }}
