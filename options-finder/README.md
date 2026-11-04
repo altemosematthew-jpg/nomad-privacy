@@ -20,7 +20,8 @@ Options scanner for US stocks. For every listed call, put and vertical spread on
 - **Events:** earnings calendar (Robinhood live, else a built-in list) and forward-variance spikes that stand out from neighbouring expiries and imply at least a 3% move (single stocks only; under-5-day expiries need a huge spike).
 - **EV:** value under the forecast minus the fill price, held to expiry, per dollar at risk (premium for buys and short singles, max loss for credit spreads).
 - **Plan simulation:** each leg follows its own price path driven by the same daily market shocks, at its own forecast diffusive vol plus its share of the event jump, and is repriced at its own market IV (rising into the event, crushed after); exits pay the fill cost; P/L in today's dollars. This keeps skew from leaking in as fake profit: a fairly priced option or spread averages zero (checked across strikes, skews, events and seeds).
-- **Grade:** liquid, EV ≥ about −5%, plan win rate (42% single buys, 40% debit spreads, 60% sales), time window, decay, no earnings inside, trend, and reward/risk for spreads. A = all pass, B = one miss.
+- **Grade:** liquid, EV ≥ about −5%, plan win rate (42% single buys, 40% debit spreads, 60% sales), time window, decay, no earnings inside, trend, and reward/risk for spreads. A = all pass, B = one miss. An A is not an edge: most A-grade buys are within a few percent of fair.
+- **Known lean:** the forecast blends in realized volatility, which is usually below implied, so sales look better than buys; the price paths are lognormal with no crashes, so sale win rates are optimistic. Diagnostics (`diag.js`) on live quotes, Nov 4: with forecast vol forced to implied, every category's plan EV equals its entry-plus-exit cost and calls and puts match, so the simulation itself adds no edge.
 
 ## Track record
 

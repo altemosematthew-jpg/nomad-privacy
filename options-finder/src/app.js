@@ -445,6 +445,7 @@ function select(id, quiet) {
   const jFocus = jKeep && jKeep.contains(document.activeElement) ? document.activeElement : null;
   state.jr.formRow = r;
   d.innerHTML = `
+  <div class="d-nav"><button class="btn sm" type="button" data-nav="results" title="Scroll back to this row in the results"><span aria-hidden="true">↑</span> Results</button><button class="btn sm" type="button" data-nav="close" title="Close the details and go back to the results">Close</button></div>
   <div class="left">
     <div class="d-head"><h2>${esc(name)}</h2><span class="grade g${r.grade === "–" ? "x" : r.grade}">${r.grade}</span><span class="muted num">${esc(sp ? r.raw.map(L => L.occ).join(" / ") : r.raw[0].occ)}</span></div>
     <div class="kv">${kv.map(([k, v, s]) => `<div><span class="k">${k}</span><span class="v num">${v}</span><span class="s">${s || ""}</span></div>`).join("")}</div>
@@ -504,6 +505,13 @@ function select(id, quiet) {
     $("#sizing").textContent = `${n} contract${n === 1 ? "" : "s"} keeps ${what} (${money(perC, 0)} each) within ${money(acct * risk, 0)}.` + (!buy && !sp && !isC ? ` Cash to secure each: ${money((r.K - r.price) * per, 0)}.` : "");
   };
   $("#acct").addEventListener("input", sizing); $("#risk").addEventListener("input", sizing); sizing();
+  // "↑ Results" / "Close": one delegated listener on #drawer itself, wired once (the minute re-quote only swaps its innerHTML)
+  if (!d.dataset.wired) { d.dataset.wired = "1"; d.addEventListener("click", e => {
+    const b = e.target.closest("[data-nav]"); if (!b || !d.contains(b)) return;
+    const tr = document.querySelector('#rows tr[aria-selected="true"]');
+    if (b.dataset.nav === "close") { state.sel = null; d.hidden = true; document.querySelectorAll('#rows tr[aria-selected="true"]').forEach(x => x.setAttribute("aria-selected", "false")); }
+    if (tr) tr.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  }); }
   if (!quiet) d.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function levelNote(sp, buy, isC) {

@@ -71,6 +71,8 @@
   /* detail drawer (already one column below 860px) */
   .drawer{margin-block:12px 22px}
   .drawer>div{padding:14px}
+  /* "↑ Results" / "Close" stay pinned to the top of the screen while the long drawer is on screen */
+  .drawer>.d-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;padding:8px 14px}
   .d-head h2{font-size:18px}
   .kv{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
   .kv .v{font-size:14px;overflow-wrap:anywhere}
