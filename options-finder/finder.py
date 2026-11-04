@@ -39,7 +39,8 @@ PORT = int(os.environ.get("PORT", os.environ.get("FINDER_PORT", "8765")))
 HOST = os.environ.get("HOST", "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
 CBOE = "https://cdn.cboe.com/api/global/delayed_quotes/options/{sym}.json"
 DEFAULT_WATCHLIST = ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA",
-                     "AMD", "NFLX", "AVGO", "COIN", "PLTR", "SOFI", "F", "BAC", "INTC", "HOOD"]
+                     "AMD", "NFLX", "AVGO", "COIN", "PLTR", "SOFI", "F", "BAC", "INTC", "HOOD",
+                     "MRVL", "MU", "UBER", "ARM"]
 WATCHLIST_FILE = HERE / "watchlist.json"
 DATA_DIR = HERE / "data"
 SYM_RE = re.compile(r"^[A-Z][A-Z0-9.\-^]{0,9}$")
@@ -160,14 +161,28 @@ class Handler(BaseHTTPRequestHandler):
             return
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
+    def _cors(self):
+        # The published claude.ai page (and any copy of index.html) reads this server cross-origin.
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "86400")
+
     def _json(self, obj, status=200):
         body = json.dumps(obj).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
+        self._cors()
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self._cors()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self):
         u = urllib.parse.urlsplit(self.path)
