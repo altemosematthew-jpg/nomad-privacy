@@ -1,0 +1,35 @@
+name: Strike Finder earnings dates
+# Every morning: refresh the watchlist's upcoming earnings dates (options-finder/earnings.json) from free public calendars.
+# 11:00 UTC = 6 AM EST / 7 AM EDT, before the open.
+on:
+  schedule:
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "First print what each source returns"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: earnings-dates
+  cancel-in-progress: false
+jobs:
+  earnings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch upcoming earnings dates
+        run: python3 options-finder/earnings_fetch.py ${{ inputs.probe && '--probe' || '' }}
+      - name: Commit earnings.json if it changed
+        run: |
+          git config user.name "strike-finder-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add options-finder/earnings.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "Earnings dates $(date -u +%F)"
+            git pull --rebase
+            git push
+          fi
