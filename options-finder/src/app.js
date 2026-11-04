@@ -18,7 +18,7 @@ const IN_CLAUDE = !!(window.claude && typeof window.claude.use === "function");
 const WATCH = ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA", "AMD", "NFLX", "AVGO", "COIN", "PLTR", "SOFI", "F", "BAC", "INTC", "HOOD", "MRVL", "MU", "UBER", "ARM"];
 const CORE = ["SPY", "QQQ", "NVDA", "AMZN", "MSFT", "AAPL", "TSLA", "META"];
 const HIST = new Map();            // occ -> this session's scan-by-scan record, for the consistency stat
-const TABLE_PATHS = 400, DRAWER_PATHS = 4000;
+const TABLE_PATHS = 400, DRAWER_PATHS = 4000, ODDS_PATHS = 200, ODDS_DRAWER_PATHS = 2000;
 const JOURNAL = true;              // "My trades" journal (Claude version only, needs the db + user capabilities); false switches it off everywhere
 
 const state = {
@@ -340,6 +340,14 @@ function planFor(st, n) {
   r = E.simulate(st, planNow(st.side), n, st.sym + "|" + st.exp + "|" + st.side);   // shared paths per symbol and expiry: fair comparisons between strikes
   state.simCache.set(key, r); return r;
 }
+/* Profit odds: the plan under several worlds (see Engine.profitOdds), cached like the plan itself. */
+function oddsFor(st, n) {
+  const p = state.plan[st.side], key = ["odds", st.id, st.side, p.target, p.stop, p.hold, n, st.price.toFixed(4), st.S.toFixed(3), state.earnVer].join("|");
+  let r = state.simCache.get(key); if (r !== undefined) return r;
+  r = E.profitOdds(st, planNow(st.side), n, st.sym + "|" + st.exp + "|" + st.side, st.plan && st.plan.n === n ? st.plan : null);
+  state.simCache.set(key, r); return r;
+}
+function setOdds(st, n) { st.odds = oddsFor(st, n); st.oddsP = st.odds ? st.odds.p : null; }
 function gradeIt(st) { const G = E.grade(st); st.grade = G.g; st.fails = G.fails; st.checks = G.checks; st.win = st.plan ? st.plan.pWin : null; }
 function build() {
   if (!state.data) return;
@@ -352,11 +360,14 @@ function build() {
   for (const st of rows) { st.plan = planFor(st, TABLE_PATHS); gradeIt(st); }
   rows = rows.filter(st => q === "all" || (q === "a" ? st.grade === "A" : st.grade === "A" || st.grade === "B"));
   state.qualityCount = rows.length;
+  const needAll = state.lens === "odds" || state.sortK === "oddsP";
+  for (const st of rows) { if (needAll) setOdds(st, ODDS_PATHS); else { st.odds = null; st.oddsP = null; } }
   E.scoreRows(rows, state.lens);
   const per = +$("#per-sym").value || 999;
   if (per < 999) { const by = {}; rows.sort((a, b) => b.score - a.score); rows = rows.filter(r => (by[r.sym] = (by[r.sym] || 0) + 1) <= per); }
   const k = state.sortK, dir = state.sortDir;
   rows.sort((a, b) => { const x = a[k], y = b[k]; if (typeof x === "string" || typeof y === "string") return dir * String(x).localeCompare(String(y)); return dir * ((x == null || isNaN(x) ? -Infinity : x) - (y == null || isNaN(y) ? -Infinity : y)); });
+  if (!needAll) for (const st of rows.slice(0, 150)) setOdds(st, ODDS_PATHS);   // the rows on screen always get their odds
   state.rows = rows; renderRows(rows);
   const scanned = state.syms.reduce((t, A) => t + A.legs.length, 0);
   $("#count").textContent = `${rows.length} shown · ${state.qualityCount} pass quality · ${state.filteredCount} pass filters · ${scanned.toLocaleString()} contracts scanned`;
@@ -384,6 +395,7 @@ function renderRows(rows) {
       ["num " + (r.theoEdge > 0 ? "up" : r.theoEdge < -0.05 ? "down" : ""), pct(r.theoEdge, 1, true)],
       ["num " + (r.evPct > 0 ? "up" : r.evPct < -0.05 ? "down" : ""), `<span title="${esc("Expected value holding to expiry: " + sgnMoney(r.ev * 100, 2) + " per contract")}">${pct(r.evPct, 1, true)}</span>`],
       ["num " + (r.win >= (r.side === "buy" ? 0.5 : 0.75) ? "up" : ""), r.plan ? `<span title="${esc("Plan: avg win " + money(r.plan.avgWin * 100, 0) + ", avg loss " + money(r.plan.avgLoss * 100, 0) + ", expected " + sgnMoney(r.plan.ev * 100, 0) + " per contract")}">${pct(r.win, 0)}</span>` : "–"],
+      ["num " + (r.oddsP >= (r.side === "buy" ? 0.5 : 0.75) ? "up" : ""), r.odds ? `<span title="${esc(`Chance the plan ends in profit across several worlds: ${oddsLine(r.odds)} · confidence ${r.odds.conf}/100`)}">${pct(r.oddsP, 0)}</span>` : "–"],
       ["num", r.oiMin.toLocaleString()],
       ["num", r.volMin.toLocaleString()],
       ["num", `${(r.score * 100).toFixed(0)}<span class="bar"><i style="width:${Math.round(r.score * 100)}%"></i></span>`],
@@ -396,11 +408,32 @@ function renderRows(rows) {
   tb.appendChild(frag);
 }
 
+const ODDS_NAMES = { base: "our forecast", market: "market's own vol (no forecast edge)", calm: "vol a fifth calmer", wild: "vol a fifth wilder", against: "stock drifts ¼σ against you", expiry: "profit at expiry (market IV)", bigJump: "earnings jump 1.5× bigger" };
+function oddsLine(o) { return o.scenarios.map(s => `${ODDS_NAMES[s.id] || s.id} ${pct(s.p, 0)}`).join(" · "); }
+function oddsBlock(r, o) {
+  if (!o) return "";
+  const per = 100, band = `${pct(Math.max(0, o.p - 1.96 * o.se), 0)}–${pct(Math.min(1, o.p + 1.96 * o.se), 0)}`;
+  const lvl = o.conf >= 75 ? "High" : o.conf >= 50 ? "Medium" : "Low";
+  const kellyTxt = o.kelly == null ? "no wins or no losses in the simulation, so no sizing math"
+    : o.kelly <= 0 ? `Kelly fraction ≤ 0: on these odds and this payoff ratio (${fmt(o.b, 2)}× win/loss) the math says there's no edge to size`
+    : `Kelly fraction ${pct(o.kelly, 0)} of the money you'd risk per trade; most traders use a quarter of that (${pct(o.kelly / 4, 1)}) because the odds are estimates`;
+  return `<div class="plan odds">
+      <span class="eyebrow">Profit odds across several worlds · ${o.n.toLocaleString()} paths each</span>
+      <div class="oddsbig"><b class="${o.p >= (r.side === "buy" ? 0.5 : 0.75) ? "up" : ""}">${pct(o.p, 0)}</b><span>chance the plan ends in profit<br><span class="muted">sampling band ${band} · worlds range ${pct(o.lo, 0)}–${pct(o.hi, 0)}</span></span>
+        <span class="confbox"><b>${lvl}</b> confidence<br><span class="muted">${o.conf}/100</span></span></div>
+      <div class="planlegend">${o.scenarios.map(s => `<span>${esc(ODDS_NAMES[s.id] || s.id)} <b>${pct(s.p, 0)}</b>${s.ev != null ? ` <span class="muted">(${sgnMoney(s.ev * per, 0)})</span>` : ""}</span>`).join("")}</div>
+      <div class="planlegend"><span>Payoff ratio <b>${o.b != null ? fmt(o.b, 2) + "×" : "–"}</b> average win ÷ average loss</span><span>Plan's expected result <b class="${o.planEv > 0 ? "up" : "down"}">${pct(o.planEv, 1, true)}</b> of money at risk</span><span>Break-even win rate <b>${o.b ? pct(1 / (1 + o.b), 0) : "–"}</b> for this payoff ratio</span></div>
+      ${o.why.length ? `<span class="note">Why not higher confidence: ${esc(o.why.join("; "))}.</span>` : ""}
+      <span class="note">${esc(kellyTxt)}. The odds are a weighted average of the plan's win rate in each world (forecast 30%, market vol 25%, calmer 10%, wilder 10%, drifting against you 10%, at expiry 15%), so they can't be gamed by one optimistic assumption. They are still a model: the paths have no crashes in them.</span>
+    </div>`;
+}
+
 /* ---------- details panel ---------- */
 function select(id, quiet) {
   const r = state.rows.find(x => x.id === id); if (!r) return;
   state.sel = id; document.querySelectorAll("#rows tr").forEach(tr => tr.setAttribute("aria-selected", tr.dataset.id === id ? "true" : "false"));
   const P = planFor(r, DRAWER_PATHS) || r.plan, plan = planNow(r.side), lv = E.planLevels(r, plan);
+  const O = E.profitOdds(r, plan, ODDS_DRAWER_PATHS, r.sym + "|" + r.exp + "|" + r.side) || r.odds;
   const buy = r.side === "buy", sp = r.kind === "spread", isC = r.isC, name = structName(r), d = $("#drawer"); d.hidden = false;
   const closeBy = r.exp - Math.max(0, (r.dte - Math.min(plan.hold, r.dte))) * 864e5;
   const per = 100;
@@ -416,6 +449,7 @@ function select(id, quiet) {
     ["Breakeven at expiry", "$" + fmt(r.be, 2), pct(r.moveBE, 1, true) + " from $" + fmt(r.S, 2)],
     ["Expected value (hold)", `<span class="${r.ev > 0 ? "up" : r.ev < 0 ? "down" : ""}">${sgnMoney(r.ev * per, 0)} · ${pct(r.evPct, 1, true)}</span>`, `worth $${fmt(r.fair)} on the forecast vs $${fmt(r.price)} ${buy ? "paid" : "received"}`],
     ["Win % with the plan", P ? `${pct(P.pWin, 0)}` : "–", P ? `expected result ${sgnMoney(P.ev * per, 0)} per contract` : ""],
+    ["Profit odds, all worlds", O ? `${pct(O.p, 0)}` : "–", O ? `confidence ${O.conf}/100 · worlds ${pct(O.lo, 0)}–${pct(O.hi, 0)}` : ""],
     ["P(profit) at expiry", pct(r.pop, 0), r.copL != null || r.copS != null ? "Robinhood's chance of profit" : "at market implied volatility"],
     ["Volatility", `IV ${pct(r.iv, 1)}`, `forecast ${pct(r.sigPath, 1)} · realized (jumps removed) ${r.hv ? pct(r.hv, 0) : "–"}${H && H.hv20 ? ` · raw 20d ${pct(H.hv20, 0)}` : ""}`],
     ["Event", ev ? (ev.src === "calendar" ? "Earnings " + day(ev.at) : "Event " + day(ev.from) + "–" + day(ev.to)) : "None in the window", ev ? (ev.move ? `market's implied move ±${pct(ev.move, 1)}` : "implied move not measurable from this chain") : ""],
@@ -450,6 +484,7 @@ function select(id, quiet) {
     <div class="d-head"><h2>${esc(name)}</h2><span class="grade g${r.grade === "–" ? "x" : r.grade}">${r.grade}</span><span class="muted num">${esc(sp ? r.raw.map(L => L.occ).join(" / ") : r.raw[0].occ)}</span></div>
     <div class="kv">${kv.map(([k, v, s]) => `<div><span class="k">${k}</span><span class="v num">${v}</span><span class="s">${s || ""}</span></div>`).join("")}</div>
     ${planBlock}
+    ${oddsBlock(r, O)}
     <div class="why" id="why"></div>
     <div class="checks" id="checks"></div>
     ${payoffSVG(r)}
@@ -483,7 +518,7 @@ function select(id, quiet) {
   }
   wireTrackForm();
   const why = [], parts = r.parts || {};
-  const lbl = { ev: "expected value", planEv: "plan's expected result", win: "plan win rate", theoEdge: "price vs fair value", spread: "spread", liq: "liquidity", theta: "theta", ivRel: "IV vs 30d", ivTrend: "IV trend", pop: "P(profit)", lever: "leverage", flow: "volume/OI", volRank: "volume", trendFit: "trend fit", stab: "consistency" };
+  const lbl = { ev: "expected value", planEv: "plan's expected result", win: "plan win rate", theoEdge: "price vs fair value", spread: "spread", liq: "liquidity", theta: "theta", ivRel: "IV vs 30d", ivTrend: "IV trend", pop: "P(profit)", lever: "leverage", flow: "volume/OI", volRank: "volume", trendFit: "trend fit", stab: "consistency", odds: "profit odds", oddsLow: "worst-world odds", conf: "confidence in the odds" };
   Object.entries(parts).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => why.push(`<span><b>${lbl[k] || k}</b>: better than ${(v * 100).toFixed(0)}% of what's in this view</span>`));
   if (ev) why.push(`<span class="warn">⚡ ${esc(evtLabel(ev))}. ${buy ? "Buying through it bets on a move bigger than the implied one; IV drops right after the report." : "Selling through it collects the elevated IV but carries the whole gap risk: size for the implied move."}</span>`);
   if (!buy && !sp && isC) why.push(`<span class="down">Robinhood only lets you sell a call you can cover with 100 shares (a covered call).</span>`);

@@ -318,6 +318,8 @@ var Engine = (function () {
     st.cost = buy ? st.price * 100 : (st.kind === "spread" ? (st.width - st.price) * 100 : null);
     st.expMove = st.S * st.iv * Math.sqrt(st.T);
     st.rt = A.rt; st.hist = A.hist; st.iv30 = A.iv30;
+    st.mismatch = !!A.mismatch;
+    st.srcGap = 0; for (var gi = 0; gi < st.legs.length; gi++) { var Lg = st.legs[gi]; if (Lg.ivSrc && Lg.iv) st.srcGap = Math.max(st.srcGap, Math.abs(Lg.iv / Lg.ivSrc - 1)); }
     return st;
   }
 
@@ -326,7 +328,8 @@ var Engine = (function () {
      (rising into the event, crushed after it). Exits pay the half spread. Levels are per share:
      buy → exit value = value − half spread, win at ≥ targetLevel, stop at ≤ stopLevel;
      sell → buy-back cost = value + half spread, win at ≤ targetLevel, stop at ≥ stopLevel. */
-  function simulateLevels(st, side, entry, targetLevel, stopLevel, horizonDays, nPaths, seed) {
+  function simulateLevels(st, side, entry, targetLevel, stopLevel, horizonDays, nPaths, seed, opts) {
+    var muX = opts && opts.drift ? opts.drift : 0;   // extra drift per year (scenario analysis); 0 = the risk-neutral path
     var T0 = st.T; if (!(entry > 0) || !(T0 > 0)) return null;
     var hs = FILL * Math.max(0, (st.ask - Math.max(0, st.bid)) / 2);
     var horizon = Math.max(1, Math.min(horizonDays, T0 * 365)), expires = horizon >= T0 * 365 - 1e-9;
@@ -335,7 +338,7 @@ var Engine = (function () {
     var legs = st.legs, nL = legs.length, buy = side === "buy", i;
     var tEv = (st.mPath > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null;
     var drift = new Float64Array(nL), vol = new Float64Array(nL), jump = new Float64Array(nL), lnS = new Float64Array(nL), ln0 = Math.log(st.S);
-    for (i = 0; i < nL; i++) { var Lg = legs[i]; drift[i] = (R - 0.5 * Lg.sigP * Lg.sigP) * dt; vol[i] = Lg.sigP * sdt; jump[i] = Lg.mJ || 0; }
+    for (i = 0; i < nL; i++) { var Lg = legs[i]; drift[i] = (R + muX - 0.5 * Lg.sigP * Lg.sigP) * dt; vol[i] = Lg.sigP * sdt; jump[i] = Lg.mJ || 0; }
     var half = Math.ceil(nPaths / 2), stride = steps + 1, zs = normals(rng(hash(seed || st.id || "x")), half * stride);
     var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL2 = 0, pls = [], dsum = 0;
     for (var p = 0; p < half; p++) for (var anti = 0; anti < 2; anti++) {
@@ -379,9 +382,67 @@ var Engine = (function () {
     if (buy && st.kind === "spread") tgt = Math.min(tgt, Math.max(entry * 1.05, (st.width - FILL * st.hs) * 0.95));   // a vertical tops out at its width
     return { entry: entry, target: tgt, stop: stp, hold: Math.min(plan.hold, st.dte) };
   }
-  function simulate(st, plan, nPaths, seed) {
+  function simulate(st, plan, nPaths, seed, opts) {
     var lv = planLevels(st, plan); if (!lv) return null;
-    return simulateLevels(st, st.side, lv.entry, lv.target, lv.stop, plan.hold, nPaths, seed);
+    return simulateLevels(st, st.side, lv.entry, lv.target, lv.stop, plan.hold, nPaths, seed, opts);
+  }
+
+  /* ---------- profit odds: the plan's win rate under several worlds, not just the forecast ----------
+     The forecast is one guess about volatility. These odds re-run the plan with the market's own vol (no forecast edge),
+     with vol a fifth calmer and a fifth wilder, with the stock drifting a quarter of a sigma against the trade over the hold,
+     and with a bigger earnings jump when there is one, and blend them with the probability of profit at expiry.
+     The result is a probability (a weighted average of probabilities), with a sampling band and a confidence score that
+     says how far to trust it, from the data behind it. */
+  var ODDS_W = { base: 0.30, market: 0.25, calm: 0.10, wild: 0.10, against: 0.10, expiry: 0.15 };
+  function withVol(st, f, kind) {   // a copy of the structure with each leg's path vol scaled (kind "market": forecast = implied)
+    var legs = st.legs.map(function (L) { var c = {}; for (var k in L) c[k] = L[k]; c.sigP = kind === "market" ? Math.sqrt(Math.max(0, L.diff2)) : L.sigP * f; return c; });
+    var c = {}; for (var k in st) c[k] = st[k]; c.legs = legs; return c;
+  }
+  function withJump(st, f) {
+    var legs = st.legs.map(function (L) { var c = {}; for (var k in L) c[k] = L[k]; c.mJ = Math.min((L.mJ || 0) * f, Math.sqrt(EV_CAP * L.iv * L.iv * st.T)); return c; });
+    var c = {}; for (var k in st) c[k] = st[k]; c.legs = legs; c.mPath = Math.max.apply(null, legs.map(function (L) { return L.mJ || 0; })); return c;
+  }
+  function profitOdds(st, plan, nPaths, seed, base) {
+    base = base && base.n === nPaths ? base : simulate(st, plan, nPaths, seed); if (!base) return null;
+    var hold = Math.min(plan.hold, st.dte || plan.hold), Th = Math.max(1, hold) / 365;
+    var dir = (st.isC ? 1 : -1) * (st.side === "buy" ? 1 : -1);   // +1: the trade wants the stock up
+    var against = -dir * 0.25 * (st.sigPath || st.iv) / Math.sqrt(Th);
+    var sc = {
+      base: base,
+      market: simulate(withVol(st, 1, "market"), plan, nPaths, seed),
+      calm: simulate(withVol(st, 0.8), plan, nPaths, seed),
+      wild: simulate(withVol(st, 1.2), plan, nPaths, seed),
+      against: simulate(st, plan, nPaths, seed, { drift: against })
+    };
+    if (st.mPath > 0 && st.tEv > 0) sc.bigJump = simulate(withJump(st, 1.5), plan, nPaths, seed);
+    var p = 0, w = 0, lo = 1, hi = 0, list = [], k;
+    for (k in ODDS_W) {
+      var v = k === "expiry" ? st.pop : (sc[k] ? sc[k].pWin : null); if (v == null || isNaN(v)) continue;
+      p += ODDS_W[k] * v; w += ODDS_W[k]; if (k !== "expiry") { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+      list.push({ id: k, p: v, ev: sc[k] ? sc[k].ev : null });
+    }
+    if (sc.bigJump) { list.push({ id: "bigJump", p: sc.bigJump.pWin, ev: sc.bigJump.ev }); lo = Math.min(lo, sc.bigJump.pWin); hi = Math.max(hi, sc.bigJump.pWin); }
+    if (!w) return null;
+    p /= w;
+    var se = Math.sqrt(Math.max(p * (1 - p), 1e-6) / Math.max(1, base.n / 2));   // antithetic pairs: about half the paths are independent draws
+    // confidence in the number, from the data behind it (0-100)
+    var conf = 100, why = [];
+    if (st.spreadPct > 0.04) { var d1 = Math.round(30 * Math.min(1, st.spreadPct / 0.15)); conf -= d1; why.push("wide market (" + Math.round(st.spreadPct * 100) + "% spread)"); }
+    if (st.oiMin < 500) { conf -= 15; why.push("thin open interest"); }
+    if (st.mismatch) { conf -= 20; why.push("stock quote out of sync with the options"); }
+    if (st.srcGap > 0.10) { conf -= 15; why.push("our IV disagrees with the source's by " + Math.round(st.srcGap * 100) + "%"); }
+    if (!st.hist) { conf -= 10; why.push("no price history for the forecast"); }
+    if (st.evt && st.evt.src === "iv") { conf -= 10; why.push("event date inferred from option prices"); }
+    else if (st.evt && st.evt.verified === false) { conf -= 5; why.push("earnings date not yet confirmed"); }
+    if (st.dte < 10) { conf -= 10; why.push("very little time: one day's move decides it"); }
+    if (hi - lo > 0.15) { conf -= 15; why.push("the worlds disagree by " + Math.round((hi - lo) * 100) + " points"); }
+    if (base.n < 1000) { conf -= 5; why.push("quick estimate (" + base.n + " paths; open the details for more)"); }
+    conf = Math.max(0, Math.min(100, conf));
+    // sizing math from the base plan: payoff ratio and the Kelly fraction (of the money at risk per trade)
+    var b = base.avgWin > 0 && base.avgLoss < 0 ? base.avgWin / -base.avgLoss : null;
+    var kelly = b ? p - (1 - p) / b : null;
+    return { p: p, se: se, lo: lo, hi: hi, scenarios: list, conf: conf, why: why, b: b, kelly: kelly, n: base.n,
+      planEv: st.evBase > 0 ? base.ev / st.evBase : null };
   }
 
   /* ---------- grades: absolute checks ---------- */
@@ -427,6 +488,8 @@ var Engine = (function () {
   var LENSES = [
     { id: "durable", name: "Good & durable", desc: "Built to still look good next week: expected value at or above break-even after costs, a plan that wins often enough, enough time that one quiet week doesn't kill it, with the trend, in a market you can get out of. Weights: expected value 20%, plan's expected result 10%, plan win rate 20%, liquidity 15%, spread 10%, low decay 10%, trend fit 10%, consistency across scans 5%.",
       w: { ev: .20, planEv: .10, win: .20, liq: .15, spread: .10, theta: .10, trendFit: .10, stab: .05 } },
+    { id: "odds", name: "Most likely to profit", desc: "The plan's chance of ending in profit across several worlds, not just our forecast: the market's own volatility (no forecast edge), calmer and wilder volatility, the stock drifting against the trade, a bigger earnings jump, and the odds at expiry, blended into one probability. Kept honest by the expected result, because a 75% win rate with losses three times the wins still loses money. Weights: profit odds 45%, worst world 15%, plan's expected result 15%, expected value 10%, confidence 5%, liquidity 5%, spread 5%.",
+      w: { odds: .45, oddsLow: .15, planEv: .15, ev: .10, conf: .05, liq: .05, spread: .05 } },
     { id: "win", name: "Highest win rate", desc: "How often the trade plan (take profit, stop, time limit) ends in profit, simulated on price paths, kept honest by expected value. High win rates come with average losses bigger than average wins: check the expected result in the details. Weights: plan win rate 45%, plan's expected result 20%, expected value 10%, liquidity 15%, spread 10%.",
       w: { win: .45, planEv: .20, ev: .10, liq: .15, spread: .10 } },
     { id: "value", name: "Best priced", desc: "The most expected value per dollar at risk: priced below what the volatility forecast says it's worth, after paying the spread. Weights: expected value 45%, vs the source's fair value 20%, spread 15%, liquidity 15%, low decay 5%.",
@@ -456,6 +519,9 @@ var Engine = (function () {
     var comps = {
       ev: pctRank(rows, function (r) { return r.evPct; }, true),
       win: pctRank(rows, function (r) { return r.plan ? r.plan.pWin : null; }, true),
+      odds: pctRank(rows, function (r) { return r.odds ? r.odds.p : null; }, true),
+      oddsLow: pctRank(rows, function (r) { return r.odds ? r.odds.lo : null; }, true),
+      conf: pctRank(rows, function (r) { return r.odds ? r.odds.conf : null; }, true),
       planEv: pctRank(rows, function (r) { return r.plan && r.evBase > 0 ? r.plan.ev / r.evBase : null; }, true),
       theoEdge: pctRank(rows, function (r) { return r.theoEdge; }, true),
       spread: pctRank(rows, function (r) { return r.spreadPct; }, false),
@@ -487,7 +553,7 @@ var Engine = (function () {
     parseOCC: parseOCC, etTime: etTime, earnMap: earnMap, histStats: histStats, realizedVol: realizedVol, trendOf: trendOf,
     paritySpot: paritySpot, termStructure: termStructure, termFrom: termFrom, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
     makeSingle: makeSingle, makeSpread: makeSpread, verticals: verticals, volModel: volModel, valueAt: valueAt, intrinsic: intrinsic,
-    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
+    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, profitOdds: profitOdds, ODDS_W: ODDS_W, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
     LENSES: LENSES, pctRank: pctRank, scoreRows: scoreRows, STRUCT_DEFAULTS: STRUCT_DEFAULTS, PLAN_DEFAULTS: PLAN_DEFAULTS };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = Engine;
