@@ -15,11 +15,11 @@ Options scanner for US stocks. For every listed call, put and vertical spread on
 ## The model (src/engine.js)
 
 - **Fills:** limit orders assumed to fill halfway between the mid and the natural price, in and out.
-- **Implied vol:** inverted from each contract's own mid, so the model prices every quote consistently. The stock price is taken from put-call parity when the stock quote and option quotes disagree by more than 2.5% (a delayed feed, an earnings gap).
-- **Forecast vol:** 60% implied, 40% realized (20/60-day, jump days removed), applied as one scale factor to the whole smile (no claim about skew). Scheduled events keep the market's implied jump.
-- **Events:** earnings calendar (Robinhood live, else a built-in list) and forward-variance spikes between expiries (single stocks only).
-- **EV:** value under the forecast minus the fill price, held to expiry, per dollar at risk.
-- **Plan simulation:** daily closes on the forecast path plus the event jump; each leg repriced at its own market IV (rising into the event, crushed after); exits pay the fill cost; P/L in today's dollars. Unbiased check: a fairly priced option held to expiry averages ~0.
+- **Implied vol:** inverted from each contract's own mid against the stock price the options themselves imply (put-call parity on near-the-money pairs), so call and put IVs at a strike agree. The page flags the symbol when that price is more than 2.5% from the stock quote (a delayed feed, an earnings gap). Term structure, 30-day IV and event detection use the same mid-implied vols.
+- **Forecast vol:** 60% implied, 40% realized (20/60-day, jump days removed), applied as one scale factor to the whole smile (no claim about skew). Scheduled events keep the market's implied jump, capped at 85% of a leg's implied variance.
+- **Events:** earnings calendar (Robinhood live, else a built-in list) and forward-variance spikes that stand out from neighbouring expiries and imply at least a 3% move (single stocks only; under-5-day expiries need a huge spike).
+- **EV:** value under the forecast minus the fill price, held to expiry, per dollar at risk (premium for buys and short singles, max loss for credit spreads).
+- **Plan simulation:** each leg follows its own price path driven by the same daily market shocks, at its own forecast diffusive vol plus its share of the event jump, and is repriced at its own market IV (rising into the event, crushed after); exits pay the fill cost; P/L in today's dollars. This keeps skew from leaking in as fake profit: a fairly priced option or spread averages zero (checked across strikes, skews, events and seeds).
 - **Grade:** liquid, EV ≥ about −5%, plan win rate (42% single buys, 40% debit spreads, 60% sales), time window, decay, no earnings inside, trend, and reward/risk for spreads. A = all pass, B = one miss.
 
 ## Track record
