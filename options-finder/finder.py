@@ -216,9 +216,8 @@ def chain(sym: str) -> dict:
         if hit and time.time() - hit[0] < CHAIN_TTL:
             return hit[1]
     data = compact(sym, fetch_cboe(sym))
-    data["hist"] = hist(sym)
     stab_update([data])
-    data["h"] = stab_for(data)
+    data = {"hist": hist(sym), "h": stab_for(data), **data}   # small fields first; "o" (the big list) last
     with _cache_lock:
         _cache[sym] = (time.time(), data)
     return data
@@ -308,6 +307,11 @@ class Handler(BaseHTTPRequestHandler):
                 if not SYM_RE.match(sym):
                     return self._json({"error": "bad symbol"}, 400)
                 self._json(chain(sym))
+            elif u.path == "/api/hist":
+                sym = (q.get("symbol") or [""])[0].upper().strip()
+                if not SYM_RE.match(sym):
+                    return self._json({"error": "bad symbol"}, 400)
+                self._json({"symbol": sym, "hist": hist(sym)})
             elif u.path == "/api/scan":
                 self._json(scan())
             else:
