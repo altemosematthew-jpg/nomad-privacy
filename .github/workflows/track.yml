@@ -1,0 +1,10 @@
+name: Strike Finder track record
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "placeholder; the tracker is added in the next commit"
