@@ -189,14 +189,15 @@ def probe(syms):
             log("  nasdaq earnings-date %s ->" % s, nasdaq_symbol(s, tries=1))
         except Exception as e:
             log("  nasdaq earnings-date %s FAILED %s" % (s, why(e)))
-    day = datetime.now(ET).date() + timedelta(days=1)
-    while day.weekday() > 4:
-        day += timedelta(days=1)
-    try:
-        rows = nasdaq_calendar(day, tries=1)
-        log("  nasdaq calendar %s -> %d rows, e.g. %s" % (day, len(rows), list(rows.items())[:5]))
-    except Exception as e:
-        log("  nasdaq calendar %s FAILED %s" % (day, why(e)))
+    for ahead in (1, 85):
+        day = datetime.now(ET).date() + timedelta(days=ahead)
+        while day.weekday() > 4:
+            day += timedelta(days=1)
+        try:
+            rows = nasdaq_calendar(day, tries=1)
+            log("  nasdaq calendar %s -> %d rows, e.g. %s; watchlist: %s" % (day, len(rows), list(rows.items())[:4], {s: rows[s] for s in syms if s in rows}))
+        except Exception as e:
+            log("  nasdaq calendar %s FAILED %s" % (day, why(e)))
     try:
         log("  yahoo ->", yahoo(pick, tries=1))
     except Exception as e:
@@ -250,7 +251,7 @@ def main(argv):
         log("yahoo: " + ", ".join("%s %s" % (s, show(v)) for s, v in yh.items()))
     except Exception as e:
         log("yahoo failed: %s" % why(e))
-    for s in syms:   # a confirmed date beats an estimate; Nasdaq breaks ties
+    for s in syms:   # a confirmed date beats an estimate, then the earlier date (the safer guess), then Nasdaq
         if not (nq.get(s) or yh.get(s)):
             continue
         answered.add(s)
@@ -258,7 +259,7 @@ def main(argv):
                  if r and r[0] and today <= r[0] <= horizon]
         if not cands:
             continue
-        cands.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        cands.sort(key=lambda c: (-c[0], c[2][0], -c[1]))
         r, src = cands[0][2], cands[0][3]
         timing = r[1]
         for c in cands[1:]:
