@@ -1,5 +1,23 @@
 {
  "version": 1,
  "created": "2026-11-04",
- "picks": []
+ "picks": [],
+ "rules": {
+  "plan": {
+   "buy": {
+    "target": 0.5,
+    "stop": 0.5,
+    "hold": 21
+   },
+   "sell": {
+    "target": 0.5,
+    "stop": 2,
+    "hold": 21
+   }
+  },
+  "entry": "limit fill halfway between mid and natural",
+  "marks": "once a day at about 2:45 PM ET, same fill model",
+  "source": "Cboe delayed quotes (15 min)"
+ },
+ "updated": "2026-11-05T00:32:38.014Z"
 }
