@@ -22,7 +22,7 @@ const TABLE_PATHS = 400, DRAWER_PATHS = 4000, ODDS_PATHS = 200, ODDS_DRAWER_PATH
 const JOURNAL = true;              // "My trades" journal (Claude version only, needs the db + user capabilities); false switches it off everywhere
 
 const state = {
-  data: null, mode: null, syms: [], ver: 0, selected: new Set(), firstLoad: true,
+  data: null, mode: null, syms: [], ver: 0, selected: new Set(), firstLoad: true, earnHist: {}, ivLog: null, ivLogVer: 0,
   lens: "durable", side: "buy", struct: "single", type: "both", evMode: "all", quality: "ab", sortK: "score", sortDir: -1, sel: null,
   plan: { buy: Object.assign({}, E.PLAN_DEFAULTS.buy), sell: Object.assign({}, E.PLAN_DEFAULTS.sell) },
   touched: {}, earn: E.earnMap(null, Date.now()), earnVer: 0, apiBase: null,
@@ -74,9 +74,9 @@ function setData(symbols, meta) {
   renderFooter();
 }
 function reanalyze() {   // per-symbol cache: only symbols whose quotes, history or earnings changed are recomputed
-  const now = Date.now(), ctx = { now, earn: state.earn };
+  const now = Date.now(), ctx = { now, earn: state.earn, ivLog: state.ivLog };
   state.syms = state.data.symbols.map(S => {
-    const key = [S.fetched || 0, S.px, S.__mut || 0, S.hist ? 1 : 0, state.earnVer].join("|");
+    const key = [S.fetched || 0, S.px, S.__mut || 0, S.hist ? 1 : 0, state.earnVer, state.ivLogVer || 0].join("|");
     if (S.__A && S.__key === key && now - S.__at < 60000) return S.__A;
     const A = E.analyzeSymbol(S, ctx); S.__A = A; S.__key = key; S.__at = now;
     if (A) for (const L of A.legs) recordHist(L);
@@ -213,10 +213,11 @@ async function rhLoadSymbol(sym, now, f) {
   return { s: sym, px, iv30: null, ivchg: null, chg: pc ? (px - pc) / pc * 100 : null, fetched: Date.now(), o: rows, rt: true, chainId: chain.id, exps };
 }
 async function rhHistory(syms) {
-  const start = new Date(Date.now() - 400 * 864e5).toISOString().slice(0, 10) + "T00:00:00Z", out = {};
+  const start = new Date(Date.now() - 1000 * 864e5).toISOString().slice(0, 10) + "T00:00:00Z", out = {};
   for (let i = 0; i < syms.length; i += 10) {
     try { const d = await rhCall("get_equity_historicals", { symbols: syms.slice(i, i + 10), interval: "day", start_time: start }, 6 * 3600e3);
-      for (const r of (d.results || [])) { const h = E.histStats((r.bars || []).filter(b => !b.interpolated).map(b => +b.close_price)); if (h) out[r.symbol] = h; } } catch (e) { if (AUTH_CODES[e && e.code]) throw e; }
+      for (const r of (d.results || [])) { const bars = (r.bars || []).filter(b => !b.interpolated && +b.close_price > 0); const h = E.histStats(bars.map(b => +b.close_price));
+        if (h) { h.bars = bars.map(b => ({ d: String(b.begins_at).slice(0, 10), c: +b.close_price })); out[r.symbol] = h; } } } catch (e) { if (AUTH_CODES[e && e.code]) throw e; }
   }
   return out;
 }
@@ -226,6 +227,8 @@ async function rhEarnings(syms) {
     try {
       const d = await rhCall("get_earnings_results", { symbol: sym }, 12 * 3600e3);
       const nxt = (d.results || []).find(e => e && e.eps && e.eps.actual == null && e.report && e.report.date >= today);
+      state.earnHist[sym] = (d.results || []).filter(e => e && e.report && e.report.date && e.report.date < today && e.eps && e.eps.actual != null)
+        .map(e => ({ d: e.report.date, pm: (e.report.timing || "pm") !== "am" })).sort((a, b) => a.d < b.d ? -1 : 1).slice(-12);
       if (nxt) { const p = nxt.report.date.split("-"), am = nxt.report.timing === "am";
         const t = E.etTime(+p[0], +p[1], +p[2], am ? 9 : 16, am ? 0 : 5);
         if (t > Date.now()) state.earn[sym] = { t, date: nxt.report.date, timing: nxt.report.timing || "pm", verified: !!nxt.report.verified, src: "robinhood" }; else delete state.earn[sym]; }
@@ -408,7 +411,7 @@ function renderRows(rows) {
   tb.appendChild(frag);
 }
 
-const ODDS_NAMES = { base: "our forecast", market: "market's own vol (no forecast edge)", calm: "vol a fifth calmer", wild: "vol a fifth wilder", against: "stock drifts ¼σ against you", expiry: "profit at expiry (market IV)", bigJump: "earnings jump 1.5× bigger" };
+const ODDS_NAMES = { base: "our forecast", market: "market's own vol (no forecast edge)", calm: "vol a fifth calmer", wild: "vol a fifth wilder", against: "stock drifts ¼σ against you", tails: "crash-prone (fat tails)", expiry: "profit at expiry (market IV)", bigJump: "earnings jump 1.5× bigger" };
 function oddsLine(o) { return o.scenarios.map(s => `${ODDS_NAMES[s.id] || s.id} ${pct(s.p, 0)}`).join(" · "); }
 function oddsBlock(r, o) {
   if (!o) return "";
@@ -423,8 +426,10 @@ function oddsBlock(r, o) {
         <span class="confbox"><b>${lvl}</b> confidence<br><span class="muted">${o.conf}/100</span></span></div>
       <div class="planlegend">${o.scenarios.map(s => `<span>${esc(ODDS_NAMES[s.id] || s.id)} <b>${pct(s.p, 0)}</b>${s.ev != null ? ` <span class="muted">(${sgnMoney(s.ev * per, 0)})</span>` : ""}</span>`).join("")}</div>
       <div class="planlegend"><span>Payoff ratio <b>${o.b != null ? fmt(o.b, 2) + "×" : "–"}</b> average win ÷ average loss</span><span>Plan's expected result <b class="${o.planEv > 0 ? "up" : "down"}">${pct(o.planEv, 1, true)}</b> of money at risk</span><span>Break-even win rate <b>${o.b ? pct(1 / (1 + o.b), 0) : "–"}</b> for this payoff ratio</span></div>
+      <div class="planlegend"><span>Tail risk: worst 5% of outcomes average <b class="down">${sgnMoney(o.cvar5 * per, 0)}</b> per contract${o.cvarTails != null ? `, <b class="down">${sgnMoney(o.cvarTails * per, 0)}</b> in the crash-prone world` : ""} (expected shortfall)</span></div>
+      <div class="planlegend"><span class="muted">If the stock gaps tomorrow:</span>${o.gaps.map(g => `<span>${g.move > 0 ? "+" : ""}${Math.round(g.move * 100)}% <span class="muted">(IV ${g.ivMult >= 1 ? "+" : ""}${Math.round((g.ivMult - 1) * 100)}%)</span> <b class="${g.pl >= 0 ? "up" : "down"}">${sgnMoney(g.pl * per, 0)}</b></span>`).join("")}</div>
       ${o.why.length ? `<span class="note">Why not higher confidence: ${esc(o.why.join("; "))}.</span>` : ""}
-      <span class="note">${esc(kellyTxt)}. The odds are a weighted average of the plan's win rate in each world (forecast 30%, market vol 25%, calmer 10%, wilder 10%, drifting against you 10%, at expiry 15%), so they can't be gamed by one optimistic assumption. They are still a model: the paths have no crashes in them.</span>
+      <span class="note">${esc(kellyTxt)}. The odds are a weighted average of the plan's win rate in each world (forecast 25%, market vol 20%, calmer 10%, wilder 10%, drifting against you 10%, crash-prone 10%, at expiry 15%), so they can't be gamed by one optimistic assumption. The crash-prone world adds sharp drops (about three in two years, averaging −7%) at the same total volatility, which is how real stocks behave more than a smooth model does.</span>
     </div>`;
 }
 
@@ -442,6 +447,7 @@ function select(id, quiet) {
   else if (buy) { maxLossTxt = money(r.price * per, 0) + " (the premium)"; maxGainTxt = isC ? "unlimited" : money((r.K - r.price) * per, 0) + " if it goes to 0"; }
   else { maxGainTxt = money(r.price * per, 0) + " (the credit)"; maxLossTxt = isC ? "unlimited unless you own 100 shares (a covered call)" : money((r.K - r.price) * per, 0) + " if it goes to 0 (cash-secured)"; }
   const H = r.hist, ev = r.evt;
+  const EH = state.earnHist[r.sym] && H && H.bars ? E.earningsMoves(H.bars, state.earnHist[r.sym]) : null;
   const kv = [
     ["Bid / Ask", `${r.bid > 0 ? fmt(r.bid) : "–"} / ${fmt(r.ask)}`, `mid ${fmt(r.mid)} · spread ${pct(r.spreadPct, 1)}`],
     [buy ? "Cost per contract" : "Credit per contract", money(r.price * per, 0), `assumes a limit fill at ${fmt(r.price)}, halfway from mid to ${buy ? "ask" : "bid"}`],
@@ -452,6 +458,9 @@ function select(id, quiet) {
     ["Profit odds, all worlds", O ? `${pct(O.p, 0)}` : "–", O ? `confidence ${O.conf}/100 · worlds ${pct(O.lo, 0)}–${pct(O.hi, 0)}` : ""],
     ["P(profit) at expiry", pct(r.pop, 0), r.copL != null || r.copS != null ? "Robinhood's chance of profit" : "at market implied volatility"],
     ["Volatility", `IV ${pct(r.iv, 1)}`, `forecast ${pct(r.sigPath, 1)} · realized (jumps removed) ${r.hv ? pct(r.hv, 0) : "–"}${H && H.hv20 ? ` · raw 20d ${pct(H.hv20, 0)}` : ""}`],
+    ["Vol premium", r.vrp != null ? `<span class="${r.vrp > 0.05 ? "up" : r.vrp < 0 ? "down" : ""}">${(r.vrp > 0 ? "+" : "") + (r.vrp * 100).toFixed(1)} pts</span>` : "–", r.vrp != null ? `IV30 ${pct(r.iv30, 0)} minus realized 20d ${pct(H.hv20, 0)} · normal is +2 to +5; above that favors selling, below favors buying` : "needs price history"],
+    ["IV rank", r.ivRank && r.ivRank.rank != null ? `${pct(r.ivRank.rank, 0)}` : "–", r.ivRank ? (r.ivRank.src === "iv" ? `of its 1-year IV range (${pct(r.ivRank.lo, 0)}–${pct(r.ivRank.hi, 0)}, ${r.ivRank.n} days logged) · percentile ${pct(r.ivRank.pctile, 0)}` : `of the past year's realized-vol range (${pct(r.ivRank.lo, 0)}–${pct(r.ivRank.hi, 0)}): a proxy until a year of IV is logged · percentile ${pct(r.ivRank.pctile, 0)}`) : "needs price history"],
+    ["Earnings history", EH ? `median ±${pct(EH.median, 1)}` : (ev && ev.src === "calendar" ? "–" : null), EH ? `last ${EH.n} reports: mean ±${pct(EH.mean, 1)}, biggest ±${pct(EH.max, 1)}${ev && ev.move ? ` · market now implies ±${pct(ev.move, 1)}: actual move was bigger ${EH.beyond(ev.move)} of ${EH.n} times` : ""}` : (ev && ev.src === "calendar" ? "past moves need Robinhood history (Claude version)" : "")],
     ["Event", ev ? (ev.src === "calendar" ? "Earnings " + day(ev.at) : "Event " + day(ev.from) + "–" + day(ev.to)) : "None in the window", ev ? (ev.move ? `market's implied move ±${pct(ev.move, 1)}` : "implied move not measurable from this chain") : ""],
     ["Trend", `<span class="${r.trend > 0 ? "up" : r.trend < 0 ? "down" : ""}">${!H ? "Unknown" : r.trend > 0 ? "Up" : r.trend < 0 ? "Down" : "Mixed"}</span>${r.trendFit === 1 ? " · with this trade" : r.trendFit === -1 ? " · against this trade" : ""}`, H ? `20d $${fmt(H.sma20, 0)} · 50d $${fmt(H.sma50, 0)} · 1-mo ${pct(H.ret1m, 1, true)} · 3-mo ${pct(H.ret3m, 1, true)}` : "no price history"],
     ["Δ · Γ · Θ · V", `${fmt(r.delta, 2)} · ${fmt(r.gamma, 3)} · ${fmt(r.theta, 3)} · ${fmt(r.vega, 3)}`, `theta ${money(Math.abs(r.theta) * per, 2)}/day per contract (${pct(r.thetaPct, 1)})`],
@@ -482,7 +491,7 @@ function select(id, quiet) {
   <div class="d-nav"><button class="btn sm" type="button" data-nav="results" title="Scroll back to this row in the results"><span aria-hidden="true">↑</span> Results</button><button class="btn sm" type="button" data-nav="close" title="Close the details and go back to the results">Close</button></div>
   <div class="left">
     <div class="d-head"><h2>${esc(name)}</h2><span class="grade g${r.grade === "–" ? "x" : r.grade}">${r.grade}</span><span class="muted num">${esc(sp ? r.raw.map(L => L.occ).join(" / ") : r.raw[0].occ)}</span></div>
-    <div class="kv">${kv.map(([k, v, s]) => `<div><span class="k">${k}</span><span class="v num">${v}</span><span class="s">${s || ""}</span></div>`).join("")}</div>
+    <div class="kv">${kv.filter(x => x[1] != null).map(([k, v, s]) => `<div><span class="k">${k}</span><span class="v num">${v}</span><span class="s">${s || ""}</span></div>`).join("")}</div>
     ${planBlock}
     ${oddsBlock(r, O)}
     <div class="why" id="why"></div>
@@ -596,7 +605,9 @@ async function rhPositions() {
     const syms = [...new Set(pos.map(p => p.chain_symbol))];
     for (let i = 0; i < syms.length; i += 10) { const eq = await rhCall("get_equity_quotes", { symbols: syms.slice(i, i + 10) }, false);
       (eq.results || []).forEach(x => { const u = x.quote || x, last = lastPrice(u), pc = +u.adjusted_previous_close || 0; px[u.symbol] = last; chg[u.symbol] = pc && last ? (last - pc) / pc : null; }); }
-    const hist = await rhHistory(syms.filter(s => !(state.rt.get(s) && state.rt.get(s).hist)));
+    const hist = await rhHistory([...new Set(syms.concat("SPY"))].filter(s => !(state.rt.get(s) && state.rt.get(s).hist && state.rt.get(s).hist.bars)));
+    const spyH = (state.rt.get("SPY") || {}).hist && state.rt.get("SPY").hist.bars ? state.rt.get("SPY").hist : hist.SPY;
+    const spyCloses = spyH && spyH.bars ? spyH.bars.map(b => b.c) : null;
     await rhEarnings(syms.filter(s => !state.rt.has(s)));
     const now = Date.now();
     const rows = pos.map(p => {
@@ -611,13 +622,15 @@ async function rhPositions() {
       const L = { sym: p.chain_symbol, S, occ: p.option_id, type: isC ? "C" : "P", isC, exp, T, dte: T * 365, K, bid, ask, mid: mark, bs: +u.bid_size || 0, as: +u.ask_size || 0, iv, oi: +u.open_interest || 0, vol: +u.volume || 0,
         delta: +u.delta || 0, gamma: +u.gamma || 0, theta: +u.theta || 0, vega: +u.vega || 0, theo: 0, last: 0, copL: +u.chance_of_profit_long || null, copS: +u.chance_of_profit_short || null };
       const st = E.makeSingle(L, A, long ? "buy" : "sell");
+      const beta = spyCloses && h && h.bars ? E.betaOf(h.bars.map(b => b.c), spyCloses) : null;
+      const crash = S > 0 ? E.gapPL(st, -0.05 * (beta != null ? beta : 1), 1.4) : null;   // a -5% SPY day, this stock moving by its beta, IV +40%
       const fair = st.fair, holdEV = long ? fair - bid : ask - fair;            // vs closing right now at the bid (long) / ask (short)
       const back = S > 0 ? E.simulateLevels(st, long ? "buy" : "sell", long ? bid : ask, cost, long ? -1 : Infinity, T * 365, 3000, "pos" + p.option_id) : null;
       const intrinsic = S ? Math.max(0, isC ? S - K : K - S) : 0, beCost = isC ? K + cost : K - cost, need = S ? (isC ? (beCost - S) / S : (S - beCost) / S) : null;
       const pend = ["pending_buy_quantity", "pending_sell_quantity", "pending_exercise_quantity", "pending_assignment_quantity", "pending_expiration_quantity"].reduce((t, k) => t + (+p[k] || 0), 0);
       return { sym: p.chain_symbol, acct: p.acct, long, isC, qty, mult, cost, mark, bid, ask, K, exp, dte: T * 365, S, chg: chg[p.chain_symbol], iv, theta: +u.theta || 0, delta: +u.delta || 0,
         cop: long ? (+u.chance_of_profit_long || null) : (+u.chance_of_profit_short || null), sig: iv * Math.sqrt(T), need, beCost, intrinsic, tv: Math.max(0, mark - intrinsic), pend, evt: st.evt,
-        pl: (mark - cost) * qty * mult * (long ? 1 : -1), plPct: cost ? (mark - cost) / cost * (long ? 1 : -1) : null, fair, holdEV, back: back ? back.pTarget : null, sigF: st.sigPath, hv: A.hv };
+        beta, crash, vega: +u.vega || 0, pl: (mark - cost) * qty * mult * (long ? 1 : -1), plPct: cost ? (mark - cost) / cost * (long ? 1 : -1) : null, fair, holdEV, back: back ? back.pTarget : null, sigF: st.sigPath, hv: A.hv };
     });
     renderPositions(rows, accts); setStatus(`Robinhood positions loaded · ${rows.length} open · real-time`, "live");
   } catch (e) { setStatus("Positions: " + (AUTH_CODES[e && e.code] || ((e && (e.code ? e.code + " " : "")) + (e && e.message || e))), "snap"); }
@@ -646,7 +659,8 @@ function renderPositions(rows, accts) {
   if (!rows.length) box.innerHTML = head("Robinhood") + `<p class="note">No open option positions in ${accts.length} account${accts.length === 1 ? "" : "s"}.</p>`;
   else {
     rows.sort((a, b) => a.dte - b.dte);
-    const tot = rows.reduce((t, p) => { const s = p.long ? 1 : -1; t.cost += p.cost * p.qty * p.mult * s; t.val += p.mark * p.qty * p.mult * s; t.theta += Math.abs(p.theta) * p.qty * p.mult * (p.long ? -1 : 1); t.ev += p.holdEV * p.qty * p.mult; return t; }, { cost: 0, val: 0, theta: 0, ev: 0 });
+    const tot = rows.reduce((t, p) => { const s = p.long ? 1 : -1; t.cost += p.cost * p.qty * p.mult * s; t.val += p.mark * p.qty * p.mult * s; t.theta += Math.abs(p.theta) * p.qty * p.mult * (p.long ? -1 : 1); t.ev += p.holdEV * p.qty * p.mult;
+      t.bwd += p.delta * p.qty * p.mult * p.S * (p.beta != null ? p.beta : 1) * s / 100; t.vega += p.vega * p.qty * p.mult * s; if (p.crash != null) t.crash += p.crash * p.qty * p.mult; else t.crashMiss++; return t; }, { cost: 0, val: 0, theta: 0, ev: 0, bwd: 0, vega: 0, crash: 0, crashMiss: 0 });
     const trs = rows.map(p => { const v = verdictFor(p);
       return `<tr class="main"><td class="l">${esc(acctLabel(p.acct))}</td>
         <td class="l"><b>${esc(p.sym)}</b> ${day(p.exp)} $${strikeTxt(p.K)} <span class="tag ${p.isC ? "c" : "p"}">${p.isC ? "CALL" : "PUT"}</span>${p.long ? "" : ' <span class="tag p">SHORT</span>'}${p.evt ? ` <span class="ev" title="${esc(evtLabel(p.evt))}">⚡</span>` : ""}</td>
@@ -659,6 +673,7 @@ function renderPositions(rows, accts) {
         <tr class="noterow"><td colspan="14"><div class="posnotes">${v.lines.map(l => `<span>${l}</span>`).join("")}</div></td></tr>`; }).join("");
     box.innerHTML = head(`${rows.length} open · Robinhood real-time · ${new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`) +
       `<div class="totals"><span>Cost basis <b>${money(tot.cost, 0)}</b></span><span>Value now <b>${money(tot.val, 0)}</b></span><span>Open P/L <b class="${tot.val - tot.cost >= 0 ? "up" : "down"}">${money(tot.val - tot.cost, 0)} (${pct(tot.cost ? (tot.val - tot.cost) / Math.abs(tot.cost) : 0, 1, true)})</b></span><span>Decay <b>${money(tot.theta, 0)}/day</b></span><span>Hold vs close now <b class="${tot.ev >= 0 ? "up" : "down"}">${sgnMoney(tot.ev, 0)}</b> expected</span></div>
+      <div class="totals"><span class="muted">Book risk:</span><span>per +1% in SPY <b class="${tot.bwd >= 0 ? "up" : "down"}">${sgnMoney(tot.bwd, 0)}</b> <span class="muted">(beta-weighted delta)</span></span><span>per +1 vol point <b class="${tot.vega >= 0 ? "up" : "down"}">${sgnMoney(tot.vega, 0)}</b> <span class="muted">(vega)</span></span><span>a −5% SPY day with IV +40% <b class="${tot.crash >= 0 ? "up" : "down"}">${sgnMoney(tot.crash, 0)}</b>${tot.crashMiss ? ` <span class="muted">(${tot.crashMiss} without a quote)</span>` : ""}</span></div>
       <div class="postable"><table><thead><tr><th class="l">Account</th><th class="l">Contract</th><th>Qty</th><th>Paid</th><th>Mark</th><th>P/L</th><th>DTE</th><th>Δ</th><th>Θ/day</th><th>Need</th><th>CoP</th><th>Back to cost</th><th>Hold EV</th><th class="l">Read</th></tr></thead><tbody>${trs}</tbody></table></div>
       <p class="note">"Need" is the move to your cost-basis breakeven by expiry. "CoP" is Robinhood's chance of profit at today's mark. "Back to cost" is the simulated chance the option trades at or above what you paid at some close before expiry. "Hold EV" is the expected value of holding to expiry versus closing at the bid/ask right now, on the forecast volatility. These are odds, not instructions; you decide and you place every order.</p>`;
   }
@@ -909,7 +924,9 @@ async function loadTrack() {
   const box = $("#trackbox");
   if (IN_CLAUDE) { box.innerHTML = `<div class="trackhead"><h2>Track record</h2></div><p class="note">A scheduled job logs the top A-grade picks every trading day and scores how they actually did. Claude's security rules stop this page from loading it here; it's on the public site at <b>strike-finder.onrender.com</b>, near the bottom.</p>`; return; }
   for (const base of (state.apiBase != null ? [state.apiBase] : serverBases())) {
-    try { const j = await fetchJSON(base + "/api/track", base ? 90000 : 8000); if (j && Array.isArray(j.picks)) { state.track = j; renderTrack(j); return; } } catch (e) {}
+    try { const j = await fetchJSON(base + "/api/track", base ? 90000 : 8000); if (j && Array.isArray(j.picks)) { state.track = j; renderTrack(j);
+      if (j.ivlog && !IN_CLAUDE) { const log = {}; for (const s in j.ivlog) log[s] = j.ivlog[s].map(x => x[1]); state.ivLog = log; state.ivLogVer++; if (state.data) { reanalyze(); build(); if (state.sel) select(state.sel, true); } }
+      return; } } catch (e) {}
   }
   box.innerHTML = `<div class="trackhead"><h2>Track record</h2></div><p class="note">Couldn't load the track record right now.</p>`;
 }
@@ -1009,6 +1026,23 @@ function planHint() {
 }
 function init() {
   seg("side", v => { state.side = v; applyDefaults(); build(); if (state.sel) select(state.sel, true); });
+  /* playbooks: filters + plan in one click, from the rules the public backtests settled on */
+  const PRESETS = {
+    seller: { side: "sell", struct: "single", f: { "dte-min": 30, "dte-max": 60, "delta-min": 0.16, "delta-max": 0.30 }, plan: { target: 50, stop: 200, hold: 24 }, ev: "avoid" },
+    buyer: { side: "buy", struct: "single", f: { "dte-min": 60, "dte-max": 150, "delta-min": 0.55, "delta-max": 0.80 }, plan: { target: 50, stop: 40, hold: 45 }, ev: "all" },
+    earnings: { side: "sell", struct: "spread", f: { "dte-min": 7, "dte-max": 30, "delta-min": 0.15, "delta-max": 0.35 }, plan: { target: 50, stop: 200, hold: 5 }, ev: "only" },
+    reset: { side: "buy", struct: "single", f: null, plan: null, ev: "all" } };
+  $("#preset").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const P = PRESETS[b.dataset.v]; if (!P) return;
+    $("#preset").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b && b.dataset.v !== "reset" ? "true" : "false"));
+    const press = (id, v) => $("#" + id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === v ? "true" : "false"));
+    state.side = P.side; press("side", P.side); state.struct = P.struct; press("struct", P.struct);
+    state.evMode = P.ev; press("evfilter", P.ev);
+    if (P.f) { for (const id in P.f) { $("#" + id).value = P.f[id]; state.touched[id] = true; } } else { ["dte-min", "dte-max", "delta-min", "delta-max"].forEach(id => delete state.touched[id]); $("#dte-min").value = 14; $("#dte-max").value = 90; }
+    applyDefaults();
+    const pl = P.plan || E.PLAN_DEFAULTS[P.side]; state.plan[P.side] = Object.assign({}, state.plan[P.side], pl); $("#plan-target").value = pl.target; $("#plan-stop").value = pl.stop; $("#plan-hold").value = pl.hold; planHint();
+    build(); maybeReloadRange(); if (state.sel) select(state.sel, true);
+  }));
   seg("struct", v => { state.struct = v; state.sel = null; $("#drawer").hidden = true; applyDefaults(); build(); });
   seg("type", v => { state.type = v; build(); });
   seg("evfilter", v => { state.evMode = v; build(); });

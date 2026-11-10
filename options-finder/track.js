@@ -37,6 +37,7 @@ const r4 = x => x == null || !isFinite(x) ? null : Math.round(x * 1e4) / 1e4;
 const scan = JSON.parse(fs.readFileSync(scanPath, "utf8"));
 const ledger = fs.existsSync(ledgerPath) ? JSON.parse(fs.readFileSync(ledgerPath, "utf8")) : { version: 1, created: today, picks: [] };
 for (const p of ledger.picks) if (p.stop == null) p.stop = p.side === "buy" ? -1 : Infinity;   // "no stop" is stored as null (JSON has no Infinity)
+ledger.ivlog = ledger.ivlog || {};   // per symbol: [[day, 30-day ATM IV]], for IV rank once enough days are logged
 ledger.rules = { plan: PLAN, entry: "limit fill halfway between mid and natural", marks: "once a day at about 2:45 PM ET, same fill model", source: "Cboe delayed quotes (15 min)" };
 
 // quotes and spot prices for marking
@@ -103,6 +104,8 @@ function computePicks() {
   }
   return { picks, stats, syms };
 }
+if (inSession) for (const S of scan.symbols || []) { const A = E.analyzeSymbol(S, { now, earn: {} }); if (!A || !(A.iv30 > 0)) continue;
+  const L = ledger.ivlog[S.s] = (ledger.ivlog[S.s] || []).filter(x => x[0] !== today); L.push([today, r4(A.iv30)]); if (L.length > 260) L.splice(0, L.length - 260); }
 let added = 0;
 if (inSession && !ledger.picks.some(p => p.date === today)) { const r = computePicks(); r.picks.forEach(p => ledger.picks.push(p)); added = r.picks.length; }
 if (DRY) {

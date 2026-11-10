@@ -92,14 +92,58 @@ var Engine = (function () {
     }
     function ret(n) { return c.length > n ? last / c[c.length - 1 - n] - 1 : null; }
     var y = c.slice(-252);
-    return { last: last, sma20: sma(20), sma50: sma(50), sma200: sma(200), hv20: hv(20), hv60: hv(60), hv20x: hvx(20), hv60x: hvx(60),
-      ret1m: ret(21), ret3m: ret(63), hi52: Math.max.apply(null, y), lo52: Math.min.apply(null, y), n: c.length };
+    // rolling 20-day realized vols over the last year: the distribution the current IV is compared with (IV rank proxy)
+    var rv20 = []; for (i = Math.max(20, r.length - 252); i <= r.length; i++) rv20.push(stdev(r.slice(i - 20, i)) * Math.sqrt(252));
+    return { last: last, sma20: sma(20), sma50: sma(50), sma200: sma(200), hv5x: hvx(5), hv20: hv(20), hv60: hv(60), hv20x: hvx(20), hv60x: hvx(60),
+      ret1m: ret(21), ret3m: ret(63), hi52: Math.max.apply(null, y), lo52: Math.min.apply(null, y), n: c.length, rv20: rv20 };
   }
+  /* HAR-style forecast (Corsi 2009): recent, monthly and quarterly realized variance with fixed weights; the daily closes we
+     have are too few to fit the weights per stock, so these are the usual published magnitudes. Jump days are removed first. */
+  var HAR_W = { w: 0.15, m: 0.50, q: 0.35 };
   function realizedVol(h) {
     if (!h) return null;
-    var a = h.hv20x != null ? h.hv20x : h.hv20, b = h.hv60x != null ? h.hv60x : h.hv60;
-    if (a > 0 && b > 0) return Math.sqrt((a * a + b * b) / 2);
+    var w = h.hv5x, a = h.hv20x != null ? h.hv20x : h.hv20, b = h.hv60x != null ? h.hv60x : h.hv60;
+    if (a > 0 && b > 0) {
+      if (w > 0) return Math.sqrt(HAR_W.w * w * w + HAR_W.m * a * a + HAR_W.q * b * b);
+      return Math.sqrt((a * a + b * b) / 2);
+    }
     return a > 0 ? a : b > 0 ? b : null;
+  }
+  /* where a vol sits in a list of vols: 0 = lowest seen, 1 = highest (IV rank and IV percentile) */
+  function volRank(x, list) {
+    if (!(x > 0) || !list || list.length < 20) return null;
+    var lo = Infinity, hi = -Infinity, below = 0; for (var i = 0; i < list.length; i++) { var v = list[i]; if (!(v > 0)) continue; if (v < lo) lo = v; if (v > hi) hi = v; if (v < x) below++; }
+    return { rank: hi > lo ? Math.max(0, Math.min(1, (x - lo) / (hi - lo))) : null, pctile: below / list.length, lo: lo, hi: hi, n: list.length };
+  }
+  /* earnings history: the stock's close-to-close move over each past report, for comparing with the implied move */
+  function earningsMoves(bars, reports) {   // bars: [{d:"YYYY-MM-DD", c}] ascending; reports: [{d:"YYYY-MM-DD", pm:true|false}]
+    if (!bars || !reports) return null;
+    var idx = {}; for (var i = 0; i < bars.length; i++) idx[bars[i].d] = i;
+    var out = [];
+    for (var j = 0; j < reports.length; j++) {
+      var r = reports[j], k = idx[r.d]; if (k == null) { for (var t = 0; t < 4 && k == null; t++) { var dd = new Date(Date.parse(r.d + "T12:00:00Z") + (t + 1) * 864e5).toISOString().slice(0, 10); k = idx[dd]; } }
+      if (k == null) continue;
+      var pre = r.pm ? k : k - 1, post = r.pm ? k + 1 : k; if (pre < 0 || post >= bars.length) continue;
+      out.push({ d: r.d, move: bars[post].c / bars[pre].c - 1 });
+    }
+    if (!out.length) return null;
+    var abs = out.map(function (x) { return Math.abs(x.move); }).sort(function (a, b) { return a - b; });
+    return { moves: out, n: out.length, median: abs[Math.floor(abs.length / 2)], mean: abs.reduce(function (s, x) { return s + x; }, 0) / abs.length, max: abs[abs.length - 1],
+      beyond: function (implied) { return out.filter(function (x) { return Math.abs(x.move) > implied; }).length; } };
+  }
+  /* beta of one price series to another (daily log returns, overlapping tail) */
+  function betaOf(a, b) {
+    if (!a || !b || a.length < 40 || b.length < 40) return null;
+    var n = Math.min(a.length, b.length, 253), ra = [], rb = [];
+    for (var i = 1; i < n; i++) { ra.push(Math.log(a[a.length - n + i] / a[a.length - n + i - 1])); rb.push(Math.log(b[b.length - n + i] / b[b.length - n + i - 1])); }
+    var ma = mean(ra), mb = mean(rb), cov = 0, vb = 0; for (i = 0; i < ra.length; i++) { cov += (ra[i] - ma) * (rb[i] - mb); vb += (rb[i] - mb) * (rb[i] - mb); }
+    return vb > 0 ? cov / vb : null;
+  }
+  /* what a gap tomorrow does to a structure: reprice every leg at S*(1+move), IV scaled, one day less; per share vs the current mid */
+  function gapPL(st, move, ivMult) {
+    var S = st.S * (1 + move), T = Math.max(0.5 / 365, st.T - 1 / 365), v = 0;
+    for (var i = 0; i < st.legs.length; i++) { var L = st.legs[i]; v += L.q * bs(S, L.K, T, L.iv * (ivMult || 1), L.isC); }
+    return (st.side === "buy" ? 1 : -1) * (v - st.mid);
   }
   function trendOf(px, h) { if (!h || !h.sma20 || !h.sma50) return 0; return px > h.sma20 && h.sma20 > h.sma50 ? 1 : px < h.sma20 && h.sma20 < h.sma50 ? -1 : 0; }
 
@@ -205,6 +249,8 @@ var Engine = (function () {
     // term structure, 30-day IV and events on the same basis as the legs (their own mid-implied vols)
     var ptsMid = termFrom(A.legs, now); if (ptsMid.length >= 2) A.pts = ptsMid;
     A.iv30 = atmIVAt(A.pts, 30 / 365) || (S.iv30 ? S.iv30 / 100 : null);
+    A.ivRank = ctx.ivLog && ctx.ivLog[S.s] && ctx.ivLog[S.s].length >= 20 ? Object.assign(volRank(A.iv30, ctx.ivLog[S.s]), { src: "iv" })
+      : h && h.rv20 ? Object.assign(volRank(A.iv30, h.rv20) || {}, { src: "rv" }) : null;
     A.ev = NO_EARNINGS[S.s] && !earn ? null : detectEvent(A.pts, earn, now);   // funds have no earnings: term-structure bumps there aren't events
     return A;
   }
@@ -318,6 +364,8 @@ var Engine = (function () {
     st.cost = buy ? st.price * 100 : (st.kind === "spread" ? (st.width - st.price) * 100 : null);
     st.expMove = st.S * st.iv * Math.sqrt(st.T);
     st.rt = A.rt; st.hist = A.hist; st.iv30 = A.iv30;
+    st.vrp = A.iv30 && A.hist && A.hist.hv20 ? A.iv30 - A.hist.hv20 : null;   // implied minus realized, in vol points (normal: +2 to +5)
+    st.ivRank = A.ivRank || null;
     st.mismatch = !!A.mismatch;
     st.srcGap = 0; for (var gi = 0; gi < st.legs.length; gi++) { var Lg = st.legs[gi]; if (Lg.ivSrc && Lg.iv) st.srcGap = Math.max(st.srcGap, Math.abs(Lg.iv / Lg.ivSrc - 1)); }
     return st;
@@ -330,6 +378,8 @@ var Engine = (function () {
      sell → buy-back cost = value + half spread, win at ≤ targetLevel, stop at ≥ stopLevel. */
   function simulateLevels(st, side, entry, targetLevel, stopLevel, horizonDays, nPaths, seed, opts) {
     var muX = opts && opts.drift ? opts.drift : 0;   // extra drift per year (scenario analysis); 0 = the risk-neutral path
+    var J = opts && opts.jumps ? opts.jumps : null;   // {lam, mu, sd}: Poisson jumps per year in log price, shared by every leg (fat tails)
+    var jVar = J ? J.lam * (J.mu * J.mu + J.sd * J.sd) : 0, jComp = J ? J.lam * (Math.exp(J.mu + 0.5 * J.sd * J.sd) - 1) : 0;
     var T0 = st.T; if (!(entry > 0) || !(T0 > 0)) return null;
     var hs = FILL * Math.max(0, (st.ask - Math.max(0, st.bid)) / 2);
     var horizon = Math.max(1, Math.min(horizonDays, T0 * 365)), expires = horizon >= T0 * 365 - 1e-9;
@@ -338,8 +388,10 @@ var Engine = (function () {
     var legs = st.legs, nL = legs.length, buy = side === "buy", i;
     var tEv = (st.mPath > 0 && st.tEv > 0 && st.tEv < T0) ? st.tEv : null;
     var drift = new Float64Array(nL), vol = new Float64Array(nL), jump = new Float64Array(nL), lnS = new Float64Array(nL), ln0 = Math.log(st.S);
-    for (i = 0; i < nL; i++) { var Lg = legs[i]; drift[i] = (R + muX - 0.5 * Lg.sigP * Lg.sigP) * dt; vol[i] = Lg.sigP * sdt; jump[i] = Lg.mJ || 0; }
+    for (i = 0; i < nL; i++) { var Lg = legs[i]; var s2 = Math.max(0.25 * Lg.sigP * Lg.sigP, Lg.sigP * Lg.sigP - jVar); drift[i] = (R + muX - jComp - 0.5 * s2) * dt; vol[i] = Math.sqrt(s2) * sdt; jump[i] = Lg.mJ || 0; }
     var half = Math.ceil(nPaths / 2), stride = steps + 1, zs = normals(rng(hash(seed || st.id || "x")), half * stride);
+    var jr = J ? rng(hash((seed || st.id || "x") + "|jumps")) : null, jU = null, jZ = null;
+    if (J) { jU = new Float64Array(half * stride); jZ = normals(jr, half * stride); for (var ji = 0; ji < jU.length; ji++) jU[ji] = jr(); }
     var nT = 0, nS = 0, nX = 0, nW = 0, sum = 0, sumW = 0, sumL = 0, nL2 = 0, pls = [], dsum = 0;
     for (var p = 0; p < half; p++) for (var anti = 0; anti < 2; anti++) {
       var sgn = anti ? -1 : 1, pl = 0, kind = "x", evDone = tEv == null, day = horizon;
@@ -347,6 +399,7 @@ var Engine = (function () {
       for (var k = 1; k <= steps; k++) {
         var z = sgn * zs[p * stride + k - 1], t = k * dt;
         for (i = 0; i < nL; i++) lnS[i] += drift[i] + vol[i] * z;
+        if (J && jU[p * stride + k - 1] < J.lam * dt) { var ju = J.mu + J.sd * jZ[p * stride + k - 1]; for (i = 0; i < nL; i++) lnS[i] += ju; }
         if (!evDone && t >= tEv) { var ze = sgn * zs[p * stride + steps]; for (i = 0; i < nL; i++) lnS[i] += -0.5 * jump[i] * jump[i] + jump[i] * ze; evDone = true; }
         var Tr = T0 - t, v = 0;
         for (i = 0; i < nL; i++) {
@@ -371,8 +424,9 @@ var Engine = (function () {
     var n = half * 2; pls.sort(function (a, b) { return a - b; });
     var plHi = st.width ? (buy ? st.width - entry : entry) : Infinity, plLo = st.width ? (buy ? -entry : entry - st.width) : -Infinity;   // shown percentiles stay inside the spread's max gain/loss
     function q(f) { return Math.min(plHi, Math.max(plLo, pls[Math.min(n - 1, Math.max(0, Math.floor(f * n)))])); }
+    var k5 = Math.max(1, Math.floor(n * 0.05)), cs = 0; for (var ci = 0; ci < k5; ci++) cs += Math.max(plLo, pls[ci]);
     return { n: n, days: horizon, avgDays: dsum / n, pTarget: nT / n, pStop: nS / n, pTime: nX / n, pWin: nW / n, ev: sum / n,
-      avgWin: nW ? sumW / nW : 0, avgLoss: nL2 ? sumL / nL2 : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), entry: entry };
+      avgWin: nW ? sumW / nW : 0, avgLoss: nL2 ? sumL / nL2 : 0, p10: q(0.1), p50: q(0.5), p90: q(0.9), cvar5: cs / k5, entry: entry };
   }
   /* Exit levels per share for a plan (fractions), shared by the simulation and the order ticket. */
   function planLevels(st, plan) {
@@ -393,7 +447,8 @@ var Engine = (function () {
      and with a bigger earnings jump when there is one, and blend them with the probability of profit at expiry.
      The result is a probability (a weighted average of probabilities), with a sampling band and a confidence score that
      says how far to trust it, from the data behind it. */
-  var ODDS_W = { base: 0.30, market: 0.25, calm: 0.10, wild: 0.10, against: 0.10, expiry: 0.15 };
+  var ODDS_W = { base: 0.25, market: 0.20, calm: 0.10, wild: 0.10, against: 0.10, tails: 0.10, expiry: 0.15 };
+  var CRASH = { lam: 1.5, mu: -0.07, sd: 0.05 };   // fat tails: about three sharp drops in two years, averaging -7%, same total variance
   function withVol(st, f, kind) {   // a copy of the structure with each leg's path vol scaled (kind "market": forecast = implied)
     var legs = st.legs.map(function (L) { var c = {}; for (var k in L) c[k] = L[k]; c.sigP = kind === "market" ? Math.sqrt(Math.max(0, L.diff2)) : L.sigP * f; return c; });
     var c = {}; for (var k in st) c[k] = st[k]; c.legs = legs; return c;
@@ -412,7 +467,8 @@ var Engine = (function () {
       market: simulate(withVol(st, 1, "market"), plan, nPaths, seed),
       calm: simulate(withVol(st, 0.8), plan, nPaths, seed),
       wild: simulate(withVol(st, 1.2), plan, nPaths, seed),
-      against: simulate(st, plan, nPaths, seed, { drift: against })
+      against: simulate(st, plan, nPaths, seed, { drift: against }),
+      tails: simulate(st, plan, nPaths, seed, { jumps: CRASH })
     };
     if (st.mPath > 0 && st.tEv > 0) sc.bigJump = simulate(withJump(st, 1.5), plan, nPaths, seed);
     var p = 0, w = 0, lo = 1, hi = 0, list = [], k;
@@ -442,7 +498,8 @@ var Engine = (function () {
     var b = base.avgWin > 0 && base.avgLoss < 0 ? base.avgWin / -base.avgLoss : null;
     var kelly = b ? p - (1 - p) / b : null;
     return { p: p, se: se, lo: lo, hi: hi, scenarios: list, conf: conf, why: why, b: b, kelly: kelly, n: base.n,
-      planEv: st.evBase > 0 ? base.ev / st.evBase : null };
+      planEv: st.evBase > 0 ? base.ev / st.evBase : null, cvar5: base.cvar5, cvarTails: sc.tails ? sc.tails.cvar5 : null,
+      gaps: [[-0.10, 1.4], [-0.03, 1.1], [0.03, 0.95], [0.10, 0.85]].map(function (g) { return { move: g[0], ivMult: g[1], pl: gapPL(st, g[0], g[1]) }; }) };
   }
 
   /* ---------- grades: absolute checks ---------- */
@@ -553,7 +610,7 @@ var Engine = (function () {
     parseOCC: parseOCC, etTime: etTime, earnMap: earnMap, histStats: histStats, realizedVol: realizedVol, trendOf: trendOf,
     paritySpot: paritySpot, termStructure: termStructure, termFrom: termFrom, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
     makeSingle: makeSingle, makeSpread: makeSpread, verticals: verticals, volModel: volModel, valueAt: valueAt, intrinsic: intrinsic,
-    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, profitOdds: profitOdds, ODDS_W: ODDS_W, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
+    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, profitOdds: profitOdds, ODDS_W: ODDS_W, CRASH: CRASH, gapPL: gapPL, volRank: volRank, earningsMoves: earningsMoves, betaOf: betaOf, HAR_W: HAR_W, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
     LENSES: LENSES, pctRank: pctRank, scoreRows: scoreRows, STRUCT_DEFAULTS: STRUCT_DEFAULTS, PLAN_DEFAULTS: PLAN_DEFAULTS };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = Engine;
