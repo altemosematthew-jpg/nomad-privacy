@@ -1,0 +1,626 @@
+{
+ "title": "Oil is betting on peace | The tankers aren't",
+ "seed": "2026-11-11-oil-peace",
+ "publish_date": "2026-11-11",
+ "cover_scene": 0,
+ "cover_t": 5.0,
+ "scenes": [
+  {
+   "dur": 5.5,
+   "tag": "NOV 9 · SAUDI ARABIA",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "THIS OIL PIPELINE\nWAS JUST [ATTACKED]",
+   "sub": "Then the price of oil fell. Here's why.",
+   "map": {
+    "bbox": [
+     33,
+     14,
+     60,
+     35
+    ],
+    "bbox_to": [
+     35.5,
+     18.5,
+     52.5,
+     30
+    ],
+    "tint": {
+     "SAU": "gold"
+    }
+   },
+   "names": [
+    {
+     "lon": 46.5,
+     "lat": 20.6,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 54.5,
+     "lat": 32.3,
+     "text": "Iran"
+    },
+    {
+     "lon": 43.6,
+     "lat": 32.6,
+     "text": "Iraq"
+    },
+    {
+     "lon": 30.5,
+     "lat": 26.5,
+     "text": "Egypt"
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       49.68,
+       25.94
+      ],
+      [
+       47.0,
+       24.6
+      ],
+      [
+       44.0,
+       24.2
+      ],
+      [
+       41.3,
+       24.1
+      ],
+      [
+       38.06,
+       24.09
+      ]
+     ],
+     "tone": "gold",
+     "t0": 0.35,
+     "dur": 1.5,
+     "width": 9
+    }
+   ],
+   "pins": [
+    {
+     "lon": 49.68,
+     "lat": 25.94,
+     "text": "Abqaiq",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -26
+    },
+    {
+     "lon": 38.06,
+     "lat": 24.09,
+     "text": "Yanbu",
+     "tone": "gold",
+     "t": 1.8,
+     "dx": -18,
+     "dy": -28,
+     "anchor": "rm"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 40.6,
+     "lat": 24.1,
+     "tone": "red",
+     "t": 1.9
+    }
+   ],
+   "callout": {
+    "lon": 40.6,
+    "lat": 24.1,
+    "dx": -150,
+    "dy": 96,
+    "tone": "red",
+    "t": 2.5,
+    "text": "Medina region · Monday\n\"Limited fire\" · put out"
+   },
+   "src": "Source: Saudi Energy Ministry via Al Jazeera · strike site approximate"
+  },
+  {
+   "dur": 7.5,
+   "tag": "Why it matters",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "IT CARRIES ABOUT\n[4% OF WORLD OIL]",
+   "sub": "With the Strait of Hormuz squeezed by the Iran war, Saudi Arabia sends about 4 million barrels a day west to the Red Sea instead.",
+   "map": {
+    "bbox": [
+     33,
+     13,
+     62,
+     35
+    ],
+    "bbox_to": [
+     34.5,
+     14.5,
+     61,
+     34
+    ],
+    "tint": {
+     "SAU": "gold",
+     "IRN": "red"
+    }
+   },
+   "names": [
+    {
+     "lon": 45.2,
+     "lat": 21.2,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 55.0,
+     "lat": 31.8,
+     "text": "Iran"
+    },
+    {
+     "lon": 37.6,
+     "lat": 19.2,
+     "text": "Red Sea"
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       49.68,
+       25.94
+      ],
+      [
+       47.0,
+       24.6
+      ],
+      [
+       44.0,
+       24.2
+      ],
+      [
+       41.3,
+       24.1
+      ],
+      [
+       38.06,
+       24.09
+      ]
+     ],
+     "tone": "gold",
+     "t0": 0,
+     "dur": 0.01,
+     "width": 9,
+     "flow": true,
+     "flow_speed": 170
+    }
+   ],
+   "rings": [
+    {
+     "lon": 56.25,
+     "lat": 26.57,
+     "r": 74,
+     "tone": "red",
+     "t": 0.7,
+     "text": "Strait of Hormuz"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 49.68,
+     "lat": 25.94,
+     "text": "Abqaiq",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    },
+    {
+     "lon": 38.06,
+     "lat": 24.09,
+     "text": "Yanbu",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1360,
+    "tone": "amber",
+    "t": 3.6,
+    "text": "Flows were not affected by Monday's strike,\nthe Saudi Energy Ministry says"
+   },
+   "src": "Sources: Al Jazeera, Saudi Press Agency"
+  },
+  {
+   "dur": 8.5,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "OIL IS DOWN MORE\nTHAN [20%] THIS MONTH",
+   "sub": "Brent crude slipped under $90 on Tuesday, a first since August.",
+   "map": {
+    "bbox": [
+     18,
+     4,
+     78,
+     46
+    ],
+    "bbox_to": [
+     24,
+     8,
+     72,
+     42
+    ],
+    "tint": {}
+   },
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Brent oil fund (BNO) · daily close",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       62.95
+      ],
+      [
+       "2026-10-02",
+       63.1
+      ],
+      [
+       "2026-10-05",
+       61.45
+      ],
+      [
+       "2026-10-06",
+       61.93
+      ],
+      [
+       "2026-10-07",
+       61.9
+      ],
+      [
+       "2026-10-08",
+       63.64
+      ],
+      [
+       "2026-10-09",
+       63.99
+      ],
+      [
+       "2026-10-12",
+       65.12
+      ],
+      [
+       "2026-10-13",
+       65.1
+      ],
+      [
+       "2026-10-14",
+       65.06
+      ],
+      [
+       "2026-10-15",
+       64.86
+      ],
+      [
+       "2026-10-16",
+       67.19
+      ],
+      [
+       "2026-10-19",
+       67.12
+      ],
+      [
+       "2026-10-20",
+       66.87
+      ],
+      [
+       "2026-10-21",
+       67.05
+      ],
+      [
+       "2026-10-22",
+       68.91
+      ],
+      [
+       "2026-10-23",
+       70.99
+      ],
+      [
+       "2026-10-26",
+       70.07
+      ],
+      [
+       "2026-10-27",
+       69.67
+      ],
+      [
+       "2026-10-28",
+       70.14
+      ],
+      [
+       "2026-10-29",
+       70.76
+      ],
+      [
+       "2026-10-30",
+       71.39
+      ],
+      [
+       "2026-11-02",
+       65.95
+      ],
+      [
+       "2026-11-03",
+       66.11
+      ],
+      [
+       "2026-11-04",
+       60.4
+      ],
+      [
+       "2026-11-05",
+       62.53
+      ],
+      [
+       "2026-11-06",
+       62.22
+      ],
+      [
+       "2026-11-09",
+       58.93
+      ],
+      [
+       "2026-11-10",
+       58.36
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 3.0,
+     "marks": [
+      {
+       "date": "2026-10-30",
+       "text": "$71.39 · 30 OCT",
+       "tone": "white",
+       "dy": -62,
+       "dx": -70
+      },
+      {
+       "date": "2026-11-10",
+       "text": "$58.36 · 10 NOV",
+       "tone": "red",
+       "dy": -66,
+       "dx": 0
+      }
+     ]
+    }
+   },
+   "src": "Sources: MUFG Research, Financial Times, Robinhood (BNO closes)"
+  },
+  {
+   "dur": 9.0,
+   "tag": "Why",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "TRADERS ARE\nBETTING ON [PEACE]",
+   "map": {
+    "bbox": [
+     20,
+     10,
+     68,
+     58
+    ],
+    "bbox_to": [
+     24,
+     13,
+     64,
+     55
+    ],
+    "tint": {}
+   },
+   "panel": {
+    "y": 640,
+    "t": 0.6,
+    "list": [
+     {
+      "kicker": "Washington",
+      "text": "Trump says new strikes on Iran are \"highly unlikely\" if a strong deal is signed.",
+      "t": 0.9
+     },
+     {
+      "kicker": "Doha",
+      "text": "Qatar is carrying proposals between the US and Iran.",
+      "t": 3.4
+     },
+     {
+      "kicker": "Abu Dhabi",
+      "text": "US-brokered Russia–Ukraine talks restarted on Tuesday.",
+      "t": 5.6
+     }
+    ]
+   },
+   "src": "Sources: CNN, CNBC, Al Jazeera, Reuters"
+  },
+  {
+   "dur": 8.0,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "THE TANKERS\n[AREN'T BUYING IT]",
+   "sub": "Shipping oil through the Strait of Hormuz still carries a war premium.",
+   "map": {
+    "bbox": [
+     46,
+     21,
+     61,
+     32
+    ],
+    "bbox_to": [
+     48.5,
+     22.5,
+     60,
+     30.5
+    ],
+    "tint": {
+     "IRN": "red"
+    }
+   },
+   "panel": {
+    "y": 860,
+    "t": 0.7,
+    "title": "Loaded inside the Gulf vs just outside Hormuz",
+    "stat": {
+     "text": "$20",
+     "tone": "red",
+     "size": 210,
+     "label": "more per barrel to ship Gulf oil to China",
+     "notes": [
+      "Between 11 and 16 tankers were hit in the strait this month, depending on who is counting."
+     ],
+     "notes_t": 2.6
+    }
+   },
+   "src": "Sources: OilPrice.com, UKMTO"
+  },
+  {
+   "dur": 8.5,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "TEHRAN WANTS\n[7 CONDITIONS] FIRST",
+   "map": {
+    "bbox": [
+     40,
+     21,
+     66,
+     42
+    ],
+    "bbox_to": [
+     42,
+     23,
+     64,
+     40.5
+    ],
+    "tint": {
+     "IRN": "red"
+    }
+   },
+   "panel": {
+    "y": 640,
+    "t": 0.6,
+    "list": [
+     {
+      "kicker": "Iran",
+      "tone": "red",
+      "text": "Talks come only after the US meets its seven demands.",
+      "t": 0.9
+     },
+     {
+      "kicker": "Washington",
+      "tone": "red",
+      "text": "Rubio says those terms are not realistic.",
+      "t": 3.2
+     },
+     {
+      "kicker": "Last time",
+      "tone": "red",
+      "text": "A deal reopened Hormuz in June. It lasted only weeks.",
+      "t": 5.3
+     }
+    ]
+   },
+   "src": "Sources: Al Jazeera, MUFG Research"
+  },
+  {
+   "dur": 7.5,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "IS OIL RIGHT?\n[PEACE] OR [PAUSE]?",
+   "sub": "Comment one word.",
+   "map": {
+    "bbox": [
+     31,
+     11,
+     64,
+     39
+    ],
+    "bbox_to": [
+     33,
+     13,
+     62,
+     37
+    ],
+    "tint": {
+     "SAU": "gold",
+     "IRN": "red"
+    }
+   },
+   "routes": [
+    {
+     "points": [
+      [
+       49.68,
+       25.94
+      ],
+      [
+       47.0,
+       24.6
+      ],
+      [
+       44.0,
+       24.2
+      ],
+      [
+       41.3,
+       24.1
+      ],
+      [
+       38.06,
+       24.09
+      ]
+     ],
+     "tone": "gold",
+     "t0": 0,
+     "dur": 0.01,
+     "width": 9,
+     "flow": true,
+     "flow_speed": 170
+    }
+   ],
+   "rings": [
+    {
+     "lon": 56.25,
+     "lat": 26.57,
+     "r": 70,
+     "tone": "red",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 40.6,
+     "lat": 24.1,
+     "tone": "red",
+     "t": 0.2,
+     "glow": 90
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · data as of 10 Nov 2026"
+  }
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "date": "2026-11-11",
+ "built": "2026-11-10 evening (first run, by hand with the owner)",
+ "edition": "daily",
+ "session_date": "2026-11-10",
+ "tape": {
+  "tickers": [
+   [
+    "NVDA",
+    -5.47
+   ],
+   [
+    "TTWO",
+    8.31
+   ],
+   [
+    "HIMS",
+    -16.61
+   ],
+   [
+    "RKLB",
+    6.54
+   ],
+   [
+    "AAON",
+    19.31
+   ],
+   [
+    "CHTR",
+    10.61
+   ],
+   [
+    "ZIP",
+    53.61
+   ],
+   [
+    "GRPN",
+    -23.05
+   ],
+   [
+    "ONON",
+    -7.54
+   ],
+   [
+    "AMRC",
+    23.03
+   ]
+  ],
+  "metricool_id": 423992321,
+  "uuid": "250509283128788458",
+  "scheduled_for": "2026-11-11T06:00:00 America/Chicago",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=250509283128788458"
+ },
+ "reel": {
+  "title": "Oil is betting on peace | The tankers aren't",
+  "topic": "Saudi East-West pipeline attack (9 Nov); oil falling on Iran and Ukraine peace hopes; tanker war premium",
+  "question": "PEACE or PAUSE?",
+  "seconds": 54.5,
+  "metricool_id": 423992424,
+  "uuid": "7564629290832973652",
+  "scheduled_for": "2026-11-11T06:10:00 America/Chicago",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=7564629290832973652"
+ },
+ "skipped": [],
+ "notes": "Posts 1 and 2 of the month on Metricool (Free plan allows 20 scheduled posts a month unless upgraded)."
+}
