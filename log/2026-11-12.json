@@ -1,0 +1,73 @@
+{
+ "date": "2026-11-12",
+ "built": "2026-11-11 15:19-17:40 CT (manual fire: 'do it again for tomorrow')",
+ "edition": "daily",
+ "session_date": "2026-11-11",
+ "tape": {
+  "tickers": [
+   [
+    "CRWV",
+    24.85
+   ],
+   [
+    "COST",
+    2.01
+   ],
+   [
+    "FOSL",
+    26.49
+   ],
+   [
+    "RGTI",
+    -8.52
+   ],
+   [
+    "FORM",
+    11.85
+   ],
+   [
+    "GO",
+    -6.56
+   ],
+   [
+    "AZTA",
+    20.73
+   ],
+   [
+    "BV",
+    -13.65
+   ],
+   [
+    "RSKD",
+    22.29
+   ],
+   [
+    "HGTY",
+    -5.28
+   ]
+  ],
+  "metricool_id": 425086476,
+  "uuid": "-7906529177512687247",
+  "scheduled_for": "2026-11-12T06:00:00 America/Chicago",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-7906529177512687247"
+ },
+ "reel": {
+  "title": "The trade truce got 2 more months | Trump and Xi meet next week",
+  "topic": "US-China trade truce extended to 10 Jan 2027 (24% tariff, rare-earth curbs, port fees stay paused); Bessent 'de-risk, not decouple'; Trump-Xi at APEC Shenzhen 18-19 Nov",
+  "question": "DEAL or DELAY?",
+  "seconds": 57.5,
+  "metricool_id": 425086501,
+  "uuid": "209635114723463102",
+  "scheduled_for": "2026-11-12T06:10:00 America/Chicago",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=209635114723463102",
+  "spec": "specs/2026-11-12-reel-truce.json (specs/2026-11-12-reel.json is the other session's Abu Dhabi Reel)"
+ },
+ "skipped": [],
+ "notes": [
+  "Closes are each stock's last regular-session trade (3:59:59 PM ET), chosen by the owner at ~17:05 CT because Robinhood had not yet published official 11 Nov closes; FXI 11 Nov point likewise.",
+  "NVDA left out: down about 8% after hours on 11 Nov for reasons not researched; FORM used instead.",
+  "Single-source slides: RGTI (Yahoo), RSKD (TheStreet), FORM (CNBC via TheStreet).",
+  "Posts 3 and 4 of the month on Metricool.",
+  "DUPLICATE: another session scheduled its own 06:10 Reel ('One deal in Abu Dhabi', Metricool id 424997552, created 15:55 CT) after this run's 15:20 check. This run's truce Reel was switched to manual publish (autoPublish false) so only one Reel auto-posts."
+ ]
+}

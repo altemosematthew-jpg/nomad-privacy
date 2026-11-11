@@ -1,0 +1,611 @@
+{
+ "title": "The trade truce got 2 more months | Trump and Xi meet next week",
+ "seed": "2026-11-12-us-china-truce",
+ "publish_date": "2026-11-12",
+ "cover_scene": 0,
+ "cover_t": 5.0,
+ "scenes": [
+  {
+   "dur": 5.5,
+   "tag": "NOV 9 · BEIJING",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "cam": "out",
+   "headline": "THE TRADE TRUCE\nGOT [2 MORE MONTHS]",
+   "sub": "It was due to run out on Tuesday. Here's what it keeps on hold.",
+   "map": {
+    "bbox": [
+     104,
+     24,
+     126,
+     44
+    ],
+    "bbox_to": [
+     88,
+     14,
+     136,
+     50
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "names": [
+    {
+     "lon": 103.5,
+     "lat": 34.5,
+     "text": "China"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "text": "Beijing",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -26
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.5
+    }
+   ],
+   "callout": {
+    "lon": 116.4,
+    "lat": 39.9,
+    "dx": -40,
+    "dy": 150,
+    "tone": "amber",
+    "t": 2.2,
+    "text": "New deadline:\n10 January 2027"
+   },
+   "src": "Sources: Reuters, The National"
+  },
+  {
+   "dur": 7.0,
+   "tag": "What stays paused",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "A [24% TARIFF]\nSTAYS ON HOLD",
+   "sub": "China's extra tariff on US goods, for two more months.",
+   "map": {
+    "bbox": [
+     86,
+     14,
+     136,
+     50
+    ],
+    "bbox_to": [
+     90,
+     16,
+     132,
+     48
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    960
+   ],
+   "names": [
+    {
+     "lon": 103.5,
+     "lat": 34.5,
+     "text": "China"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "text": "Beijing",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 18,
+     "dy": -26
+    }
+   ],
+   "panel": {
+    "y": 990,
+    "t": 0.6,
+    "stat": {
+     "text": "24%",
+     "tone": "red",
+     "size": 190,
+     "label": "extra tariff on US goods, still suspended",
+     "notes": [
+      "A 10% tariff still applies."
+     ],
+     "notes_t": 2.4
+    }
+   },
+   "src": "Source: Reuters"
+  },
+  {
+   "dur": 8.5,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "CHINA STOCKS (FXI)\n[UP 2.5%] THIS MONTH",
+   "sub": "Hong Kong's Hang Seng rose 0.4% on Tuesday, the day the extension began.",
+   "map": {
+    "bbox": [
+     70,
+     2,
+     150,
+     56
+    ],
+    "bbox_to": [
+     76,
+     6,
+     144,
+     52
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "50 big Chinese stocks (FXI) · daily close",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       33.92
+      ],
+      [
+       "2026-10-02",
+       33.19
+      ],
+      [
+       "2026-10-05",
+       33.85
+      ],
+      [
+       "2026-10-06",
+       33.77
+      ],
+      [
+       "2026-10-07",
+       33.42
+      ],
+      [
+       "2026-10-08",
+       33.45
+      ],
+      [
+       "2026-10-09",
+       34.24
+      ],
+      [
+       "2026-10-12",
+       34.14
+      ],
+      [
+       "2026-10-13",
+       34.17
+      ],
+      [
+       "2026-10-14",
+       33.86
+      ],
+      [
+       "2026-10-15",
+       34.26
+      ],
+      [
+       "2026-10-16",
+       33.84
+      ],
+      [
+       "2026-10-19",
+       33.53
+      ],
+      [
+       "2026-10-20",
+       33.51
+      ],
+      [
+       "2026-10-21",
+       32.94
+      ],
+      [
+       "2026-10-22",
+       32.45
+      ],
+      [
+       "2026-10-23",
+       32.31
+      ],
+      [
+       "2026-10-26",
+       32.51
+      ],
+      [
+       "2026-10-27",
+       32.5
+      ],
+      [
+       "2026-10-28",
+       32.46
+      ],
+      [
+       "2026-10-29",
+       32.69
+      ],
+      [
+       "2026-10-30",
+       33.08
+      ],
+      [
+       "2026-11-02",
+       33.21
+      ],
+      [
+       "2026-11-03",
+       33.19
+      ],
+      [
+       "2026-11-04",
+       34.59
+      ],
+      [
+       "2026-11-05",
+       34.94
+      ],
+      [
+       "2026-11-06",
+       34.95
+      ],
+      [
+       "2026-11-09",
+       34.66
+      ],
+      [
+       "2026-11-10",
+       34.41
+      ],
+      [
+       "2026-11-11",
+       33.915
+      ]
+     ],
+     "tone": "amber",
+     "t0": 0.5,
+     "dur": 3.0,
+     "marks": [
+      {
+       "date": "2026-10-30",
+       "text": "$33.08 · 30 OCT",
+       "tone": "white",
+       "dy": 70,
+       "dx": 0
+      },
+      {
+       "date": "2026-11-11",
+       "text": "$33.92 · 11 NOV",
+       "tone": "amber",
+       "dy": 64,
+       "dx": -40
+      }
+     ]
+    }
+   },
+   "src": "Sources: CappNotes, Robinhood (FXI closes)"
+  },
+  {
+   "dur": 8.0,
+   "tag": "Why it matters",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "CHINA REFINES\n[9 IN 10] RARE EARTHS",
+   "map": {
+    "bbox": [
+     73,
+     17,
+     136,
+     54
+    ],
+    "bbox_to": [
+     78,
+     19,
+     131,
+     51
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    520,
+    1010,
+    960
+   ],
+   "names": [
+    {
+     "lon": 103.5,
+     "lat": 34.5,
+     "text": "China"
+    }
+   ],
+   "panel": {
+    "y": 990,
+    "t": 0.6,
+    "stat": {
+     "text": "91%",
+     "tone": "amber",
+     "size": 190,
+     "label": "of the world's refined rare earths came from China in 2024",
+     "notes": [
+      "It also mined 60%, the IEA says.",
+      "Its curbs on exporting them stay paused until 10 January."
+     ],
+     "notes_t": 2.0,
+     "notes_gap": 2.0
+    }
+   },
+   "src": "Sources: IEA via The National, Reuters"
+  },
+  {
+   "dur": 7.0,
+   "tag": "Also paused",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "FEES ON US-LINKED\nSHIPS: [ON HOLD]",
+   "sub": "China paused special port fees on US-linked vessels. The US paused action in its own shipping probe.",
+   "map": {
+    "bbox": [
+     106,
+     17,
+     136,
+     38
+    ],
+    "bbox_to": [
+     108,
+     18,
+     134,
+     37
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "routes": [
+    {
+     "points": [
+      [
+       135.5,
+       30.2
+      ],
+      [
+       127.5,
+       30.8
+      ],
+      [
+       121.9,
+       31.2
+      ]
+     ],
+     "tone": "amber",
+     "t0": 0.4,
+     "dur": 1.4,
+     "dash": true,
+     "width": 6
+    },
+    {
+     "points": [
+      [
+       135.5,
+       21.0
+      ],
+      [
+       124.0,
+       21.4
+      ],
+      [
+       114.4,
+       22.4
+      ]
+     ],
+     "tone": "amber",
+     "t0": 0.8,
+     "dur": 1.4,
+     "dash": true,
+     "width": 6
+    }
+   ],
+   "pins": [
+    {
+     "lon": 121.47,
+     "lat": 31.23,
+     "text": "Shanghai",
+     "tone": "gold",
+     "t": 1.6,
+     "dx": -18,
+     "dy": -26,
+     "anchor": "rm"
+    },
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen",
+     "tone": "gold",
+     "t": 2.0,
+     "dx": -18,
+     "dy": -26,
+     "anchor": "rm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "Port fees on US-linked ships:\nsuspended until 10 January"
+   },
+   "src": "Sources: Reuters, The National · ports shown as examples"
+  },
+  {
+   "dur": 8.5,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "IT'S A [PAUSE],\nNOT A FINAL DEAL",
+   "map": {
+    "bbox": [
+     86,
+     14,
+     136,
+     50
+    ],
+    "bbox_to": [
+     90,
+     16,
+     132,
+     48
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    470,
+    1010,
+    820
+   ],
+   "panel": {
+    "y": 850,
+    "t": 0.6,
+    "stat": {
+     "text": "JAN 10",
+     "tone": "red",
+     "size": 170,
+     "label": "when the paused measures run out again",
+     "notes": [
+      "Bessent says the US will \"closely assess\" whether China delivers on rare earths and farm purchases.",
+      "China says it will \"closely follow\" US plans for new tariffs, and may adjust its response."
+     ],
+     "notes_t": 1.6,
+     "notes_gap": 2.4
+    }
+   },
+   "src": "Sources: Business Standard, Reuters"
+  },
+  {
+   "dur": 6.5,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEXT: TRUMP AND XI\nIN [SHENZHEN]",
+   "sub": "They are expected to meet at the APEC summit, 18–19 November.",
+   "map": {
+    "bbox": [
+     110.5,
+     19.5,
+     117.5,
+     25.5
+    ],
+    "bbox_to": [
+     100,
+     14,
+     130,
+     42
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "cam_span": [
+    2.0,
+    4.6
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 64,
+     "tone": "amber",
+     "t": 0.4,
+     "text": "Shenzhen · APEC",
+     "text_dy": -96
+    }
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "text": "Beijing",
+     "tone": "gold",
+     "t": 4.8,
+     "dx": 18,
+     "dy": -26
+    }
+   ],
+   "src": "Source: Business Standard"
+  },
+  {
+   "dur": 6.5,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "WILL THE TRUCE HOLD?\n[DEAL] OR [DELAY]?",
+   "sub": "Comment one word.",
+   "map": {
+    "bbox": [
+     88,
+     14,
+     136,
+     50
+    ],
+    "bbox_to": [
+     92,
+     16,
+     132,
+     48
+    ],
+    "tint": {
+     "CHN": "gold"
+    }
+   },
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 50,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 11 Nov 2026"
+  }
+ ]
+}
