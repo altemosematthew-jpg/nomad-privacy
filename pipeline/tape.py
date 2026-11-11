@@ -119,17 +119,19 @@ def chart(im, d, s, spec, x0, y0, x1, y1):
     off = len(bars) - SHOW
     hi2 = max(b[2] for b in view)
     lo2 = min(b[3] for b in view)
+    ma_vals = [sum(closes[off + i - 19:off + i + 1]) / 20 for i in range(SHOW) if off + i >= 19]
     ref = hi2
-    pad = (hi2 - lo2) * 0.07 or 0.5
-    top, bot = hi2 + pad, lo2 - pad
-    lab_w = int(max(d.textlength(price_label(v, ref), font=font("Atkinson-Bold", 22)) for v in (hi2, lo2))) + 18
+    lo_all, hi_all = min([lo2] + ma_vals), max([hi2] + ma_vals)  # keep the 20-day average inside the chart too
+    pad = (hi_all - lo_all) * 0.07 or 0.5
+    top, bot = hi_all + pad, lo_all - pad
+    lab_w = int(max(d.textlength(price_label(v, ref), font=font("Atkinson-Bold", 22)) for v in (hi_all, lo_all))) + 18
     px0, px1 = x0 + lab_w, x1 - 148
     py0, py1 = y0 + 14, y1 - 46
     Y = lambda v: py1 - (py1 - py0) * (v - bot) / (top - bot)
     step = (px1 - px0) / SHOW
     X = lambda i: px0 + step * (i + 0.5)
     for k in range(4):  # grid + y labels
-        v = lo2 + (hi2 - lo2) * (k + 0.5) / 4
+        v = lo_all + (hi_all - lo_all) * (k + 0.5) / 4
         d.line([px0, Y(v), px1, Y(v)], fill=GRID, width=2)
         d.text((x0, Y(v)), price_label(v, ref), font=font("Atkinson-Bold", 22), fill=SOFT, anchor="lm")
     last_m = view[0][0][:7]
@@ -160,7 +162,11 @@ def chart(im, d, s, spec, x0, y0, x1, y1):
     x = X(SHOW - 1)
     d.rounded_rectangle([x - bw / 2 - 9, Y(b[2]) - 10, x + bw / 2 + 9, Y(b[3]) + 10], radius=8, outline=GOLD, width=3)
     tx = x1 - 120  # right-hand tags, nudged apart so they never overlap
-    items = [[Y(hi2), price_label(hi2, ref), GREEN], [Y(s["close"]), price_label(s["close"], ref), GOLD], [Y(lo2), price_label(lo2, ref), RED]]
+    close_txt = price_label(s["close"], ref)
+    items = [[Y(s["close"]), close_txt, GOLD]]
+    for v, col in ((hi2, GREEN), (lo2, RED)):
+        if price_label(v, ref) != close_txt:  # a close at the 2-month high/low gets one gold tag, not two
+            items.append([Y(v), price_label(v, ref), col])
     items.sort(key=lambda t: t[0])
     for _ in range(6):
         for a, b2 in zip(items, items[1:]):

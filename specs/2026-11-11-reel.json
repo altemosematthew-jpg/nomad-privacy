@@ -10,6 +10,7 @@
    "tag": "NOV 9 · SAUDI ARABIA",
    "tag_tone": "red",
    "hl": "red",
+   "cam": "out",
    "headline": "THIS OIL PIPELINE\nWAS JUST [ATTACKED]",
    "sub": "Then the price of oil fell. Here's why.",
    "map": {
@@ -41,14 +42,9 @@
      "text": "Iran"
     },
     {
-     "lon": 43.6,
-     "lat": 32.6,
-     "text": "Iraq"
-    },
-    {
-     "lon": 30.5,
-     "lat": 26.5,
-     "text": "Egypt"
+     "lon": 38.9,
+     "lat": 19.4,
+     "text": "Red Sea"
     }
    ],
    "routes": [
@@ -119,7 +115,7 @@
     "t": 2.5,
     "text": "Medina region · Monday\n\"Limited fire\" · put out"
    },
-   "src": "Source: Saudi Energy Ministry via Al Jazeera · strike site approximate"
+   "src": "Source: Saudi Energy Ministry via Al Jazeera · route and strike site approximate"
   },
   {
    "dur": 7.5,
@@ -234,15 +230,15 @@
     "t": 3.6,
     "text": "Flows were not affected by Monday's strike,\nthe Saudi Energy Ministry says"
    },
-   "src": "Sources: Al Jazeera, Saudi Press Agency"
+   "src": "Sources: Al Jazeera, Saudi Press Agency · route approximate"
   },
   {
    "dur": 8.5,
    "tag": "The market",
    "tag_tone": "amber",
    "hl": "red",
-   "headline": "OIL IS DOWN MORE\nTHAN [20%] THIS MONTH",
-   "sub": "Brent crude slipped under $90 on Tuesday, a first since August.",
+   "headline": "OIL HAS DROPPED\n[18%] SINCE OCT 30",
+   "sub": "Brent briefly slipped under $90 on Tuesday, a first since August.",
    "map": {
     "bbox": [
      18,
@@ -403,7 +399,7 @@
      ]
     }
    },
-   "src": "Sources: MUFG Research, Financial Times, Robinhood (BNO closes)"
+   "src": "Sources: CappNotes, MUFG Research, Robinhood (BNO closes)"
   },
   {
    "dur": 9.0,
@@ -411,43 +407,154 @@
    "tag_tone": "amber",
    "hl": "amber",
    "headline": "TRADERS ARE\nBETTING ON [PEACE]",
+   "sub": "Trump told CNN new strikes on Iran are \"highly unlikely\" if a strong deal is signed.",
    "map": {
     "bbox": [
-     20,
-     10,
-     68,
-     58
+     45,
+     22.5,
+     58,
+     37.5
     ],
     "bbox_to": [
      24,
-     13,
-     64,
-     55
+     21,
+     62,
+     57
     ],
-    "tint": {}
+    "tint": {
+     "IRN": "red",
+     "QAT": "gold",
+     "ARE": "gold"
+    }
    },
-   "panel": {
-    "y": 640,
-    "t": 0.6,
-    "list": [
-     {
-      "kicker": "Washington",
-      "text": "Trump says new strikes on Iran are \"highly unlikely\" if a strong deal is signed.",
-      "t": 0.9
-     },
-     {
-      "kicker": "Doha",
-      "text": "Qatar is carrying proposals between the US and Iran.",
-      "t": 3.4
-     },
-     {
-      "kicker": "Abu Dhabi",
-      "text": "US-brokered Russia–Ukraine talks restarted on Tuesday.",
-      "t": 5.6
-     }
-    ]
-   },
-   "src": "Sources: CNN, CNBC, Al Jazeera, Reuters"
+   "focus": [
+    70,
+    650,
+    1010,
+    1440
+   ],
+   "names": [
+    {
+     "lon": 55.2,
+     "lat": 32.2,
+     "text": "Iran"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 51.53,
+     "lat": 25.29,
+     "text": "Doha\nQatar carries\nUS–Iran proposals",
+     "tone": "gold",
+     "t": 0.6,
+     "dx": -20,
+     "dy": -20,
+     "anchor": "rm",
+     "size": 27
+    },
+    {
+     "lon": 51.39,
+     "lat": 35.69,
+     "text": "Tehran",
+     "tone": "red",
+     "t": 1.0,
+     "dx": 18,
+     "dy": 0,
+     "size": 27
+    },
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "text": "Abu Dhabi\nRussia–Ukraine\ntalks restart",
+     "tone": "amber",
+     "t": 2.7,
+     "dx": 20,
+     "dy": 10,
+     "size": 27
+    },
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 5.5,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm",
+     "size": 27
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "amber",
+     "t": 5.7,
+     "dx": 18,
+     "dy": 0,
+     "size": 27
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       51.53,
+       25.29
+      ],
+      [
+       51.39,
+       35.69
+      ]
+     ],
+     "arc": 0.18,
+     "dash": true,
+     "tone": "gold",
+     "t0": 1.0,
+     "dur": 1.2,
+     "width": 6
+    },
+    {
+     "points": [
+      [
+       54.37,
+       24.45
+      ],
+      [
+       30.52,
+       50.45
+      ]
+     ],
+     "arc": 0.12,
+     "dash": true,
+     "tone": "amber",
+     "t0": 4.3,
+     "dur": 1.4,
+     "width": 6
+    },
+    {
+     "points": [
+      [
+       54.37,
+       24.45
+      ],
+      [
+       37.62,
+       55.75
+      ]
+     ],
+     "arc": 0.08,
+     "dash": true,
+     "tone": "amber",
+     "t0": 4.5,
+     "dur": 1.4,
+     "width": 6
+    }
+   ],
+   "src": "Sources: CNN, Al Jazeera, Kyiv Independent, Reuters",
+   "cam_span": [
+    2.4,
+    5.4
+   ]
   },
   {
    "dur": 8.0,
@@ -455,33 +562,73 @@
    "tag_tone": "red",
    "hl": "red",
    "headline": "THE TANKERS\n[AREN'T BUYING IT]",
-   "sub": "Shipping oil through the Strait of Hormuz still carries a war premium.",
+   "sub": "Shipping oil out of the Gulf still carries a war premium.",
    "map": {
     "bbox": [
-     46,
-     21,
-     61,
-     32
+     47.5,
+     22.8,
+     60.5,
+     30.3
     ],
     "bbox_to": [
      48.5,
-     22.5,
-     60,
-     30.5
+     23.3,
+     59.5,
+     29.8
     ],
     "tint": {
      "IRN": "red"
     }
    },
-   "panel": {
-    "y": 860,
-    "t": 0.7,
-    "title": "Loaded inside the Gulf vs just outside Hormuz",
-    "stat": {
-     "text": "$20",
+   "focus": [
+    70,
+    540,
+    1010,
+    990
+   ],
+   "rings": [
+    {
+     "lon": 56.25,
+     "lat": 26.57,
+     "r": 62,
      "tone": "red",
-     "size": 210,
-     "label": "more per barrel to ship Gulf oil to China",
+     "t": 0.5,
+     "text": "Strait of Hormuz",
+     "text_dy": -92
+    }
+   ],
+   "pins": [
+    {
+     "lon": 50.16,
+     "lat": 26.64,
+     "text": "Loaded in\nthe Gulf",
+     "tone": "gold",
+     "t": 1.0,
+     "dx": -20,
+     "dy": -14,
+     "anchor": "rm",
+     "size": 27
+    },
+    {
+     "lon": 56.33,
+     "lat": 25.12,
+     "text": "Loaded\njust outside",
+     "tone": "gold",
+     "t": 1.5,
+     "dx": 22,
+     "dy": 4,
+     "size": 27
+    }
+   ],
+   "panel": {
+    "y": 1010,
+    "t": 0.9,
+    "title": "Shipping a barrel to China",
+    "stat": {
+     "text": "~$20",
+     "tone": "red",
+     "size": 190,
+     "label": "more per barrel when it loads inside the Gulf",
      "notes": [
       "Between 11 and 16 tankers were hit in the strait this month, depending on who is counting."
      ],
@@ -491,53 +638,59 @@
    "src": "Sources: OilPrice.com, UKMTO"
   },
   {
-   "dur": 8.5,
+   "dur": 9.0,
    "tag": "The catch",
    "tag_tone": "red",
    "hl": "red",
-   "headline": "TEHRAN WANTS\n[7 CONDITIONS] FIRST",
+   "headline": "IRAN WANTS\n[7 DEMANDS] MET FIRST",
    "map": {
     "bbox": [
-     40,
-     21,
-     66,
-     42
-    ],
-    "bbox_to": [
-     42,
-     23,
+     43,
+     24.5,
      64,
      40.5
+    ],
+    "bbox_to": [
+     44.5,
+     25.5,
+     62.5,
+     39.5
     ],
     "tint": {
      "IRN": "red"
     }
    },
+   "focus": [
+    70,
+    470,
+    1010,
+    820
+   ],
+   "names": [
+    {
+     "lon": 54.0,
+     "lat": 33.6,
+     "text": "Iran"
+    }
+   ],
    "panel": {
-    "y": 640,
+    "y": 850,
     "t": 0.6,
-    "list": [
-     {
-      "kicker": "Iran",
-      "tone": "red",
-      "text": "Talks come only after the US meets its seven demands.",
-      "t": 0.9
-     },
-     {
-      "kicker": "Washington",
-      "tone": "red",
-      "text": "Rubio says those terms are not realistic.",
-      "t": 3.2
-     },
-     {
-      "kicker": "Last time",
-      "tone": "red",
-      "text": "A deal reopened Hormuz in June. It lasted only weeks.",
-      "t": 5.3
-     }
-    ]
+    "stat": {
+     "text": "7",
+     "tone": "red",
+     "size": 170,
+     "label": "demands Iran wants met before talks go further",
+     "notes": [
+      "Among them: lift the US blockade of Iran's ports, and lift sanctions.",
+      "Rubio calls some of them \"not realistic\". Iran calls its plan \"the most logical\" one.",
+      "A deal reopened Hormuz in June. It held for only a few weeks."
+     ],
+     "notes_t": 1.6,
+     "notes_gap": 2.0
+    }
    },
-   "src": "Sources: Al Jazeera, MUFG Research"
+   "src": "Sources: Al Jazeera, CNBC, MUFG Research"
   },
   {
    "dur": 7.5,
@@ -620,7 +773,7 @@
     "handle": "@thegildedticker",
     "note": "Follow for the next chapter"
    },
-   "src": "News, not financial advice · data as of 10 Nov 2026"
+   "src": "News, not financial advice · prices up to 10 Nov 2026"
   }
  ]
 }

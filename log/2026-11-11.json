@@ -46,21 +46,27 @@
     23.03
    ]
   ],
-  "metricool_id": 423992321,
+  "metricool_id": 424024317,
   "uuid": "250509283128788458",
   "scheduled_for": "2026-11-11T06:00:00 America/Chicago",
-  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=250509283128788458"
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=250509283128788458",
+  "media": "01, 02b, 03, 04, 05, 06b, 07b, 08, 09, 10 .jpg"
  },
  "reel": {
   "title": "Oil is betting on peace | The tankers aren't",
   "topic": "Saudi East-West pipeline attack (9 Nov); oil falling on Iran and Ukraine peace hopes; tanker war premium",
   "question": "PEACE or PAUSE?",
-  "seconds": 54.5,
-  "metricool_id": 423992424,
+  "seconds": 55.0,
+  "metricool_id": 424023671,
   "uuid": "7564629290832973652",
   "scheduled_for": "2026-11-11T06:10:00 America/Chicago",
-  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=7564629290832973652"
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=7564629290832973652",
+  "media": "reel-v2.mp4, cover-v2.jpg"
  },
  "skipped": [],
- "notes": "Posts 1 and 2 of the month on Metricool (Free plan allows 20 scheduled posts a month unless upgraded)."
+ "notes": "Posts 1 and 2 of the month on Metricool (Free plan allows 20 scheduled posts a month unless upgraded).",
+ "revisions": [
+  "23:22 Reel v2: headline now says oil fell 18% since 30 Oct (matches the BNO chart; v1 said 'more than 20%' from futures data); Brent 'briefly' under $90; peace-talks and Iran scenes rebuilt around the map; Rubio and Iran's reply both quoted; audio normalised to -14 LUFS; caption updated to match.",
+  "23:23 Carousel: slide 6 (CHTR) keeps the 20-day average inside the chart; slide 7 (ZIP) shows one gold tag where the close equals the 2-month high."
+ ]
 }
