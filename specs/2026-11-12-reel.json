@@ -1,0 +1,711 @@
+{
+ "title": "One deal in Abu Dhabi | Traders still price peace at 10%",
+ "seed": "2026-11-12-abu-dhabi",
+ "publish_date": "2026-11-12",
+ "cover_scene": 0,
+ "cover_t": 5.2,
+ "scenes": [
+  {
+   "dur": 6.5,
+   "tag": "NOV 11 · ABU DHABI",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "cam": "out",
+   "headline": "RUSSIA AND UKRAINE\nAGREED ON [ONE THING]",
+   "sub": "Two days of US-run talks just ended. Here's what came out, and what's next.",
+   "map": {
+    "bbox": [
+     20,
+     17,
+     64,
+     61
+    ],
+    "bbox_to": [
+     24,
+     20,
+     61,
+     59
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 27.0,
+     "lat": 48.9,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 47.5,
+     "lat": 52.6,
+     "text": "Russia"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "text": "Abu Dhabi",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -6
+    },
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 1.3,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "amber",
+     "t": 1.5,
+     "dx": 18,
+     "dy": 0
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       54.37,
+       24.45
+      ],
+      [
+       30.52,
+       50.45
+      ]
+     ],
+     "arc": 0.14,
+     "dash": true,
+     "tone": "amber",
+     "t0": 0.8,
+     "dur": 1.2,
+     "width": 6
+    },
+    {
+     "points": [
+      [
+       54.37,
+       24.45
+      ],
+      [
+       37.62,
+       55.75
+      ]
+     ],
+     "arc": -0.1,
+     "dash": true,
+     "tone": "amber",
+     "t0": 1.0,
+     "dur": 1.2,
+     "width": 6
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "tone": "gold",
+     "t": 0.2
+    }
+   ],
+   "src": "Sources: AP, Kyiv Independent",
+   "focus": [
+    70,
+    780,
+    1010,
+    1480
+   ]
+  },
+  {
+   "dur": 8.0,
+   "tag": "The one deal",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE ONE DEAL:\nA [PRISONER SWAP]",
+   "sub": "US envoy Jared Kushner called it \"the biggest humanitarian release of prisoners.\" Russia says it's agreed \"in principle.\"",
+   "map": {
+    "bbox": [
+     24,
+     44,
+     44,
+     58
+    ],
+    "bbox_to": [
+     25,
+     44.5,
+     43,
+     57.5
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    640,
+    1010,
+    1060
+   ],
+   "names": [
+    {
+     "lon": 31.5,
+     "lat": 48.2,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 40.5,
+     "lat": 53.6,
+     "text": "Russia"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 18,
+     "dy": 0
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       30.52,
+       50.45
+      ],
+      [
+       37.62,
+       55.75
+      ]
+     ],
+     "arc": 0.22,
+     "tone": "gold",
+     "t0": 0.7,
+     "dur": 1.2,
+     "width": 6,
+     "flow": true,
+     "flow_speed": 120
+    },
+    {
+     "points": [
+      [
+       37.62,
+       55.75
+      ],
+      [
+       30.52,
+       50.45
+      ]
+     ],
+     "arc": -0.22,
+     "tone": "gold",
+     "t0": 1.0,
+     "dur": 1.2,
+     "width": 6,
+     "flow": true,
+     "flow_speed": 120
+    }
+   ],
+   "panel": {
+    "y": 1090,
+    "t": 1.6,
+    "stat": {
+     "text": "2–3",
+     "tone": "amber",
+     "size": 170,
+     "label": "weeks until the swap could happen, a Russian officer told state TV",
+     "notes": [
+      "He says it will be one of the biggest since 1,000 soldiers from each side came home last year."
+     ],
+     "notes_t": 3.4
+    }
+   },
+   "src": "Sources: AP via CP24, NPR, Kyiv Independent"
+  },
+  {
+   "dur": 8.5,
+   "tag": "What they didn't get",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "NO CEASEFIRE.\nTHE STRIKES [WENT ON]",
+   "sub": "Kyiv wanted a ceasefire at sea and on energy targets. Both sides kept striking while the talks ran.",
+   "map": {
+    "bbox": [
+     18,
+     42.5,
+     40,
+     61.5
+    ],
+    "bbox_to": [
+     19,
+     43,
+     39,
+     61
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    650,
+    1010,
+    1440
+   ],
+   "names": [
+    {
+     "lon": 33.5,
+     "lat": 43.6,
+     "text": "Black Sea"
+    },
+    {
+     "lon": 19.8,
+     "lat": 58.2,
+     "text": "Baltic Sea"
+    },
+    {
+     "lon": 31.2,
+     "lat": 49.0,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 36.5,
+     "lat": 57.0,
+     "text": "Russia"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 30.73,
+     "lat": 46.48,
+     "text": "Odesa region\nRussian strike\non a market",
+     "tone": "red",
+     "t": 1.6,
+     "dx": -20,
+     "dy": 6,
+     "anchor": "rm",
+     "size": 27
+    },
+    {
+     "lon": 28.39,
+     "lat": 59.67,
+     "text": "Ust-Luga oil port\nfire after\ndrone attack",
+     "tone": "red",
+     "t": 2.6,
+     "dx": 22,
+     "dy": 8,
+     "size": 27
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 30.73,
+     "lat": 46.48,
+     "tone": "red",
+     "t": 1.5
+    },
+    {
+     "lon": 28.39,
+     "lat": 59.67,
+     "tone": "red",
+     "t": 2.5
+    }
+   ],
+   "src": "Sources: AP, Kyiv Independent · locations approximate"
+  },
+  {
+   "dur": 8.5,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "A CEASEFIRE IN 2026?\nTRADERS SAY [10%]",
+   "sub": "That was the price on Polymarket, a prediction market, on Wednesday. For the end of 2027: about 47%.",
+   "map": {
+    "bbox": [
+     -12,
+     33,
+     62,
+     66
+    ],
+    "bbox_to": [
+     -8,
+     35,
+     58,
+     64
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    640,
+    1010,
+    1000
+   ],
+   "panel": {
+    "y": 1030,
+    "t": 0.9,
+    "title": "Polymarket · Russia–Ukraine ceasefire by…",
+    "bars": [
+     {
+      "label": "Dec 31, 2026",
+      "frac": 0.1,
+      "value": "10%",
+      "tone": "red"
+     },
+     {
+      "label": "Dec 31, 2027",
+      "frac": 0.47,
+      "value": "47%",
+      "tone": "amber"
+     }
+    ],
+    "note": "Wed 11 Nov · 12:44 p.m. ET",
+    "note_tone": "amber"
+   },
+   "src": "Source: Polymarket via The Rio Times · odds change all the time"
+  },
+  {
+   "dur": 8.0,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "EUROPE WAS THERE.\n[NOT AT THE TABLE]",
+   "sub": "Security advisers from France, Germany, the UK and Italy met Ukraine separately. Zelenskyy says Europe must be at every stage.",
+   "map": {
+    "bbox": [
+     -12,
+     20,
+     62,
+     60
+    ],
+    "bbox_to": [
+     -9,
+     21.5,
+     60,
+     58.5
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    680,
+    1010,
+    1440
+   ],
+   "pins": [
+    {
+     "lon": -0.13,
+     "lat": 51.51,
+     "text": "London",
+     "tone": "amber",
+     "t": 0.6,
+     "dx": -16,
+     "dy": -8,
+     "anchor": "rm",
+     "size": 26
+    },
+    {
+     "lon": 2.35,
+     "lat": 48.86,
+     "text": "Paris",
+     "tone": "amber",
+     "t": 0.8,
+     "dx": -16,
+     "dy": 10,
+     "anchor": "rm",
+     "size": 26
+    },
+    {
+     "lon": 13.4,
+     "lat": 52.52,
+     "text": "Berlin",
+     "tone": "amber",
+     "t": 1.0,
+     "dx": 16,
+     "dy": -12,
+     "size": 26
+    },
+    {
+     "lon": 12.5,
+     "lat": 41.9,
+     "text": "Rome",
+     "tone": "amber",
+     "t": 1.2,
+     "dx": 16,
+     "dy": 6,
+     "size": 26
+    },
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "text": "Abu Dhabi",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": 4,
+     "size": 26
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       -0.13,
+       51.51
+      ],
+      [
+       54.37,
+       24.45
+      ]
+     ],
+     "arc": 0.12,
+     "dash": true,
+     "tone": "amber",
+     "t0": 1.6,
+     "dur": 1.3,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       2.35,
+       48.86
+      ],
+      [
+       54.37,
+       24.45
+      ]
+     ],
+     "arc": 0.1,
+     "dash": true,
+     "tone": "amber",
+     "t0": 1.8,
+     "dur": 1.3,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       13.4,
+       52.52
+      ],
+      [
+       54.37,
+       24.45
+      ]
+     ],
+     "arc": 0.08,
+     "dash": true,
+     "tone": "amber",
+     "t0": 2.0,
+     "dur": 1.3,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       12.5,
+       41.9
+      ],
+      [
+       54.37,
+       24.45
+      ]
+     ],
+     "arc": 0.06,
+     "dash": true,
+     "tone": "amber",
+     "t0": 2.2,
+     "dur": 1.3,
+     "width": 5
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 4.2,
+    "text": "The Kremlin says Europeans could join later"
+   },
+   "src": "Sources: AP, Kyiv Independent"
+  },
+  {
+   "dur": 8.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEXT STOP:\n[MOSCOW]",
+   "sub": "Witkoff and Kushner are due to meet Putin on Thursday, then see Zelenskyy in Dublin. One goal: get Europe into the talks.",
+   "map": {
+    "bbox": [
+     -14,
+     20,
+     62,
+     62
+    ],
+    "bbox_to": [
+     -11,
+     22,
+     60,
+     60.5
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    700,
+    1010,
+    1440
+   ],
+   "pins": [
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "text": "Abu Dhabi",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 18,
+     "dy": 4,
+     "size": 26
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow\nPutin",
+     "tone": "amber",
+     "t": 1.6,
+     "dx": 18,
+     "dy": -10,
+     "size": 27
+    },
+    {
+     "lon": -6.26,
+     "lat": 53.35,
+     "text": "Dublin\nZelenskyy",
+     "tone": "amber",
+     "t": 3.6,
+     "dx": 0,
+     "dy": -44,
+     "anchor": "mm",
+     "size": 27
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       54.37,
+       24.45
+      ],
+      [
+       37.62,
+       55.75
+      ]
+     ],
+     "arc": -0.1,
+     "tone": "gold",
+     "t0": 0.5,
+     "dur": 1.2,
+     "width": 7
+    },
+    {
+     "points": [
+      [
+       37.62,
+       55.75
+      ],
+      [
+       -6.26,
+       53.35
+      ]
+     ],
+     "arc": 0.12,
+     "tone": "gold",
+     "t0": 2.4,
+     "dur": 1.3,
+     "width": 7
+    }
+   ],
+   "src": "Sources: AP via CP24, investingLive"
+  },
+  {
+   "dur": 6.5,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "CEASEFIRE BY NEW YEAR?\n[YES] OR [NO]?",
+   "sub": "Comment one word.",
+   "map": {
+    "bbox": [
+     6,
+     28,
+     62,
+     62
+    ],
+    "bbox_to": [
+     9,
+     30,
+     60,
+     60
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 0.2,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm",
+     "size": 26
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 18,
+     "dy": 0,
+     "size": 26
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 54.37,
+     "lat": 24.45,
+     "tone": "gold",
+     "t": 0.2,
+     "glow": 90
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · odds as of 11 Nov 2026"
+  }
+ ]
+}
