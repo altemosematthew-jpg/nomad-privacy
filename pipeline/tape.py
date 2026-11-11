@@ -158,9 +158,11 @@ def chart(im, d, s, spec, x0, y0, x1, y1):
         if yb - ya < 3:
             yb = ya + 3
         d.rectangle([x - bw / 2, ya, x + bw / 2, yb], fill=col)
-    b = view[-1]  # highlight the session's candle
-    x = X(SHOW - 1)
-    d.rounded_rectangle([x - bw / 2 - 9, Y(b[2]) - 10, x + bw / 2 + 9, Y(b[3]) + 10], radius=8, outline=GOLD, width=3)
+    mb = spec.get("move_bars", 1)  # highlight the candles the % move covers (1 = the session, 5 = the week)
+    hl = view[-mb:]
+    xa, xb = X(SHOW - mb), X(SHOW - 1)
+    d.rounded_rectangle([xa - bw / 2 - 9, Y(max(c[2] for c in hl)) - 10, xb + bw / 2 + 9, Y(min(c[3] for c in hl)) + 10],
+                        radius=8, outline=GOLD, width=3)
     tx = x1 - 120  # right-hand tags, nudged apart so they never overlap
     close_txt = price_label(s["close"], ref)
     items = [[Y(s["close"]), close_txt, GOLD]]
@@ -207,7 +209,7 @@ def slide(spec, s, n, out):
     if first:
         d.rounded_rectangle([MX, y, W - MX, y + 150], radius=14, fill=(24, 33, 52), outline=GOLD_DIM, width=2)
         d.text((MX + 30, y + 54), "Ten on the Tape", font=font("Atkinson-Bold", 60), fill=IVORY, anchor="lm")
-        d.text((MX + 32, y + 112), f"10 stocks with big news · {spec['post_label']}", font=font("Atkinson-Bold", 28), fill=GOLD, anchor="lm")
+        d.text((MX + 32, y + 112), f"{spec.get('title_sub', '10 stocks with big news')} · {spec['post_label']}", font=font("Atkinson-Bold", 28), fill=GOLD, anchor="lm")
         y += 150 + 46
     else:
         y += 20
@@ -220,7 +222,7 @@ def slide(spec, s, n, out):
     pw = d.textlength(pct_text(p), font=fp)
     d.text((nx, y + 37), s["name"], font=fit_font(d, s["name"], "AtkinsonNext-SemiBold", 31, W - MX - pw - 30 - nx, min_size=22), fill=IVORY, anchor="lm")
     d.text((W - MX, y + 30), pct_text(p), font=fp, fill=col, anchor="rm")
-    d.text((W - MX, y + 92), f"{day} · closed {money(s['close'])}", font=font("AtkinsonNext-SemiBold", 24), fill=IVORY, anchor="rm")
+    d.text((W - MX, y + 92), f"{spec.get('move_label', day)} · closed {money(s['close'])}", font=font("AtkinsonNext-SemiBold", 24), fill=IVORY, anchor="rm")
     y += 74 + 62
     fh = fit_font(d, s["headline"], "Atkinson-Bold", 56, W - 2 * MX, min_size=42)  # headline + body
     if d.textlength(s["headline"], font=fh) > W - 2 * MX:
@@ -237,7 +239,7 @@ def slide(spec, s, n, out):
     y += (3 - len(lines)) * 14 + 30
     stats_y = 1160  # chart fills what is left above the legend and stats
     chart(im, d, s, spec, MX, y, W - MX, stats_y - 92)
-    legend(d, stats_y - 62, day)
+    legend(d, stats_y - 62, spec.get("move_label", day) if spec.get("move_bars", 1) > 1 else day)
     d.line([MX, stats_y - 22, W - MX, stats_y - 22], fill=GOLD_DIM, width=2)
     vol_x = s["bars"][-1][5] / s["avg_volume_30d"]
     if s["close"] >= s["high_52w"] * 0.995:
