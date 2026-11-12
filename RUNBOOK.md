@@ -191,6 +191,11 @@ Skip a post with `--tape none` or `--reel none`. If it is already past 05:50, ad
 schedule a time that has already passed.
 
 ### 7. Schedule in Metricool
+**Check again right before you create anything.** More than one session can work on the same day (the
+03:05 run, a run the owner starts by hand, a chat session), so call `getScheduledPosts` for D once more
+just before each `createScheduledPost`. If a carousel (or a Reel) for D is already there and is not a
+draft, do not create another one: report it instead. (On 11 Nov two sessions both scheduled a 06:00
+carousel for the 12th; one had to be turned into a draft.)
 Read each JSON file and call `createScheduledPost(blogId=…, date=…, info=…)` with its three fields exactly
 as written. Then call `getScheduledPosts` for D and confirm both are there, status PENDING, at the right times.
 To correct a post that is already scheduled, use `updateScheduledPost` with the post's `id` and `uuid` from
