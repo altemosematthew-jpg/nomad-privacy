@@ -68,6 +68,70 @@
   "NVDA left out: down about 8% after hours on 11 Nov for reasons not researched; FORM used instead.",
   "Single-source slides: RGTI (Yahoo), RSKD (TheStreet), FORM (CNBC via TheStreet).",
   "Posts 3 and 4 of the month on Metricool.",
-  "DUPLICATE: another session scheduled its own 06:10 Reel ('One deal in Abu Dhabi', Metricool id 424997552, created 15:55 CT) after this run's 15:20 check. This run's truce Reel was switched to manual publish (autoPublish false) so only one Reel auto-posts."
- ]
+  "DUPLICATE: another session scheduled its own 06:10 Reel ('One deal in Abu Dhabi', Metricool id 424997552, created 15:55 CT) after this run's 15:20 check. This run's truce Reel was switched to manual publish (autoPublish false) so only one Reel auto-posts.",
+  "19:31 CT: session_0199Z1Cj5BYbK9f1oFnnWaKb scheduled a second carousel (official closes) without re-checking Metricool first, so two carousels were set for 06:00. At 19:32 it turned its own carousel into a draft, keeping the owner-directed 17:37 carousel (id 425086476). Posts created on Metricool this month now total 6 (2 on 11 Nov, 4 for 12 Nov incl. the draft)."
+ ],
+ "reel_auto_publish": {
+  "title": "One deal in Abu Dhabi | Traders still price peace at 10%",
+  "topic": "Russia-Ukraine talks in Abu Dhabi end with a prisoner-swap deal in principle, no ceasefire; Polymarket ceasefire odds ~10% by 31 Dec 2026; Europe not at the table; US envoys to Moscow on Thursday",
+  "question": "Ceasefire by New Year? YES or NO",
+  "seconds": 54.0,
+  "metricool_id": 424997552,
+  "uuid": "-1088100943431119276",
+  "scheduled_for": "2026-11-12T06:10:00 America/Chicago",
+  "auto_publish": true,
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-1088100943431119276",
+  "spec": "specs/2026-11-12-reel.json",
+  "built_by": "session_0199Z1Cj5BYbK9f1oFnnWaKb, 11 Nov 15:40-15:55 CT"
+ },
+ "tape_draft_alternative": {
+  "status": "DRAFT in Metricool (will not publish)",
+  "metricool_id": 425163522,
+  "uuid": "1606759134113517517",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=1606759134113517517",
+  "tickers": [
+   [
+    "CRWV",
+    24.71
+   ],
+   [
+    "MU",
+    11.89
+   ],
+   [
+    "ORCL",
+    8.82
+   ],
+   [
+    "GLW",
+    7.43
+   ],
+   [
+    "GO",
+    -6.42
+   ],
+   [
+    "FOSL",
+    26.68
+   ],
+   [
+    "BGSI",
+    -12.79
+   ],
+   [
+    "RSKD",
+    22.29
+   ],
+   [
+    "AZTA",
+    20.8
+   ],
+   [
+    "BV",
+    -13.65
+   ]
+  ],
+  "closes": "official Robinhood closes (get_equity_quotes close.date 2026-11-11, read 19:30 CT)",
+  "spec": "specs/2026-11-12-tape-draft.json, specs/2026-11-12-tape-draft-stories.json, specs/2026-11-12-tape-draft-caption.txt"
+ }
 }
