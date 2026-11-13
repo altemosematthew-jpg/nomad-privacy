@@ -1,0 +1,12 @@
+{
+ "date": "2026-11-13",
+ "built": "2026-11-12 19:50 CT (manual run, user request: make Friday's posts and optimise for reach)",
+ "carousel": {"metricool_id": 426451277, "uuid": "8914688525695796072", "time": "06:00 CT", "status": "PENDING",
+   "title": "Ten on the Tape | Nvidia's CEO is out, and 9 more",
+   "stocks": ["NVDA","AMD","AVGO","MSTR","NBIS","CTVA","YETI","MBGL","LUNR","ADIG"],
+   "notes": "CTVA spun off Vylor on 2026-10-01; added break_date support to tape.py so the chart hides pre-spin bars and the third stat is % from post-spin high."},
+ "reel": {"metricool_id": 426451379, "uuid": "8978204448224657894", "time": "06:10 CT", "status": "PENDING",
+   "title": "Nvidia's CEO is out | What changes now", "length_s": 45.0, "scenes": 6},
+ "reach_choices": ["topic of the day leads slide 1, caption line 1 and Reel frame 1", "Reel at the 45 s floor with a 5.5 s hook", "one-word comment prompts + share prompt", "5 targeted hashtags incl. #nvidia", "first comment on the Reel repeats the question"],
+ "skipped": "AVEX (+13.4%) considered, but no same-day source for its Q3 results"
+}

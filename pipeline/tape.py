@@ -117,9 +117,13 @@ def chart(im, d, s, spec, x0, y0, x1, y1):
     closes = [b[4] for b in bars]
     view = bars[-SHOW:]
     off = len(bars) - SHOW
-    hi2 = max(b[2] for b in view)
-    lo2 = min(b[3] for b in view)
-    ma_vals = [sum(closes[off + i - 19:off + i + 1]) / 20 for i in range(SHOW) if off + i >= 19]
+    # break_date: a spin-off or other break in the price history. Bars before it are not drawn and the
+    # 20-day average only starts once it has 20 sessions after the break, so the chart never shows a fake crash.
+    first = next(i for i, b in enumerate(bars) if b[0] >= s.get("break_date", "0000"))
+    drawn = [b for k, b in enumerate(view) if off + k >= first]
+    hi2 = max(b[2] for b in drawn)
+    lo2 = min(b[3] for b in drawn)
+    ma_vals = [sum(closes[off + i - 19:off + i + 1]) / 20 for i in range(SHOW) if off + i >= first + 19]
     ref = hi2
     lo_all, hi_all = min([lo2] + ma_vals), max([hi2] + ma_vals)  # keep the 20-day average inside the chart too
     pad = (hi_all - lo_all) * 0.07 or 0.5
@@ -144,12 +148,14 @@ def chart(im, d, s, spec, x0, y0, x1, y1):
     ma = []
     for i in range(SHOW):  # 20-day average
         j = off + i
-        if j >= 19:
+        if j >= first + 19:
             ma.append((X(i), Y(sum(closes[j - 19:j + 1]) / 20)))
     if len(ma) > 1:
         d.line(ma, fill=BLUE, width=4, joint="curve")
     bw = max(4, int(step * 0.56))
     for i, b in enumerate(view):  # candles
+        if off + i < first:
+            continue
         o, h, l, c = b[1], b[2], b[3], b[4]
         col = GREEN if c >= o else RED
         x = X(i)
@@ -242,7 +248,10 @@ def slide(spec, s, n, out):
     legend(d, stats_y - 62, spec.get("move_label", day) if spec.get("move_bars", 1) > 1 else day)
     d.line([MX, stats_y - 22, W - MX, stats_y - 22], fill=GOLD_DIM, width=2)
     vol_x = s["bars"][-1][5] / s["avg_volume_30d"]
-    if s["close"] >= s["high_52w"] * 0.995:
+    if s.get("break_date"):  # 52-week figures straddle the break, so measure from the high since it
+        since = [b for b in s["bars"] if b[0] >= s["break_date"]]
+        third = (pct_text(pct(s["close"], max(b[2] for b in since)), 0), s.get("break_label", "from high since the break"))
+    elif s["close"] >= s["high_52w"] * 0.995:
         third = (pct_text(pct(s["close"], s["low_52w"]), 0), "from 52-week low")
     else:
         third = (pct_text(pct(s["close"], s["high_52w"]), 0), "from 52-week high")

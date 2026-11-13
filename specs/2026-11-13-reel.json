@@ -1,0 +1,426 @@
+{
+ "title": "Nvidia's CEO is out | What changes now",
+ "seed": "2026-11-13-nvidia",
+ "publish_date": "2026-11-13",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 5.5,
+   "tag": "NOV 12 \u00b7 SANTA CLARA",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "NVIDIA'S CEO\nIS [OUT]",
+   "sub": "Jensen Huang resigned on Thursday, effective immediately. Here's what changes.",
+   "map": {
+    "bbox": [
+     -150,
+     5,
+     -40,
+     65
+    ],
+    "bbox_to": [
+     -128,
+     26,
+     -100,
+     46
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "text": "Nvidia HQ\nSanta Clara",
+     "tone": "gold",
+     "t": 0.4,
+     "dx": 20,
+     "dy": 0
+    }
+   ],
+   "pulses": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "tone": "red",
+     "t": 0.1
+    }
+   ],
+   "src": "Sources: Nvidia, CNN",
+   "focus": [
+    70,
+    760,
+    1010,
+    1480
+   ]
+  },
+  {
+   "dur": 8.0,
+   "tag": "Who runs it now",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE CFO TAKES\n[OVER] FOR NOW",
+   "sub": "The board is searching for a permanent CEO, inside and outside the company.",
+   "map": {
+    "bbox": [
+     -128,
+     26,
+     -100,
+     46
+    ],
+    "bbox_to": [
+     -126,
+     28,
+     -104,
+     44
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "text": "Santa Clara",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 20,
+     "dy": 0,
+     "size": 26
+    }
+   ],
+   "panel": {
+    "y": 1000,
+    "t": 0.7,
+    "title": "Nvidia's new line-up",
+    "list": [
+     {
+      "kicker": "Interim CEO",
+      "text": "Colette Kress, the finance chief"
+     },
+     {
+      "kicker": "Board chair",
+      "text": "Harvey Jones, the first in Nvidia's history"
+     }
+    ]
+   },
+   "src": "Sources: Nvidia press release and SEC filing",
+   "focus": [
+    70,
+    600,
+    1010,
+    970
+   ]
+  },
+  {
+   "dur": 8.5,
+   "tag": "Why it matters",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "A BOARD PROBE\nCAME [FIRST]",
+   "sub": "On November 8 the board opened an investigation into reports that he was the target of a foreign intelligence effort, AP reported.",
+   "map": {
+    "bbox": [
+     -170,
+     -10,
+     170,
+     70
+    ],
+    "bbox_to": [
+     -150,
+     0,
+     150,
+     65
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "text": "Santa Clara",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 20,
+     "dy": 0,
+     "size": 26
+    }
+   ],
+   "pulses": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "tone": "red",
+     "t": 0.2,
+     "glow": 90
+    }
+   ],
+   "src": "Source: AP"
+  },
+  {
+   "dur": 9.0,
+   "tag": "The market",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "THE STOCK HIT A\n[52-WEEK LOW]",
+   "sub": "It touched $148.80 during Thursday's session, then closed at $166.19, down 4.3%.",
+   "map": {
+    "bbox": [
+     -128,
+     22,
+     -64,
+     52
+    ],
+    "bbox_to": [
+     -124,
+     25,
+     -70,
+     50
+    ],
+    "tint": {}
+   },
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.6,
+    "title": "Nvidia (NVDA) \u00b7 daily close",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       230.86
+      ],
+      [
+       "2026-10-02",
+       233.95
+      ],
+      [
+       "2026-10-05",
+       238.9
+      ],
+      [
+       "2026-10-06",
+       239.24
+      ],
+      [
+       "2026-10-07",
+       237.47
+      ],
+      [
+       "2026-10-08",
+       230.48
+      ],
+      [
+       "2026-10-09",
+       229.28
+      ],
+      [
+       "2026-10-12",
+       226.32
+      ],
+      [
+       "2026-10-13",
+       228.52
+      ],
+      [
+       "2026-10-14",
+       221.3
+      ],
+      [
+       "2026-10-15",
+       217.23
+      ],
+      [
+       "2026-10-16",
+       214.13
+      ],
+      [
+       "2026-10-19",
+       217.09
+      ],
+      [
+       "2026-10-20",
+       216.47
+      ],
+      [
+       "2026-10-21",
+       221.97
+      ],
+      [
+       "2026-10-22",
+       212.21
+      ],
+      [
+       "2026-10-23",
+       210.96
+      ],
+      [
+       "2026-10-26",
+       216.0
+      ],
+      [
+       "2026-10-27",
+       217.94
+      ],
+      [
+       "2026-10-28",
+       215.38
+      ],
+      [
+       "2026-10-29",
+       213.66
+      ],
+      [
+       "2026-10-30",
+       204.64
+      ],
+      [
+       "2026-11-02",
+       202.06
+      ],
+      [
+       "2026-11-03",
+       206.69
+      ],
+      [
+       "2026-11-04",
+       200.13
+      ],
+      [
+       "2026-11-05",
+       181.6
+      ],
+      [
+       "2026-11-06",
+       186.64
+      ],
+      [
+       "2026-11-09",
+       178.67
+      ],
+      [
+       "2026-11-10",
+       168.89
+      ],
+      [
+       "2026-11-11",
+       173.73
+      ],
+      [
+       "2026-11-12",
+       166.19
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.4,
+     "dur": 2.8,
+     "marks": [
+      {
+       "date": "2026-10-06",
+       "text": "$239.24 \u00b7 6 OCT",
+       "tone": "white",
+       "dy": -62,
+       "dx": 0
+      },
+      {
+       "date": "2026-11-12",
+       "text": "$166.19 \u00b7 12 NOV",
+       "tone": "red",
+       "dy": -66,
+       "dx": -60
+      }
+     ]
+    }
+   },
+   "src": "Sources: CNN, Robinhood (NVDA closes)"
+  },
+  {
+   "dur": 7.0,
+   "tag": "Who gained",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "ITS RIVALS\n[ROSE]",
+   "sub": "Other chip stocks climbed as Nvidia fell.",
+   "map": {
+    "bbox": [
+     -128,
+     22,
+     -64,
+     52
+    ],
+    "bbox_to": [
+     -125,
+     24,
+     -68,
+     50
+    ],
+    "tint": {}
+   },
+   "panel": {
+    "y": 960,
+    "t": 0.6,
+    "title": "Thursday's close",
+    "bars": [
+     {
+      "label": "AMD",
+      "frac": 0.59,
+      "value": "+5.9%",
+      "tone": "amber"
+     },
+     {
+      "label": "Broadcom (AVGO)",
+      "frac": 0.55,
+      "value": "+5.5%",
+      "tone": "amber"
+     },
+     {
+      "label": "Nvidia (NVDA)",
+      "frac": 0.43,
+      "value": "\u22124.3%",
+      "tone": "red"
+     }
+    ]
+   },
+   "src": "Sources: StockTitan, Robinhood"
+  },
+  {
+   "dur": 7.0,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "EARNINGS NOV 17.\n[UP] OR [DOWN]?",
+   "sub": "Comment one word.",
+   "map": {
+    "bbox": [
+     -128,
+     26,
+     -100,
+     46
+    ],
+    "bbox_to": [
+     -125,
+     28,
+     -103,
+     44
+    ],
+    "tint": {}
+   },
+   "pulses": [
+    {
+     "lon": -121.96,
+     "lat": 37.37,
+     "tone": "gold",
+     "t": 0.2,
+     "glow": 90
+    }
+   ],
+   "end": {
+    "t": 1.4,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice \u00b7 prices up to 12 Nov 2026"
+  }
+ ]
+}
