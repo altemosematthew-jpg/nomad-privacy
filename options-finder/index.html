@@ -1142,6 +1142,26 @@ const CORE = ["SPY", "QQQ", "NVDA", "AMZN", "MSFT", "AAPL", "TSLA", "META"];
 const HIST = new Map();            // occ -> this session's scan-by-scan record, for the consistency stat
 const TABLE_PATHS = 400, DRAWER_PATHS = 4000, ODDS_PATHS = 200, ODDS_DRAWER_PATHS = 2000;
 const JOURNAL = true;              // "My trades" journal (Claude version only, needs the db + user capabilities); false switches it off everywhere
+/* Trader feed (Claude version, owner's view only): after every full Robinhood re-quote, about every 10 minutes and also with
+   the tab in the background, the best contracts under the hourly auto-trader's rules are saved to the shared doc live/picks,
+   which the trader reads. Rules: buy single calls or puts, 14-45 days, |delta| 0.20-0.60, open interest 500+, spread 10% or
+   less, graded by this page's engine, the plan simulated as a short trade (+30% target, -25% stop, 1-day horizon), the
+   multi-day decay check swapped for a same-day one (decay at most 6% of the price a day). The owner wants the most shares
+   through options for all the cash, so the A/B contracts are sent most delta-shares per $1,000 first, with the "Most
+   leverage" lens score alongside. Places no orders. */
+const FEED = { on: false, busy: false, okAt: 0, fullAt: 0, sig: "", err: "", n: 0 };
+const TRADER = { f: { types: "both", dteMin: 14, dteMax: 45, dMin: 0.20, dMax: 0.60, maxPrice: 1e9, minOI: 500, maxSpread: 0.10, evMode: "all" },
+  plan: { target: 0.30, stop: 0.25, hold: 1 }, decay: 0.06, keep: 60, lens: "lever" };
+const fx = (v, d) => (typeof v === "number" && isFinite(v)) ? +v.toFixed(d) : null;
+/* Stop trailer (Claude version, owner's view only; the owner's choice on Nov 13, 2026): while this page is open in market
+   hours, once a minute it looks at the open option positions in the auto-trader's account (the one account this agent
+   may trade) and raises each position's resting stop as the trade gains: from +15% the stop goes to max(entry, mark x 0.85),
+   from +30% to mark x 0.90. It only ever moves an existing stop UP (cancel, confirm, re-place). It never opens a trade,
+   never sells, never places a stop where none rests, and stays out of :45-:56 when the hourly trader runs. Its moves are
+   logged to the shared doc live/trailer. */
+const TRAIL = { on: true, busy: false, owner: null, acct: null, id: Math.random().toString(36).slice(2), text: "", err: "", moves: [],
+  pending: {}, start: 1.15, give: 0.85, tight: 1.30, tightGive: 0.90, minStep: 0.02 };
+const OPEN_STATES = new Set(["queued", "unconfirmed", "confirmed", "partially_filled", "pending"]);
 
 const state = {
   data: null, mode: null, syms: [], ver: 0, selected: new Set(), firstLoad: true, earnHist: {}, ivLog: null, ivLogVer: 0,
@@ -1386,6 +1406,7 @@ async function rhLoadAll(syms) {
   } finally {
     clearTimeout(timer); state.rtLoading = null; state.lastTick = Date.now();
     applyRT();
+    if (state.rt.size && !state.rtAbort) { FEED.fullAt = state.lastTick; feedTrader(); }
     if (state.rtAbort) { const e = state.rtAbort; setStatus(AUTH_CODES[e.code] || ("Robinhood: " + (e.message || e.code)), "snap"); if (!state.rt.size) fallbackSnapshot(AUTH_CODES[e.code]); }
     else if (!state.rt.size) { setStatus("Robinhood returned no option chains. Reload to try again.", "snap"); fallbackSnapshot(); }
     if (!state.rtAbort && state.rt.size) setTimeout(() => paperTick(true), 50);   // history and earnings are in: run the paper account now
@@ -1415,6 +1436,7 @@ async function rhRequote(all) {
     });
     state.rt.forEach(S => { S.__mut = (S.__mut || 0) + 1; });
     state.lastTick = Date.now(); state.data.generated = Date.now(); reanalyze(); renderSymbols(); build(); if (state.sel) select(state.sel, true); setStatus(liveLabel(), "live");
+    if (all) { FEED.fullAt = state.lastTick; feedTrader(); }
     paperTick(false);
   } finally { state.busy = false; }
 }
@@ -1435,13 +1457,19 @@ async function initClaude() {
   try { const x = JSON.parse(localStorage.getItem("sf:extra") || "[]"); if (Array.isArray(x)) state.extra = x.filter(s => /^[A-Z][A-Z0-9.]{0,6}$/.test(s)).slice(0, 12); } catch (e) {}
   await rhLoadAll([...new Set(CORE.concat(WATCH, state.extra))]);
   setInterval(() => { if (document.visibilityState === "visible" && marketHours()) rhRequote(false); }, 60 * 1000);
-  setInterval(() => { if (document.visibilityState === "visible" && marketHours()) rhRequote(true); }, 10 * 60 * 1000);
+  setInterval(() => { if ((document.visibilityState === "visible" || FEED.on) && marketHours()) rhRequote(true); }, 10 * 60 * 1000);   // the trader feed keeps this going in a background tab
   setInterval(() => { if (state.mode === "rt" && !state.rtLoading && !state.busy) setStatus(liveLabel(), "live"); }, 15000);
+  try { TRAIL.on = localStorage.getItem("sf:trail") !== "off"; } catch (e) {}
+  renderTrail(); setInterval(trailTick, 60 * 1000); setTimeout(trailTick, 4000);   // the stop trailer, once a minute (also in a background tab)
 }
 function addRHButtons() {
   if ($("#rh-pos")) return;
   const p = document.createElement("button"); p.type = "button"; p.className = "btn sm primary"; p.id = "rh-pos"; p.textContent = "My positions"; p.addEventListener("click", () => rhPositions());
   $("#refresh").after(p);
+  const t = document.createElement("button"); t.type = "button"; t.className = "btn sm"; t.id = "rh-trail"; t.textContent = "Stop trailer: " + (TRAIL.on ? "on" : "off");
+  t.title = "Once a minute while this page is open, raise the auto-trader's resting stop as its trade gains (never lowers it, never opens or sells)";
+  t.addEventListener("click", () => { TRAIL.on = !TRAIL.on; TRAIL.err = ""; try { localStorage.setItem("sf:trail", TRAIL.on ? "on" : "off"); } catch (e) {} renderTrail(); if (TRAIL.on) trailTick(); });
+  p.after(t);
 }
 
 /* ---------- filters, structures, ranking ---------- */
@@ -1497,8 +1525,161 @@ function build() {
   if (!needAll) for (const st of rows.slice(0, 150)) setOdds(st, ODDS_PATHS);   // the rows on screen always get their odds
   state.rows = rows; renderRows(rows);
   const scanned = state.syms.reduce((t, A) => t + A.legs.length, 0);
-  $("#count").textContent = `${rows.length} shown · ${state.qualityCount} pass quality · ${state.filteredCount} pass filters · ${scanned.toLocaleString()} contracts scanned`;
+  $("#count").textContent = `${rows.length} shown · ${state.qualityCount} pass quality · ${state.filteredCount} pass filters · ${scanned.toLocaleString()} contracts scanned`
+    + (FEED.on && FEED.okAt ? ` · trader feed: ${FEED.n} picks sent ${ago(FEED.okAt)} ago` : FEED.on && FEED.err ? ` · trader feed failed (${FEED.err})` : "");
   if (state.sel && !rows.some(r => r.id === state.sel)) { state.sel = null; $("#drawer").hidden = true; }
+}
+async function feedTrader() {   // see FEED above
+  if (!IN_CLAUDE || FEED.busy || state.mode !== "rt" || !state.rt.size || state.rtLoading) return;
+  FEED.busy = true;
+  try {
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!db || !user || !(await user.isOwner())) { FEED.on = false; return; }
+    FEED.on = true;
+    const now = Date.now(), T = TRADER, rows = []; let scanned = 0;
+    for (const A of state.syms) for (const L of A.legs) {
+      const d = Math.abs(L.delta);
+      if (!L.instId || !(L.ask > 0) || L.dte < T.f.dteMin || L.dte > T.f.dteMax || d < T.f.dMin || d > T.f.dMax || L.oi < T.f.minOI) continue;
+      const st = E.makeSingle(L, A, "buy"); if (!E.prefilter(st, T.f)) continue;
+      scanned++;
+      st.A = A; const s = stabOf(A, st); st.stab = s; st.stabPos = s.n >= 2 ? s.pos : null;
+      st.plan = E.simulate(st, T.plan, TABLE_PATHS, st.sym + "|" + st.exp + "|feed");
+      const c = Object.assign({}, E.grade(st).checks, { decay: st.thetaPct <= T.decay });
+      st.fails = Object.keys(c).filter(k => !c[k]);
+      st.grade = st.fails.length === 0 ? "A" : st.fails.length === 1 ? "B" : st.fails.length === 2 ? "C" : "–";
+      st.win = st.plan ? st.plan.pWin : null;
+      if (st.grade === "A" || st.grade === "B") rows.push(st);
+    }
+    for (const st of rows) st.odds = E.profitOdds(st, T.plan, ODDS_PATHS, st.sym + "|" + st.exp + "|feed", null);
+    const lens = T.lens;
+    E.scoreRows(rows, lens);
+    const per1k = st => st.ask > 0 ? 1000 * Math.abs(st.delta) / st.ask : 0;   // delta-shares bought per $1,000 of premium
+    rows.sort((a, b) => per1k(b) - per1k(a) || b.score - a.score);
+    const day = t => new Date(t).toISOString().slice(0, 10);
+    const picks = rows.slice(0, T.keep).map((st, i) => ({
+      rank: i + 1, sym: st.sym, type: st.isC ? "call" : "put", strike: st.K, exp: day(st.exp), dte: fx(st.dte, 1), stock: fx(st.S, 2),
+      bid: fx(st.bid, 2), ask: fx(st.ask, 2), mid: fx(st.mid, 3), fill: fx(st.price, 3), costPer: fx(st.price * 100, 0), spreadPct: fx(st.spreadPct * 100, 1),
+      delta: fx(st.delta, 3), iv: fx(st.iv, 3), oi: st.oi, vol: st.vol, decayPct: fx(st.thetaPct * 100, 2),
+      evPct: st.evPct == null ? null : fx(st.evPct * 100, 1), winPct: st.win == null ? null : fx(st.win * 100, 1),
+      planEvPct: st.plan && st.evBase > 0 ? fx(st.plan.ev / st.evBase * 100, 1) : null, oddsPct: st.odds ? fx(st.odds.p * 100, 1) : null,
+      grade: st.grade, fails: st.fails, score: fx(st.score, 3), sharesPer1k: fx(per1k(st), 1), trend: st.trend,
+      earnings: st.evt ? (st.evt.date || day(now + (st.evt.tEvent || 0) * E.YEAR_MS)) : null,
+      instrument_id: st.raw[0].instId, occ: st.id }));
+    const sig = JSON.stringify(picks.map(p => [p.occ, p.bid, p.ask, p.grade]));
+    if (sig === FEED.sig && now - FEED.okAt < 9 * 60e3) return;   // nothing new since the last write
+    await db.doc("live/picks").set({ v: 1, source: "Strike Finder, open in the owner's browser", writtenAt: now, quotedAt: FEED.fullAt || state.lastTick,
+      writtenAtText: new Date(now).toLocaleString("en-US", { timeZone: "America/Chicago" }) + " CT", hidden: document.visibilityState !== "visible", lens,
+      rules: { side: "buy", struct: "single", dte: [T.f.dteMin, T.f.dteMax], absDelta: [T.f.dMin, T.f.dMax], minOI: T.f.minOI, maxSpreadPct: T.f.maxSpread * 100,
+        plan: { targetPct: T.plan.target * 100, stopPct: T.plan.stop * 100, holdDays: T.plan.hold }, decayMaxPct: T.decay * 100, grades: "A,B",
+        order: "most delta-shares per $1,000 first" },
+      symbols: state.syms.map(A => A.sym), scanned, passed: rows.length, picks });
+    FEED.sig = sig; FEED.okAt = now; FEED.err = ""; FEED.n = picks.length;
+  } catch (e) { FEED.err = (e && (e.code || e.message)) || "failed"; }
+  finally { FEED.busy = false; }
+}
+function ctMinutes() {
+  const p = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date());
+  const g = k => +((p.find(x => x.type === k) || {}).value || 0); return (g("hour") % 24) * 60 + g("minute");
+}
+const tickOf = v => v >= 3 ? 0.05 : 0.01;
+const tickDown = v => v >= 3 ? Math.floor(v * 20 + 1e-9) / 20 : Math.floor(v * 100 + 1e-9) / 100;
+const newRef = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, () => (Math.random() * 16 | 0).toString(16));
+function trailLock() {   // one tab trails at a time
+  try { const now = Date.now(), L = JSON.parse(localStorage.getItem("sf:trail-lock") || "null");
+    if (L && L.id !== TRAIL.id && now - L.at < 150e3) return false;
+    localStorage.setItem("sf:trail-lock", JSON.stringify({ id: TRAIL.id, at: now })); return true; } catch (e) { return true; }
+}
+async function trailAccount() {
+  if (TRAIL.acct) return TRAIL.acct;
+  if (!state.accounts) { const a = await rhCall("get_accounts", {}, 3600e3); state.accounts = (a.accounts || a.results || []).filter(x => x && x.account_number); }
+  const ag = (state.accounts || []).filter(a => a.agentic_allowed === true);
+  const pick = ag.length === 1 ? ag[0] : (state.accounts || []).filter(a => a.agentic_allowed === true && /^mcp$/i.test(a.nickname || ""))[0];
+  TRAIL.acct = pick ? pick.account_number : null; return TRAIL.acct;
+}
+function renderTrail() {
+  let el = $("#trail-status");
+  if (!el) { const c = $("#count"); if (!c) return; el = document.createElement("span"); el.id = "trail-status"; el.className = "count"; el.style.marginLeft = "8px"; c.after(el); }
+  el.textContent = TRAIL.on ? (TRAIL.err ? "Stop trailer: " + TRAIL.err : TRAIL.text) : "Stop trailer off";
+  const b = $("#rh-trail"); if (b) b.textContent = "Stop trailer: " + (TRAIL.on ? "on" : "off");
+}
+async function trailLog(m) {
+  TRAIL.moves.unshift(Object.assign({ at: Date.now(), atText: new Date().toLocaleString("en-US", { timeZone: "America/Chicago" }) + " CT" }, m));
+  TRAIL.moves = TRAIL.moves.slice(0, 20);
+  try { const db = await window.claude.use("db"); if (db) await db.doc("live/trailer").set({ v: 1, updatedAt: Date.now(), moves: TRAIL.moves }); } catch (e) {}
+}
+async function trailPlace(acct, optionId, qty, price) {
+  const r = await rhCall("place_option_order", { account_number: acct, legs: [{ option_id: optionId, side: "sell", position_effect: "close" }],
+    quantity: String(qty), type: "stop_market", stop_price: price.toFixed(2), time_in_force: "gfd", ref_id: newRef() }, false);
+  if (!r || !r.order) throw Object.assign(new Error(r && r.approval ? "waiting for your approval in the Robinhood app" : "order not placed"), { code: "not_placed" });
+  return r.order;
+}
+async function trailMove(acct, p, qty, stop, cur, want, mark, entry) {
+  const sym = p.chain_symbol || "option";
+  TRAIL.pending[p.option_id] = { want, cur, qty, at: Date.now() };
+  await rhCall("cancel_option_order", { account_number: acct, order_id: stop.id }, false);
+  let st = null;
+  for (let i = 0; i < 10; i++) {
+    await sleep(1500);
+    const r = await rhCall("get_option_orders", { account_number: acct, order_id: stop.id }, false); st = (r.orders || [])[0] || null;
+    if (st && (st.state === "cancelled" || st.state === "filled" || +st.processed_quantity > 0)) break;
+  }
+  if (!st || st.state !== "cancelled" || +st.processed_quantity > 0) {
+    if (st && (st.state === "filled" || +st.processed_quantity > 0)) delete TRAIL.pending[p.option_id];
+    await trailLog({ sym, from: cur, to: want, mark, entry, ok: false, note: "old stop " + (st ? st.state : "unknown") + "; not replaced yet" }); return false;
+  }
+  try { const o = await trailPlace(acct, p.option_id, qty, want); delete TRAIL.pending[p.option_id];
+    await trailLog({ sym, from: cur, to: want, mark, entry, ok: true, order: o.id }); return true; }
+  catch (e) {
+    try { const o = await trailPlace(acct, p.option_id, qty, cur); delete TRAIL.pending[p.option_id];
+      await trailLog({ sym, from: cur, to: cur, mark, entry, ok: false, order: o.id, note: "raise refused (" + ((e && e.message) || e) + "); old stop restored" }); return false; }
+    catch (e2) { TRAIL.err = sym + " stop could not be re-placed: the next hourly run will place it";
+      await trailLog({ sym, from: cur, to: null, mark, entry, ok: false, note: "re-place failed: " + ((e2 && e2.message) || e2) }); return false; }
+  }
+}
+async function trailTick() {
+  if (!IN_CLAUDE || !TRAIL.on || TRAIL.busy || !state.mcp) return;
+  const t = ctMinutes(), m = t % 60;
+  if (!marketHours() || t < 8 * 60 + 31 || t >= 14 * 60 + 40 || (m >= 45 && m <= 56)) { TRAIL.text = "Stop trailer on (resting: outside its hours or the hourly run's window)"; renderTrail(); return; }
+  if (!trailLock()) { TRAIL.text = "Stop trailer running in another tab"; renderTrail(); return; }
+  TRAIL.busy = true;
+  try {
+    if (TRAIL.owner == null) { const user = await window.claude.use("user"); TRAIL.owner = !!(user && await user.isOwner()); }
+    if (!TRAIL.owner) { TRAIL.on = false; return; }
+    const acct = await trailAccount(); if (!acct) { TRAIL.text = "Stop trailer: no trading account found"; return; }
+    const pd = await rhCall("get_option_positions", { account_number: acct, nonzero: true }, false);
+    const longs = (pd.positions || pd.results || []).filter(p => p && p.type === "long" && +p.quantity > 0 && p.option_id);
+    if (!longs.length) { TRAIL.pending = {}; TRAIL.text = "Stop trailer on · no open option position"; TRAIL.err = ""; return; }
+    const od = await rhCall("get_option_orders", { account_number: acct, created_at_gte: new Date(Date.now() - 16 * 3600e3).toISOString() }, false);
+    const open = (od.orders || []).filter(o => o && OPEN_STATES.has(o.state));
+    const qd = await rhCall("get_option_quotes", { instrument_ids: longs.map(p => p.option_id) }, false);
+    const quotes = new Map((qd.results || []).map(r => { const u = r.quote || r; return [u.instrument_id, u]; }));
+    const notes = [];
+    for (const p of longs) {
+      const u = quotes.get(p.option_id); if (!u) continue;
+      const sym = p.chain_symbol || "option", qty = Math.round(+p.quantity), entry = +p.average_price / 100, mark = +u.mark_price, bid = +u.bid_price;
+      if (!(entry > 0) || !(mark > 0) || !(qty > 0)) continue;
+      const sells = open.filter(o => (o.legs || []).some(L => L.option_id === p.option_id && L.side === "sell"));
+      if (sells.some(o => o.trigger !== "stop")) { notes.push(sym + ": a sell is working, hands off"); continue; }
+      const stop = sells.find(o => o.trigger === "stop"), pend = TRAIL.pending[p.option_id];
+      if (!stop) {   // only finish a move this page started; otherwise leave a missing stop to the hourly run
+        if (pend && Date.now() - pend.at < 10 * 60e3) { const lvl = pend.want < bid ? pend.want : pend.cur;
+          try { const o = await trailPlace(acct, p.option_id, pend.qty, lvl); delete TRAIL.pending[p.option_id]; await trailLog({ sym, from: pend.cur, to: lvl, mark, entry, ok: true, order: o.id, note: "finished an earlier move" }); }
+          catch (e) { TRAIL.err = sym + " stop could not be re-placed: the next hourly run will place it"; } }
+        else notes.push(sym + ": no resting stop (the hourly run places one)");
+        continue;
+      }
+      const cur = +stop.stop_price; let want = 0;
+      if (mark >= entry * TRAIL.tight) want = Math.max(entry, mark * TRAIL.give, mark * TRAIL.tightGive);
+      else if (mark >= entry * TRAIL.start) want = Math.max(entry, mark * TRAIL.give);
+      want = tickDown(want);
+      notes.push(`${sym} stop $${cur.toFixed(2)} · mark $${mark.toFixed(2)} (${(mark / entry - 1 >= 0 ? "+" : "") + ((mark / entry - 1) * 100).toFixed(1)}%)` + (mark < entry * TRAIL.start ? ` · trails from $${(entry * TRAIL.start).toFixed(2)}` : ""));
+      if (!(want > 0) || want < cur * (1 + TRAIL.minStep) || want < cur + tickOf(cur) - 1e-9 || !(want < bid)) continue;
+      const ok = await trailMove(acct, p, qty, stop, cur, want, mark, entry);
+      notes[notes.length - 1] += ok ? ` → raised to $${want.toFixed(2)}` : " → not raised this minute (see the log)";
+    }
+    TRAIL.text = "Stop trailer on · " + (notes.join(" · ") || "watching"); if (!/re-placed/.test(TRAIL.err)) TRAIL.err = "";
+  } catch (e) { TRAIL.err = "error (" + ((e && (e.code || e.message)) || "failed") + "), retrying next minute"; }
+  finally { TRAIL.busy = false; renderTrail(); }
 }
 function renderRows(rows) {
   const tb = $("#rows"); tb.textContent = ""; $("#empty").hidden = rows.length > 0 || !state.data;
