@@ -168,6 +168,14 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 .planbar .t{background:var(--up)} .planbar .x{background:var(--fg-3)} .planbar .s{background:var(--down)}
 .planlegend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--fg-2)}
 .planlegend b{color:var(--fg);font-family:var(--font-num)}
+.pptop{display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap;margin:6px 0 10px}
+.ppeq{display:flex;flex-direction:column;gap:2px}.ppeq>b{font-family:var(--font-num);font-size:36px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}.ppeq span{font-size:13px;color:var(--fg-2)}
+.ppkv{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--fg-2)}.ppkv b{color:var(--fg);font-family:var(--font-num)}
+.ppcurve{width:100%;height:auto;max-height:190px;display:block;margin:4px 0 8px}.ppcurve .eq{stroke:var(--accent);stroke-width:2}.ppcurve .spy{stroke:var(--fg-3);stroke-width:1.5;stroke-dasharray:4 4}
+.ppcurve .base{stroke:var(--line-2);stroke-width:1}.ppcurve .lbl{font-size:11px;fill:var(--fg-3);font-family:var(--font-num)}
+#ppbox .postable td:first-child,#ppbox .postable th:first-child{text-align:left}
+.pph{font-size:13px;margin:16px 0 6px;color:var(--fg-2);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.pplog{list-style:none;padding:0;margin:0;font-size:13px;line-height:1.5}.pplog li{padding:3px 0;border-bottom:1px solid var(--line)}
 .presets{flex-basis:100%}.presets .seg button{font-size:12px}
 .oddsbig{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--fg-2);line-height:1.35}
 .oddsbig>b{font-family:var(--font-num);font-size:34px;font-weight:600;color:var(--fg);letter-spacing:-.02em}
@@ -252,6 +260,7 @@ footer .wrap{padding-block:12px 34px;font-size:12.5px;color:var(--fg-2);display:
 </div></section>
 
 <section class="pos" id="pos" hidden aria-label="My positions"><div class="wrap"><div class="posbox" id="posbox"></div></div></section>
+<section class="pos" id="paper" hidden aria-label="Paper account"><div class="wrap"><div class="posbox" id="ppbox"></div></div></section>
 <section class="pos" id="journal" hidden aria-label="My trades"><div class="wrap"><div class="posbox" id="jbox"></div></div></section>
 
 <section class="wrap" aria-label="Results">

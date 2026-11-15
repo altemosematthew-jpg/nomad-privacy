@@ -266,6 +266,7 @@ async function rhLoadAll(syms) {
     applyRT();
     if (state.rtAbort) { const e = state.rtAbort; setStatus(AUTH_CODES[e.code] || ("Robinhood: " + (e.message || e.code)), "snap"); if (!state.rt.size) fallbackSnapshot(AUTH_CODES[e.code]); }
     else if (!state.rt.size) { setStatus("Robinhood returned no option chains. Reload to try again.", "snap"); fallbackSnapshot(); }
+    if (!state.rtAbort && state.rt.size) setTimeout(() => paperTick(true), 50);   // history and earnings are in: run the paper account now
   }
 }
 /* Every minute: re-quote the contracts on screen. Every 10 minutes: re-quote everything loaded. */
@@ -292,6 +293,7 @@ async function rhRequote(all) {
     });
     state.rt.forEach(S => { S.__mut = (S.__mut || 0) + 1; });
     state.lastTick = Date.now(); state.data.generated = Date.now(); reanalyze(); renderSymbols(); build(); if (state.sel) select(state.sel, true); setStatus(liveLabel(), "live");
+    paperTick(false);
   } finally { state.busy = false; }
 }
 function fallbackSnapshot(reason) {
@@ -711,6 +713,168 @@ async function initJournal() {
   if (wasOpen) openJournal(false);
   setInterval(() => { if (J.open && document.visibilityState === "visible" && marketHours()) jRequote(); }, 60 * 1000);
 }
+/* ---------- Paper account: $1,000, trades picked by the engine's paper rules (Engine.paperCandidates) ----------
+   Claude version: its own account in this page's private storage, run whenever the page is open in market hours.
+   Public site and Mac: the always-on account the daily GitHub job runs (ledger.paper, via /api/track), read-only. */
+const PP = { ready: false, own: false, acct: null, ref: null, open: false, busy: false, msg: "", quotes: new Map(), qAt: 0, confirmReset: false, tickAt: 0 };
+function etNow() {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", weekday: "short", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date());
+  const g = k => (parts.find(x => x.type === k) || {}).value;
+  const day = `${g("year")}-${g("month")}-${g("day")}`, min = (+g("hour") % 24) * 60 + +g("minute");
+  return { day, min, trading: !/Sat|Sun/.test(g("weekday")) && !E.HOLIDAYS.includes(day) };
+}
+const etDayOf = ms => new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date(ms));
+const dayDiff = (a, b) => Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 864e5);
+function addPaperButton() {
+  if ($("#pp-btn")) return;
+  const b = document.createElement("button"); b.type = "button"; b.className = "btn sm"; b.id = "pp-btn"; b.textContent = "Paper $1,000";
+  b.addEventListener("click", () => { if (PP.open) closePaper(); else openPaper(true); });
+  ($("#jr-btn") || $("#rh-pos") || $("#refresh")).after(b);
+  let was = false; try { was = localStorage.getItem("sf:paper") === "1"; } catch (e) {}
+  if (was) openPaper(false);
+}
+function openPaper(scroll) {
+  PP.open = true; $("#paper").hidden = false; try { localStorage.setItem("sf:paper", "1"); } catch (e) {}
+  renderPaper(); if (PP.own) paperTick(true);
+  if (scroll) $("#paper").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function closePaper() { PP.open = false; $("#paper").hidden = true; try { localStorage.setItem("sf:paper", "0"); } catch (e) {} }
+async function initPaper() {
+  const box = $("#ppbox");
+  box.addEventListener("click", e => { const b = e.target.closest("[data-pp]"); if (b) paperAction(b.dataset.pp); });
+  if (IN_CLAUDE) {
+    let db = null, user = null;
+    try { [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]); } catch (e) { db = null; }
+    let uid = null; if (db && user) { try { uid = await user.id(); } catch (e) { uid = null; } }
+    if (!uid) { PP.ready = true; PP.msg = "The paper account needs this page's saved data, which isn't available in this view."; addPaperButton(); renderPaper(); return; }
+    PP.own = true; PP.ref = db.doc("data/users/" + uid + "/paper");
+    PP.ref.onSnapshot(snap => { PP.acct = snap.exists ? snap.data() : null; PP.ready = true; renderPaper(); if (!PP.acct) paperTick(false); },
+      e => { PP.ready = true; PP.msg = jErrText(e).replace(/journal/g, "paper account").replace(/trades/g, "data"); renderPaper(); });
+    setInterval(() => { if (document.visibilityState === "visible") paperTick(false); }, 60 * 1000);
+  } else { PP.ready = true; }
+  addPaperButton(); renderPaper();
+}
+/* value per share to close, from Robinhood quotes, same fill model as everywhere else */
+function ppValue(p) {
+  let bid = 0, ask = 0, mark = 0;
+  for (const L of p.legs || []) { const u = PP.quotes.get(L.instId); if (!u) return null; const q = +L.q || 0, m = u.mark > 0 ? u.mark : (u.bid + u.ask) / 2;
+    if (q > 0) { bid += q * u.bid; ask += q * u.ask; } else { bid += q * u.ask; ask += q * u.bid; } mark += q * m; }
+  bid = Math.max(0, bid); if (!(ask > 0) && !(mark > 0)) return null; ask = Math.max(ask, bid); const mid = Math.min(ask, Math.max(bid, mark));
+  const v = p.side === "buy" ? mid - E.FILL * (mid - bid) : mid + E.FILL * (ask - mid);
+  return Math.max(0, p.width ? Math.min(v, p.width) : v);
+}
+async function ppQuote(acct) {
+  const ids = [...new Set(acct.open.flatMap(p => (p.legs || []).map(L => L.instId)).filter(Boolean))];
+  if (!ids.length || !state.mcp) return !ids.length;
+  for (let i = 0; i < ids.length; i += 50) {
+    const r = await rhCall("get_option_quotes", { instrument_ids: ids.slice(i, i + 50) }, false);
+    (r.results || []).forEach(res => { const u = res && (res.quote || res); if (u && u.instrument_id) PP.quotes.set(u.instrument_id, { bid: +u.bid_price || 0, ask: +u.ask_price || 0, mark: +u.mark_price || 0 }); });
+  }
+  PP.qAt = Date.now(); return true;
+}
+function ppSpot(sym) { const A = (state.syms || []).find(a => a.sym === sym); return A ? A.px : null; }
+/* one pass: mark, exit, pick (once a trading day, 9:45 AM-4:00 PM ET, live data only), snapshot; one write if anything changed */
+async function paperTick(force) {
+  if (!PP.own || PP.busy || !PP.ready || !state.data) return;
+  if (!force && Date.now() - PP.tickAt < 55 * 1000) return;
+  if (state.readonlyPaper) return;
+  PP.busy = true; PP.tickAt = Date.now(); renderPaper();
+  try {
+    const t = etNow(), live = state.mode === "rt" && !!state.mcp;
+    let acct = PP.acct ? JSON.parse(JSON.stringify(PP.acct)) : null, changed = false;
+    if (!acct) { acct = E.paperNew(t.day, ppSpot("SPY")); E.paperLog(acct, t.day, "Account opened with $1,000. Trades are picked from the scanner's own rules: grade A, expected value ≥ 0, defined risk, no earnings inside."); changed = true; }
+    const before = JSON.stringify(acct.open.map(p => [p.id, p.last]));
+    if (live && acct.open.length) {
+      try { await ppQuote(acct); } catch (e) { PP.msg = AUTH_CODES[e && e.code] || "Robinhood quotes failed, so open trades weren't re-marked."; }
+      for (const p of acct.open.slice()) {
+        if (t.day > p.expDay) { const S = ppSpot(p.sym); let v = 0; if (S > 0) for (const L of p.legs) v += L.q * Math.max(0, L.isC ? S - L.K : L.K - S); E.paperClose(acct, p, Math.max(0, v), "expired", t.day); changed = true; continue; }
+        const v = ppValue(p); if (v == null) continue;
+        p.last = +v.toFixed(4); p.lastAt = t.day;
+        const why = t.trading && t.min >= 9 * 60 + 30 && t.min <= 16 * 60 ? E.paperExit(p, v, t.day, dayDiff(t.day, p.expDay)) : null;
+        if (why) { E.paperClose(acct, p, v, why, t.day); changed = true; }
+      }
+    }
+    if (live && t.trading && t.min >= 9 * 60 + 45 && t.min <= 16 * 60 && acct.lastPick !== t.day) {
+      const cands = E.paperCandidates(state.syms || []), held = new Set(acct.open.map(p => p.sym)); let n = 0;
+      for (const st of cands) {
+        if (n >= E.PAPER.perDay || acct.open.length >= E.PAPER.maxOpen) break; if (held.has(st.sym)) continue;
+        if (!st.raw.every(L => L.instId)) continue;
+        const closeBy = etDayOf(Math.min(st.exp - 864e5, Date.now() + E.PAPER.plan[st.side].hold * 864e5));
+        const p = E.paperOpen(acct, st, t.day, closeBy, st.legs.map((l, i) => ({ occ: st.raw[i].occ, instId: st.raw[i].instId, q: l.q, K: l.K, isC: !!l.isC })), structName(st), etDayOf(st.exp));
+        if (p) { held.add(st.sym); n++; }
+      }
+      if (!n) E.paperLog(acct, t.day, "No new trade: " + (cands.length ? `${cands.length} contract${cands.length === 1 ? "" : "s"} met every rule, but none fit the risk budget or the symbols were already held` : "nothing met every rule today (grade A, expected value ≥ 0 held and with the plan, no earnings inside)"));
+      acct.lastPick = t.day; changed = true;
+    }
+    if (t.trading && (changed || live)) {
+      const eq = E.paperEquity(acct, p => p.last), h = acct.hist[acct.hist.length - 1];
+      if (!h || h.d !== t.day || Math.abs(h.eq - eq) >= 0.01) { E.paperSnapshot(acct, t.day, eq, ppSpot("SPY")); changed = true; }
+    }
+    if (!changed && before !== JSON.stringify(acct.open.map(p => [p.id, p.last]))) changed = true;
+    if (changed) {
+      if (acct.closed.length > 150) acct.closed.length = 150;   // stays well inside the 256 KiB document limit
+      if (acct.hist.length > 500) acct.hist.splice(0, acct.hist.length - 500);
+      PP.acct = acct; renderPaper();
+      try { await jWrite(() => PP.ref.set(acct)); PP.msg = ""; } catch (e) { PP.msg = jErrText(e).replace(/journal/g, "paper account"); if (e && e.code === "invalid_argument") state.readonlyPaper = true; }
+    }
+  } catch (e) { PP.msg = "The paper account couldn't update: " + ((e && e.message) || e); }
+  finally { PP.busy = false; renderPaper(); }
+}
+async function paperAction(act) {
+  if (act === "check") return paperTick(true);
+  if (act === "hide") return closePaper();
+  if (act === "reset") { PP.confirmReset = true; return renderPaper(); }
+  if (act === "reset-no") { PP.confirmReset = false; return renderPaper(); }
+  if (act === "reset-yes" && PP.own) {
+    PP.confirmReset = false; const t = etNow(), acct = E.paperNew(t.day, ppSpot("SPY"));
+    E.paperLog(acct, t.day, "Account reset to $1,000."); PP.acct = acct; renderPaper();
+    try { await jWrite(() => PP.ref.set(acct)); } catch (e) { PP.msg = jErrText(e); renderPaper(); }
+    paperTick(true);
+  }
+}
+function ppCurve(hist, start, spy0) {
+  if (!hist || hist.length < 2) return `<p class="note">The equity curve appears after the second trading day.</p>`;
+  const W = 640, H = 150, pad = 26, xs = hist.map((_, i) => pad + i * (W - 2 * pad) / (hist.length - 1));
+  const spyEq = hist.map(h => spy0 && h.spy ? start * h.spy / spy0 : null);
+  const all = hist.map(h => h.eq).concat(spyEq.filter(x => x != null), [start]); let lo = Math.min(...all), hi = Math.max(...all); if (hi - lo < 20) { lo -= 10; hi += 10; }
+  const y = v => H - pad - (v - lo) / (hi - lo) * (H - 2 * pad);
+  const line = (vals, cls) => { const pts = vals.map((v, i) => v == null ? null : `${xs[i].toFixed(1)},${y(v).toFixed(1)}`).filter(Boolean); return pts.length > 1 ? `<polyline class="${cls}" points="${pts.join(" ")}" fill="none"/>` : ""; };
+  return `<svg class="ppcurve" viewBox="0 0 ${W} ${H}" role="img" aria-label="Paper account equity over time, with SPY for comparison">
+    <line x1="${pad}" x2="${W - pad}" y1="${y(start).toFixed(1)}" y2="${y(start).toFixed(1)}" class="base"/>
+    ${line(spyEq, "spy")}${line(hist.map(h => h.eq), "eq")}
+    <text x="${pad}" y="14" class="lbl">${money(hi, 0)}</text><text x="${pad}" y="${H - 6}" class="lbl">${money(lo, 0)}</text>
+    <text x="${W - pad}" y="14" class="lbl" text-anchor="end">— account · - - SPY, same $1,000</text></svg>`;
+}
+function renderPaper() {
+  const box = $("#ppbox"); if (!box || !PP.open) { const b = $("#pp-btn"); if (b && PP.acct) b.textContent = "Paper " + money(E.paperEquity(PP.acct, p => p.last), 0); return; }
+  const own = PP.own, acct = own ? PP.acct : (state.track && state.track.paper) || null;
+  const btn = $("#pp-btn");
+  const head = `<div class="poshead"><h2>Paper account <span class="muted" style="font-weight:500;font-size:13px">· $1,000 start · ${own ? "this page's own account" : "always-on, run every trading day by the daily job"}</span></h2>
+    <div class="actions" style="margin:0">${own ? `<button class="btn sm" type="button" data-pp="check" ${PP.busy ? "disabled" : ""}>${PP.busy ? "Checking…" : "Check now"}</button>${PP.confirmReset ? `<span class="note">Start over at $1,000? Every trade is erased.</span><button class="btn sm" type="button" data-pp="reset-yes">Yes, reset</button><button class="btn sm" type="button" data-pp="reset-no">Keep it</button>` : `<button class="btn sm" type="button" data-pp="reset">Reset</button>`}` : ""}<button class="btn sm" type="button" data-pp="hide">Hide</button></div></div>`;
+  const rules = `<p class="note">Rules: picks up to ${E.PAPER.perDay} trades a trading day from the scanner, only grade A with expected value ≥ 0 both held to expiry and under the plan, no earnings inside, ${E.PAPER.dteMin}–${E.PAPER.dteMax} days to expiry, defined risk only (bought options, debit spreads, credit spreads with the width set aside). At most ${Math.round(E.PAPER.riskPct * 100)}% of equity at risk per trade, ${Math.round(E.PAPER.maxRiskTotal * 100)}% in all, ${E.PAPER.maxOpen} open at once. Fills halfway between the mid and the natural price, $${E.PAPER.fee.toFixed(2)} per contract per leg in fees. Exits: buys +50% / −50%, sales keep 50% / stop at 2× the credit, 21 days, or a day before expiry. ${own ? "This account only trades while this page is open in market hours (it checks every minute); the public site runs a separate always-on account." : "Runs without anyone watching; GitHub starts the job late in the day, so entries and exits use that day's closing quotes."}</p>`;
+  if (!PP.ready) { box.innerHTML = head + `<p class="note">Loading…</p>`; return; }
+  if (!acct) { box.innerHTML = head + `<p class="note">${esc(PP.msg || (own ? "Setting up the account…" : "The always-on account opens on the next trading day the daily job runs."))}</p>` + rules; return; }
+  const eq = E.paperEquity(acct, p => p.last), S = E.paperStats(acct, eq), risk = E.paperOpenRisk(acct);
+  for (const k of ["ret", "maxDD", "spyRet"]) if (S[k] != null && Math.abs(S[k]) < 0.0005) S[k] = 0;
+  if (btn) btn.textContent = "Paper " + money(eq, 0);
+  const sg = x => x == null ? "–" : `<b class="${x >= 0 ? "up" : "down"}">${pct(x, 1, true)}</b>`;
+  const top = `<div class="pptop"><div class="ppeq"><b>${money(eq, 2)}</b><span>${sg(S.ret)} since ${esc(acct.created)}</span></div>
+    <div class="ppkv"><span>Cash <b>${money(acct.cash, 2)}</b></span><span>At risk <b>${money(risk, 0)}</b></span><span>SPY same period ${sg(S.spyRet)}</span><span>Max drawdown <b class="${S.maxDD < 0 ? "down" : ""}">${pct(S.maxDD, 1)}</b></span>
+    <span>Closed <b>${S.n}</b>${S.n ? `, won <b>${S.wins}</b> (${pct(S.rate, 0)} vs the model's ${S.model != null ? pct(S.model, 0) : "–"})` : ""}</span>${S.n ? `<span>Avg win <b class="up">${S.avgWin != null ? sgnMoney(S.avgWin, 0) : "–"}</b> · avg loss <b class="down">${S.avgLoss != null ? sgnMoney(S.avgLoss, 0) : "–"}</b></span>` : ""}</div></div>`;
+  const openRows = acct.open.map(p => { const v = p.last, per = v != null ? (p.side === "buy" ? v - p.entry : p.entry - v) : null, usd = per != null ? per * 100 * p.qty : null;
+    return `<tr><td>${esc(p.label)}</td><td>${esc(p.opened)}</td><td class="num">${p.qty}</td><td class="num">${fmt(p.entry, 2)}${p.side === "sell" ? " cr" : ""}</td><td class="num">${v != null ? fmt(v, 2) : "–"}</td>
+      <td class="num ${usd >= 0 ? "up" : "down"}">${usd != null ? sgnMoney(usd, 0) : "–"}</td><td class="num">${per != null ? pct(per / p.risk, 0, true) : "–"}</td>
+      <td class="num">${fmt(p.target, 2)}</td><td class="num">${p.stop != null ? fmt(p.stop, 2) : "none"}</td><td>${esc(p.closeBy)}</td><td class="num">${p.odds != null ? pct(p.odds, 0) : "–"}</td></tr>`; }).join("");
+  const closedRows = acct.closed.slice(0, 40).map(c => `<tr><td>${esc(c.label)}</td><td>${esc(c.opened)} → ${esc(c.closed)}</td><td>${esc(({ target: "target", stop: "stop", time: "time limit", expiry: "before expiry", expired: "expired" })[c.how] || c.how)}</td>
+      <td class="num">${fmt(c.entry, 2)} → ${fmt(c.exit, 2)}</td><td class="num ${c.pl >= 0 ? "up" : "down"}">${sgnMoney(c.pl, 2)}</td><td class="num">${pct(c.plPct, 0, true)}</td><td class="num">${c.odds != null ? pct(c.odds, 0) : "–"}</td></tr>`).join("");
+  const log = (acct.log || []).slice(0, 12).map(l => `<li><span class="muted">${esc(l.d)}</span> ${esc(l.t)}</li>`).join("");
+  box.innerHTML = head + top + ppCurve(acct.hist, acct.start, acct.spy0) +
+    (PP.msg ? `<p class="note warn">${esc(PP.msg)}</p>` : "") +
+    `<h3 class="pph">Open (${acct.open.length})</h3>` + (openRows ? `<div class="postable"><table><thead><tr><th>Trade</th><th>Opened</th><th>Qty</th><th>Entry</th><th>Now</th><th>P/L</th><th>% of risk</th><th>Target</th><th>Stop</th><th>Close by</th><th>Odds</th></tr></thead><tbody>${openRows}</tbody></table></div>` : `<p class="note">No open trades.</p>`) +
+    `<h3 class="pph">Closed (${acct.closed.length})</h3>` + (closedRows ? `<div class="postable"><table><thead><tr><th>Trade</th><th>Dates</th><th>Exit</th><th>Price</th><th>P/L</th><th>% of risk</th><th>Odds</th></tr></thead><tbody>${closedRows}</tbody></table></div>` : `<p class="note">Nothing closed yet.</p>`) +
+    (log ? `<h3 class="pph">Activity</h3><ul class="pplog">${log}</ul>` : "") + rules +
+    `<p class="note">Paper results only: no real orders, and real fills can be worse. A month or two of trades says little; judge it after 50+ closed trades.</p>`;
+}
 function jErrText(e) {
   const c = e && e.code;
   if (c === "quota_exceeded") return "Your journal is full. Delete some old trades, then save again.";
@@ -931,6 +1095,7 @@ async function loadTrack() {
   box.innerHTML = `<div class="trackhead"><h2>Track record</h2></div><p class="note">Couldn't load the track record right now.</p>`;
 }
 function renderTrack(L) {
+  if (!PP.own) renderPaper();
   const box = $("#trackbox"), picks = L.picks || [], closed = picks.filter(p => p.status !== "open"), open = picks.filter(p => p.status === "open");
   const cats = { "single-buy": "Single options, bought", "spread-buy": "Debit spreads", "spread-sell": "Credit spreads" };
   const stat = arr => { const n = arr.length, w = arr.filter(p => p.pl > 0).length, avg = n ? arr.reduce((t, p) => t + (p.plPct || 0), 0) / n : null, sum = arr.reduce((t, p) => t + (p.pl || 0) * 100, 0),
@@ -1068,7 +1233,8 @@ function maybeReloadRange() {
 /* ---------- start ---------- */
 (async function start() {
   init(); renderLenses(); markSort();
-  if (IN_CLAUDE) { loadTrack(); initJournal().catch(() => {}); await initClaude(); return; }
+  if (IN_CLAUDE) { loadTrack(); initJournal().catch(() => {}); initPaper().catch(() => {}); await initClaude(); return; }
+  initPaper().catch(() => {});
   await loadServer(); loadTrack(); loadEarnings();
   setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server" && marketHours()) loadServer(); }, 5 * 60 * 1000);
   setInterval(() => { if (document.visibilityState === "visible" && state.mode === "server") { loadTrack(); loadEarnings(); } }, 30 * 60 * 1000);

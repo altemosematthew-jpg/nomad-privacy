@@ -23,13 +23,15 @@ const HOLIDAYS = new Set(["2026-01-01", "2026-01-19", "2026-02-16", "2026-04-03"
   "2027-01-01", "2027-01-18", "2027-02-15", "2027-03-26", "2027-05-31", "2027-06-18", "2027-07-05", "2027-09-06", "2027-11-25", "2027-12-24"]);
 const PLAN = { buy: { target: 0.5, stop: 0.5, hold: 21 }, sell: { target: 0.5, stop: 2.0, hold: 21 } };   // the page's defaults
 const CATS = [{ cat: "single-buy", struct: "single", side: "buy", n: 4 }, { cat: "spread-buy", struct: "spread", side: "buy", n: 3 }, { cat: "spread-sell", struct: "spread", side: "sell", n: 3 }];
-const now = Date.now();
+const now = process.env.NOW_MS ? +process.env.NOW_MS : Date.now();   // NOW_MS: testing only
 const etDay = ms => new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date(ms));
 const etWeekday = ms => new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short" }).format(new Date(ms));
 const etMinutes = ms => { const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date(ms));
   const g = k => +((parts.find(x => x.type === k) || {}).value || 0); return (g("hour") % 24) * 60 + g("minute"); };
 const today = etDay(now), tradingDay = !/Sat|Sun/.test(etWeekday(now)) && !HOLIDAYS.has(today);
-const inSession = tradingDay && etMinutes(now) >= 9 * 60 + 45 && etMinutes(now) <= 16 * 60 + 15;   // only log or mark on live quotes
+// GitHub starts scheduled jobs hours late, so any run on a trading day after 9:45 AM ET counts; after 4:15 PM the quotes are that day's close
+const inSession = tradingDay && etMinutes(now) >= 9 * 60 + 45;
+const atClose = inSession && etMinutes(now) > 16 * 60 + 15;
 const DRY = !!process.env.DRY_RUN;
 const daysBetween = (a, b) => Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 864e5);
 const r4 = x => x == null || !isFinite(x) ? null : Math.round(x * 1e4) / 1e4;
@@ -66,12 +68,18 @@ for (const p of ledger.picks) {
   if (today > p.exp) { const v = intrinsicNow(p); close(p, "expired", v != null ? v : (p.marks.length ? p.marks[p.marks.length - 1].v : 0)); closed++; continue; }
   if (!inSession || p.date === today) continue;
   const v = comboValue(p); if (v == null) continue;
-  if (!p.marks.length || p.marks[p.marks.length - 1].d !== today) p.marks.push({ d: today, v: r4(v), px: r4(spot[p.sym]) });
+  if (p.marks.length && p.marks[p.marks.length - 1].d === today) p.marks.pop();   // the latest quote of the day wins
+  p.marks.push({ d: today, v: r4(v), px: r4(spot[p.sym]) });
   marked++;
   const held = daysBetween(p.date, today), buy = p.side === "buy";
   if (buy ? v >= p.target : v <= p.target) { close(p, "target", v); closed++; }
   else if (buy ? v <= p.stop : v >= p.stop) { close(p, "stop", v); closed++; }
   else if (held >= p.hold || today >= p.closeBy) { close(p, "time", v); closed++; }
+}
+
+function labelOf(st) {
+  const mon = new Date(st.exp).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" }), k = x => (x % 1 ? x.toFixed(2) : String(x));
+  return st.kind === "single" ? `${st.sym} ${mon} $${k(st.K)} ${st.isC ? "Call" : "Put"}` : `${st.sym} ${mon} $${k(st.K)}/$${k(st.K2)} ${st.isC ? "Call" : "Put"} ${st.side === "buy" ? "debit" : "credit"} spread`;
 }
 
 // 2. today's picks (also computed in a dry run, for the diagnostics)
@@ -92,9 +100,7 @@ function computePicks() {
     const used = new Set();
     for (const st of rows) {
       if (used.size >= C.n) break; if (used.has(st.sym) || openIds.has(st.id)) continue; used.add(st.sym);
-      const lv = E.planLevels(st, PLAN[C.side]), expD = etDay(st.exp), mon = new Date(st.exp).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" });
-      const k = x => (x % 1 ? x.toFixed(2) : String(x));
-      const label = st.kind === "single" ? `${st.sym} ${mon} $${k(st.K)} ${st.isC ? "Call" : "Put"}` : `${st.sym} ${mon} $${k(st.K)}/$${k(st.K2)} ${st.isC ? "Call" : "Put"} ${C.side === "buy" ? "debit" : "credit"} spread`;
+      const lv = E.planLevels(st, PLAN[C.side]), expD = etDay(st.exp), label = labelOf(st);
       picks.push({ id: today + "|" + C.cat + "|" + st.id, structId: st.id, date: today, cat: C.cat, side: C.side, kind: st.kind, sym: st.sym, label, exp: expD,
         legs: st.legs.map((l, i) => ({ occ: st.raw[i].occ, q: l.q, K: l.K, isC: l.isC })), entry: r4(lv.entry), target: r4(lv.target), stop: isFinite(lv.stop) ? r4(lv.stop) : null,
         hold: PLAN[C.side].hold, closeBy: etDay(now + PLAN[C.side].hold * 864e5), risk: r4(st.risk), width: st.width || null, px: r4(st.S), grade: st.grade, score: r4(st.score),
@@ -115,8 +121,41 @@ if (DRY) {
   console.log("--- would log ---", JSON.stringify(r.stats));
   for (const p of r.picks) console.log(`${p.cat.padEnd(12)} ${p.label.padEnd(46)} entry ${p.entry} · EV ${pc(p.evPct)} · plan win ${pc(p.pWin)} · plan EV $${(p.planEv * 100).toFixed(0)} · P(profit) ${pc(p.pop)}`);
 }
+// 3. the $1,000 paper account: marks and exits, then up to two new trades a day, same engine rules as the page
+let paperLog = [];
+if (inSession) {
+  const P = ledger.paper || (ledger.paper = E.paperNew(today, spot.SPY));
+  for (const p of P.open.slice()) {
+    if (today > p.expDay) { const v = intrinsicNow(p); E.paperClose(P, p, v != null ? v : (p.last || 0), "expired", today); paperLog.push("expired " + p.label); continue; }
+    const v = comboValue(p); if (v == null) continue;
+    p.last = r4(v); p.lastAt = today;
+    const why = E.paperExit(p, v, today, daysBetween(today, p.expDay));
+    if (why) { const c = E.paperClose(P, p, v, why, today); paperLog.push(`closed ${c.label} (${why}) ${c.pl >= 0 ? "+" : "−"}$${Math.abs(c.pl).toFixed(2)}`); }
+  }
+  if (P.lastPick !== today) {
+    const syms = (scan.symbols || []).map(S => E.analyzeSymbol(S, { now, earn: E.earnMap(EARN, now) })).filter(Boolean);
+    const held = new Set(P.open.map(p => p.sym)), cands = E.paperCandidates(syms);
+    let n = 0;
+    for (const st of cands) {
+      if (n >= E.PAPER.perDay || P.open.length >= E.PAPER.maxOpen) break; if (held.has(st.sym)) continue;
+      const closeBy = etDay(Math.min(st.exp - 864e5, now + E.PAPER.plan[st.side].hold * 864e5));
+      const p = E.paperOpen(P, st, today, closeBy, st.legs.map((l, i) => ({ occ: st.raw[i].occ, q: l.q, K: l.K, isC: l.isC })), labelOf(st), etDay(st.exp));
+      if (!p) continue;
+      held.add(st.sym); n++;
+      paperLog.push(`opened ${p.label} ×${p.qty} at $${p.entry} (risk $${(p.risk * 100 * p.qty).toFixed(0)}, odds ${(p.odds * 100).toFixed(0)}%, EV ${(p.evPct * 100).toFixed(1)}%)`);
+    }
+    P.lastPick = today;
+    if (!n) { const why = cands.length ? `${cands.length} contract${cands.length === 1 ? "" : "s"} met every rule, but none fit the risk budget or the symbols were already held` : "nothing met every rule today (grade A, expected value ≥ 0 held and with the plan, no earnings inside)";
+      E.paperLog(P, today, "No new trade: " + why); paperLog.push("no new trade: " + why); }
+  }
+  const eq = E.paperEquity(P, p => p.last);
+  E.paperSnapshot(P, today, eq, spot.SPY);
+  paperLog.push(`equity $${eq.toFixed(2)} · cash $${P.cash.toFixed(2)} · ${P.open.length} open`);
+}
+for (const l of paperLog) console.log("paper: " + l);
+
 ledger.updated = new Date(now).toISOString();
 const out = JSON.stringify(ledger, (k, v) => (v === Infinity ? null : v), 1);
 if (!DRY) fs.writeFileSync(ledgerPath, out + "\n");
-console.log(`${today}${inSession ? "" : " (outside market hours: nothing logged or marked)"}${DRY ? " [dry run, ledger not written]" : ""}: ${scan.symbols ? scan.symbols.length : 0} symbols · marked ${marked} · closed ${closed} · added ${added} · ${ledger.picks.length} picks total`);
+console.log(`${today}${inSession ? (atClose ? " (closing quotes)" : "") : " (not a trading day or before 9:45 AM ET: nothing logged or marked)"}${DRY ? " [dry run, ledger not written]" : ""}: ${scan.symbols ? scan.symbols.length : 0} symbols · marked ${marked} · closed ${closed} · added ${added} · ${ledger.picks.length} picks total`);
 

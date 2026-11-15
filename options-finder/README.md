@@ -32,9 +32,19 @@ Options scanner for US stocks. For every listed call, put and vertical spread on
 - **Book risk (My positions):** beta-weighted delta to SPY (dollars per +1% SPY), vega (dollars per vol point), and a −5% SPY day with IV +40%, every leg repriced.
 - **Playbooks:** one-click filter+plan sets: Premium seller 45→21 (30–60 DTE, 16–30 delta, take 50%, close by 21 DTE, stop 2× credit), Patient buyer (60–150 DTE, 55–80 delta, +50% / −40% / 45 days), Earnings seller (credit spreads 7–30 DTE on names reporting inside the window, out within 5 days).
 
+## Paper account ($1,000)
+
+**Paper $1,000** in the masthead opens the account. It picks its own trades with the engine's paper rules (`Engine.paperCandidates`), the same code in both places:
+
+- **Rules:** up to 2 new trades a trading day; only grade A with expected value ≥ 0 both held to expiry and under the plan; no earnings inside; 14–60 days to expiry; defined risk only (bought options, debit spreads, credit spreads with the width set aside as collateral); at most 20% of equity at risk per trade, 60% in all, 5 open; one per symbol. Fills halfway between mid and natural; $0.03 per contract per leg in fees. Exits: buys +50% / −50%, sales keep 50% / stop at 2× the credit, 21 days, or one day before expiry.
+- **Always-on account:** `track.js` runs it every trading day in the GitHub job and stores it as `ledger.paper` in `track/ledger.json`; the public site and the Mac show it read-only, with an equity curve against SPY, open and closed trades, and an activity log.
+- **Claude version:** its own account in the page's private storage (`data/users/<id>/paper`), run whenever the page is open in market hours (right after the data loads, then every minute), with Check now and Reset. The page can't reach GitHub, so this is a separate account from the always-on one.
+
+$1,000 is small: most single options cost more than 20% of it, so the account mostly trades spreads and cheaper names. Judge it after 50+ closed trades, not a few weeks.
+
 ## Track record
 
-`.github/workflows/track.yml` runs every trading day at 19:45 UTC (2:45 PM EST / 3:45 PM EDT): `tracker_scan.py` pulls the chains (Cboe directly, else the public server), then `track.js` loads the engine straight out of `index.html`, marks every open pick at today's quotes, closes it per the default plan (+50%/−50%/21 days for buys; keep 50% / stop at a 200% loss / 21 days for sales), and logs the day's top A-grade picks: 4 single buys, 3 debit spreads, 3 credit spreads, one per symbol. The ledger is `track/ledger.json`; the page reads it through `/api/track`. Run it by hand from the Actions tab (dry run by default).
+`.github/workflows/track.yml` is scheduled three times a trading day (15:40, 17:40, 19:45 UTC) because GitHub often starts scheduled jobs hours late; any run on a trading day after 9:45 AM ET counts as that day (closing quotes when it lands after 4:15 PM), picks once a day and re-marks on every run: `tracker_scan.py` pulls the chains (Cboe directly, else the public server), then `track.js` loads the engine straight out of `index.html`, marks every open pick at today's quotes, closes it per the default plan (+50%/−50%/21 days for buys; keep 50% / stop at a 200% loss / 21 days for sales), and logs the day's top A-grade picks: 4 single buys, 3 debit spreads, 3 credit spreads, one per symbol. The ledger is `track/ledger.json`; the page reads it through `/api/track`. Run it by hand from the Actions tab (dry run by default).
 
 ## My trades (Claude version)
 

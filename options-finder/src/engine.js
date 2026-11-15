@@ -600,6 +600,93 @@ var Engine = (function () {
     });
     return rows;
   }
+  /* ---------- paper trading: a $1,000 account that picks its own trades by fixed rules ----------
+     Same code for the always-on daily job (track.js) and the page. Only trades with an edge by the model's own numbers:
+     grade A, expected value >= 0 held to expiry AND under the plan, no earnings inside, defined risk only (bought options,
+     debit spreads, credit spreads with the width held as collateral). Sized so one trade risks at most 20% of equity (a small account can afford little else). */
+  var PAPER = { start: 1000, riskPct: 0.20, maxOpen: 5, maxRiskTotal: 0.60, perDay: 2, fee: 0.03, dteMin: 14, dteMax: 60, closeDte: 1, paths: 300,
+    plan: { buy: { target: 0.5, stop: 0.5, hold: 21 }, sell: { target: 0.5, stop: 2.0, hold: 21 } } };
+  function paperNew(day, spy) { return { v: 1, start: PAPER.start, cash: PAPER.start, created: day, spy0: spy || null, open: [], closed: [], hist: [], log: [], lastPick: null, picks: 0 }; }
+  function paperLog(acct, day, text) { acct.log = acct.log || []; acct.log.unshift({ d: day, t: text }); if (acct.log.length > 80) acct.log.length = 80; }
+  var HOLIDAYS = ["2026-01-01", "2026-01-19", "2026-02-16", "2026-04-03", "2026-05-25", "2026-06-19", "2026-07-03", "2026-09-07", "2026-11-26", "2026-12-25",
+    "2027-01-01", "2027-01-18", "2027-02-15", "2027-03-26", "2027-05-31", "2027-06-18", "2027-07-05", "2027-09-06", "2027-11-25", "2027-12-24"];
+  function paperRisk(st, entry) { return st.side === "buy" ? entry : st.width - entry; }   // per share
+  function paperWorth(p, v) { return (p.side === "buy" ? v : p.width - v) * 100 * p.qty; }   // what the position adds to equity at value v
+  function paperEquity(acct, valueOf) {
+    var eq = acct.cash; for (var i = 0; i < acct.open.length; i++) { var p = acct.open[i], v = valueOf ? valueOf(p) : null; eq += paperWorth(p, v != null ? v : (p.last != null ? p.last : p.entry)); }
+    return eq;
+  }
+  function paperOpenRisk(acct) { var s = 0; for (var i = 0; i < acct.open.length; i++) s += acct.open[i].risk * 100 * acct.open[i].qty; return s; }
+  /* the ranked candidates: same scan as the page, then the strictest filter the page has */
+  function paperCandidates(syms, opts) {
+    opts = opts || {}; var out = [], n = opts.paths || PAPER.paths;
+    var cats = [{ struct: "single", side: "buy" }, { struct: "spread", side: "buy" }, { struct: "spread", side: "sell" }];
+    for (var c = 0; c < cats.length; c++) {
+      var C = cats[c], d = STRUCT_DEFAULTS[C.struct + "|" + C.side], plan = PAPER.plan[C.side];
+      var f = { types: "both", dteMin: PAPER.dteMin, dteMax: PAPER.dteMax, dMin: d.dMin, dMax: d.dMax, maxPrice: 2000, minOI: 300, maxSpread: d.maxSpread / 100, evMode: "avoid" };
+      var rows = [];
+      for (var a = 0; a < syms.length; a++) {
+        var A = syms[a], list = C.struct === "single" ? A.legs.map(function (L) { return makeSingle(L, A, C.side); }) : verticals(A, C.side, f);
+        for (var j = 0; j < list.length; j++) { var st = list[j]; if (st && prefilter(st, f) && !(st.tEv > 0 && st.tEv < st.T)) rows.push(st); }
+      }
+      rows = rows.filter(function (st) { st.plan = null; return st.evPct >= 0 && grade(st).fails.filter(function (k) { return k !== "odds"; }).length === 0; });
+      for (j = 0; j < rows.length; j++) { var s2 = rows[j]; s2.plan = simulate(s2, plan, n, s2.sym + "|" + s2.exp + "|" + C.side); s2.grade = grade(s2).g; }
+      rows = rows.filter(function (st) { return st.grade === "A" && st.plan && st.plan.ev >= 0; });
+      for (j = 0; j < rows.length; j++) rows[j].odds = profitOdds(rows[j], plan, Math.max(200, n >> 1), rows[j].sym + "|" + rows[j].exp + "|" + C.side, null);
+      out = out.concat(rows);
+    }
+    scoreRows(out, "odds"); out.sort(function (x, y) { return y.score - x.score; });
+    return out;
+  }
+  /* open, close, exits and the daily decision; dayMs(st) gives the close-by date as "YYYY-MM-DD" in the caller's calendar */
+  function paperOpen(acct, st, day, closeBy, legs, label, expDay) {
+    var plan = PAPER.plan[st.side], lv = planLevels(st, plan); if (!lv) return null;
+    var risk = paperRisk(st, lv.entry); if (!(risk > 0)) return null;
+    var eq = paperEquity(acct), room = Math.min(PAPER.riskPct * eq, PAPER.maxRiskTotal * eq - paperOpenRisk(acct), acct.cash - 1);
+    var nLegs = st.legs.length, qty = Math.floor(room / (risk * 100 + PAPER.fee * nLegs)); if (!(qty >= 1)) return null;
+    var fee = PAPER.fee * nLegs * qty;
+    var p = { id: day + "|" + st.id, sym: st.sym, label: label || st.id, expDay: expDay || null, kind: st.kind, side: st.side, isC: !!st.isC, K: st.K, K2: st.K2 || null, exp: st.exp, legs: legs,
+      qty: qty, entry: +lv.entry.toFixed(4), target: +lv.target.toFixed(4), stop: isFinite(lv.stop) ? +lv.stop.toFixed(4) : null, width: st.width || null, risk: +risk.toFixed(4),
+      opened: day, closeBy: closeBy, fees: +fee.toFixed(2), S0: +st.S.toFixed(2), pWin: st.plan ? +st.plan.pWin.toFixed(4) : null, odds: st.odds ? +st.odds.p.toFixed(4) : null,
+      evPct: +(+st.evPct).toFixed(4), planEv: st.plan && st.evBase > 0 ? +(st.plan.ev / st.evBase).toFixed(4) : null, iv: +(+st.iv).toFixed(4), last: +lv.entry.toFixed(4), lastAt: day };
+    acct.cash = +(acct.cash - risk * 100 * qty - fee).toFixed(2);
+    acct.open.push(p); acct.picks++;
+    paperLog(acct, day, "Opened " + p.label + " ×" + qty + " at $" + p.entry.toFixed(2) + (st.side === "sell" ? " credit" : "") + ": risk $" + (risk * 100 * qty).toFixed(0) +
+      ", profit odds " + (p.odds != null ? Math.round(p.odds * 100) + "%" : "–") + ", EV " + (p.evPct * 100).toFixed(1) + "%");
+    return p;
+  }
+  function paperExit(p, v, day, dte) {
+    var buy = p.side === "buy";
+    if (v != null && (buy ? v >= p.target : v <= p.target)) return "target";
+    if (v != null && p.stop != null && (buy ? v <= p.stop : v >= p.stop)) return "stop";
+    if (dte != null && dte <= PAPER.closeDte) return "expiry";
+    if (day >= p.closeBy) return "time";
+    return null;
+  }
+  function paperClose(acct, p, v, reason, day) {
+    var nLegs = p.legs ? p.legs.length : 1, fee = PAPER.fee * nLegs * p.qty, worth = paperWorth(p, v);
+    acct.cash = +(acct.cash + worth - fee).toFixed(2);
+    var per = p.side === "buy" ? v - p.entry : p.entry - v;
+    var c = Object.assign({}, p, { exit: +v.toFixed(4), closed: day, how: reason, fees: +(p.fees + fee).toFixed(2), pl: +(per * 100 * p.qty - p.fees - fee).toFixed(2), plPct: +(per / p.risk).toFixed(4) });
+    acct.open = acct.open.filter(function (x) { return x !== p; });
+    acct.closed.unshift(c); if (acct.closed.length > 400) acct.closed.length = 400;
+    paperLog(acct, day, "Closed " + p.label + " (" + ({ target: "target hit", stop: "stop hit", time: "time limit", expiry: "a day before expiry", expired: "expired" }[reason] || reason) + ") at $" + v.toFixed(2) +
+      ": " + (c.pl >= 0 ? "+" : "−") + "$" + Math.abs(c.pl).toFixed(2));
+    return c;
+  }
+  function paperSnapshot(acct, day, eq, spy) {
+    var h = acct.hist; if (h.length && h[h.length - 1].d === day) h.pop();
+    h.push({ d: day, eq: +eq.toFixed(2), spy: spy ? +spy.toFixed(2) : null }); if (h.length > 600) h.splice(0, h.length - 600);
+  }
+  function paperStats(acct, eq) {
+    var cl = acct.closed, n = cl.length, w = 0, sw = 0, sl = 0, nl = 0, model = 0, nm = 0;
+    for (var i = 0; i < n; i++) { var c = cl[i]; if (c.pl > 0) { w++; sw += c.pl; } else { nl++; sl += c.pl; } if (c.odds != null) { model += c.odds; nm++; } }
+    var peak = acct.start, dd = 0; for (i = 0; i < acct.hist.length; i++) { var e = acct.hist[i].eq; if (e > peak) peak = e; dd = Math.min(dd, e / peak - 1); }
+    var h0 = acct.hist[0], hN = acct.hist[acct.hist.length - 1], spyRet = acct.spy0 && hN && hN.spy ? hN.spy / acct.spy0 - 1 : null;
+    return { n: n, wins: w, rate: n ? w / n : null, avgWin: w ? sw / w : null, avgLoss: nl ? sl / nl : null, realized: sw + sl, model: nm ? model / nm : null,
+      ret: eq / acct.start - 1, maxDD: dd, spyRet: spyRet, days: h0 ? Math.round((Date.parse(hN.d) - Date.parse(h0.d)) / 864e5) : 0 };
+  }
+
   var STRUCT_DEFAULTS = {
     "single|buy": { dMin: 0.20, dMax: 0.70, maxSpread: 10 }, "single|sell": { dMin: 0.15, dMax: 0.45, maxSpread: 10 },
     "spread|buy": { dMin: 0.35, dMax: 0.75, maxSpread: 20 }, "spread|sell": { dMin: 0.15, dMax: 0.40, maxSpread: 25 }
@@ -610,7 +697,7 @@ var Engine = (function () {
     parseOCC: parseOCC, etTime: etTime, earnMap: earnMap, histStats: histStats, realizedVol: realizedVol, trendOf: trendOf,
     paritySpot: paritySpot, termStructure: termStructure, termFrom: termFrom, atmIVAt: atmIVAt, detectEvent: detectEvent, spans: spans, analyzeSymbol: analyzeSymbol,
     makeSingle: makeSingle, makeSpread: makeSpread, verticals: verticals, volModel: volModel, valueAt: valueAt, intrinsic: intrinsic,
-    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, profitOdds: profitOdds, ODDS_W: ODDS_W, CRASH: CRASH, gapPL: gapPL, volRank: volRank, earningsMoves: earningsMoves, betaOf: betaOf, HAR_W: HAR_W, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
+    impliedVol: impliedVol, finish: finish, simulateLevels: simulateLevels, simulate: simulate, profitOdds: profitOdds, PAPER: PAPER, HOLIDAYS: HOLIDAYS, paperLog: paperLog, paperNew: paperNew, paperCandidates: paperCandidates, paperOpen: paperOpen, paperExit: paperExit, paperClose: paperClose, paperEquity: paperEquity, paperOpenRisk: paperOpenRisk, paperSnapshot: paperSnapshot, paperStats: paperStats, paperWorth: paperWorth, ODDS_W: ODDS_W, CRASH: CRASH, gapPL: gapPL, volRank: volRank, earningsMoves: earningsMoves, betaOf: betaOf, HAR_W: HAR_W, planLevels: planLevels, grade: grade, CHECKS: CHECKS, ODDS: ODDS, prefilter: prefilter,
     LENSES: LENSES, pctRank: pctRank, scoreRows: scoreRows, STRUCT_DEFAULTS: STRUCT_DEFAULTS, PLAN_DEFAULTS: PLAN_DEFAULTS };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = Engine;

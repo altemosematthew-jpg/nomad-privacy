@@ -1,8 +1,11 @@
 name: Strike Finder track record
 # Every trading day near the close: mark open picks, close them per the plan, log today's A-grade picks.
-# 19:45 UTC = 2:45 PM EST / 3:45 PM EDT. The script itself skips holidays and anything outside market hours.
+# Three tries a day because GitHub often starts scheduled jobs hours late; the script picks once a day, re-marks on every run,
+# skips holidays, and treats any run on a trading day after 9:45 AM ET as that day (closing quotes when it lands after 4:15 PM).
 on:
   schedule:
+    - cron: "40 15 * * 1-5"
+    - cron: "40 17 * * 1-5"
     - cron: "45 19 * * 1-5"
   workflow_dispatch:
     inputs:
