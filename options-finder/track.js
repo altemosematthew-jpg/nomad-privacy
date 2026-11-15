@@ -120,6 +120,9 @@ if (DRY) {
   for (const A of r.syms) console.log(`${A.sym.padEnd(5)} $${A.px.toFixed(2)}${A.mismatch ? " (stock quote $" + A.pxQuoted.toFixed(2) + " out of sync)" : ""} · realized ${pc(A.hv)} · iv30 ${pc(A.iv30)} · ${A.legs.length} legs${A.dropped ? " (" + A.dropped + " dropped)" : ""} · trend ${A.trend} · event ${A.ev ? (A.ev.src === "iv" ? etDay(A.ev.from) + "→" + etDay(A.ev.to) : "earnings " + etDay(A.ev.at)) + " ±" + pc(A.ev.move) : "none"}`);
   console.log("--- would log ---", JSON.stringify(r.stats));
   for (const p of r.picks) console.log(`${p.cat.padEnd(12)} ${p.label.padEnd(46)} entry ${p.entry} · EV ${pc(p.evPct)} · plan win ${pc(p.pWin)} · plan EV $${(p.planEv * 100).toFixed(0)} · P(profit) ${pc(p.pop)}`);
+  const pcs = E.paperCandidates(r.syms), budget = E.PAPER.riskPct * E.PAPER.start;
+  console.log(`--- paper account would consider --- ${pcs.length} contracts meet every rule; ${pcs.filter(st => (st.side === "buy" ? st.price : st.width - st.price) * 100 <= budget).length} fit a $${budget} risk budget`);
+  for (const st of pcs.slice(0, 6)) console.log(`  ${labelOf(st).padEnd(46)} risk $${((st.side === "buy" ? st.price : st.width - st.price) * 100).toFixed(0)} · odds ${pc(st.odds && st.odds.p)} · EV ${pc(st.evPct)}`);
 }
 // 3. the $1,000 paper account: marks and exits, then up to two new trades a day, same engine rules as the page
 let paperLog = [];
