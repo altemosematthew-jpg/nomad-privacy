@@ -1,7 +1,464 @@
 {
  "version": 1,
  "created": "2026-11-04",
- "picks": [],
+ "picks": [
+  {
+   "id": "2026-11-16|single-buy|INTC270115P00060000",
+   "structId": "INTC270115P00060000",
+   "date": "2026-11-16",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "INTC",
+   "label": "INTC Jan 15 $60 Put",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "INTC270115P00060000",
+     "q": 1,
+     "K": 60,
+     "isC": false
+    }
+   ],
+   "entry": 8.65,
+   "target": 12.975,
+   "stop": 4.325,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 8.65,
+   "width": null,
+   "px": 55.4671,
+   "grade": "A",
+   "score": 0.852,
+   "ev": 0.2472,
+   "evPct": 0.0286,
+   "pWin": 0.475,
+   "planEv": -0.0156,
+   "pop": 0.4345,
+   "iv": 0.6817,
+   "sigPath": 0.715,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|single-buy|AMZN270115C00270000",
+   "structId": "AMZN270115C00270000",
+   "date": "2026-11-16",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "AMZN",
+   "label": "AMZN Jan 15 $270 Call",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "AMZN270115C00270000",
+     "q": 1,
+     "K": 270,
+     "isC": true
+    }
+   ],
+   "entry": 9.9875,
+   "target": 14.9813,
+   "stop": 4.9938,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 9.9875,
+   "width": null,
+   "px": 257.7326,
+   "grade": "A",
+   "score": 0.762,
+   "ev": 0.2658,
+   "evPct": 0.0266,
+   "pWin": 0.465,
+   "planEv": 0.1005,
+   "pop": 0.2683,
+   "iv": 0.3434,
+   "sigPath": 0.3514,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|single-buy|AAPL270115C00355000",
+   "structId": "AAPL270115C00355000",
+   "date": "2026-11-16",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "AAPL",
+   "label": "AAPL Jan 15 $355 Call",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "AAPL270115C00355000",
+     "q": 1,
+     "K": 355,
+     "isC": true
+    }
+   ],
+   "entry": 13.8125,
+   "target": 20.7188,
+   "stop": 6.9063,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 13.8125,
+   "width": null,
+   "px": 352.6064,
+   "grade": "A",
+   "score": 0.665,
+   "ev": 0.1437,
+   "evPct": 0.0104,
+   "pWin": 0.46,
+   "planEv": -0.1704,
+   "pop": 0.3291,
+   "iv": 0.2407,
+   "sigPath": 0.2456,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|single-buy|HOOD261218P00080000",
+   "structId": "HOOD261218P00080000",
+   "date": "2026-11-16",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "HOOD",
+   "label": "HOOD Dec 18 $80 Put",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "HOOD261218P00080000",
+     "q": 1,
+     "K": 80,
+     "isC": false
+    }
+   ],
+   "entry": 10.75,
+   "target": 16.125,
+   "stop": 5.375,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 10.75,
+   "width": null,
+   "px": 72.1075,
+   "grade": "A",
+   "score": 0.662,
+   "ev": -0.2574,
+   "evPct": -0.0239,
+   "pWin": 0.4925,
+   "planEv": -0.2066,
+   "pop": 0.4548,
+   "iv": 0.6899,
+   "sigPath": 0.6634,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-buy|QQQ261218P00680000/QQQ261218P00660000",
+   "structId": "QQQ261218P00680000/QQQ261218P00660000",
+   "date": "2026-11-16",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "QQQ",
+   "label": "QQQ Dec 18 $680/$660 Put debit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "QQQ261218P00680000",
+     "q": 1,
+     "K": 680,
+     "isC": false
+    },
+    {
+     "occ": "QQQ261218P00660000",
+     "q": -1,
+     "K": 660,
+     "isC": false
+    }
+   ],
+   "entry": 9.6175,
+   "target": 14.4263,
+   "stop": 4.8088,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 9.6175,
+   "width": 20,
+   "px": 661.9458,
+   "grade": "A",
+   "score": 0.8796,
+   "ev": -0.0183,
+   "evPct": -0.0019,
+   "pWin": 0.5125,
+   "planEv": -0.1932,
+   "pop": 0.5608,
+   "iv": 0.2767,
+   "sigPath": 0.2627,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-buy|IWM270115P00280000/IWM270115P00270000",
+   "structId": "IWM270115P00280000/IWM270115P00270000",
+   "date": "2026-11-16",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "IWM",
+   "label": "IWM Jan 15 $280/$270 Put debit spread",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "IWM270115P00280000",
+     "q": 1,
+     "K": 280,
+     "isC": false
+    },
+    {
+     "occ": "IWM270115P00270000",
+     "q": -1,
+     "K": 270,
+     "isC": false
+    }
+   ],
+   "entry": 4.7275,
+   "target": 7.0912,
+   "stop": 2.3637,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 4.7275,
+   "width": 10,
+   "px": 272.6589,
+   "grade": "A",
+   "score": 0.8398,
+   "ev": -0.0159,
+   "evPct": -0.0034,
+   "pWin": 0.51,
+   "planEv": -0.1032,
+   "pop": 0.531,
+   "iv": 0.2183,
+   "sigPath": 0.202,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-buy|SPY270115P00765000/SPY270115P00740000",
+   "structId": "SPY270115P00765000/SPY270115P00740000",
+   "date": "2026-11-16",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "SPY",
+   "label": "SPY Jan 15 $765/$740 Put debit spread",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "SPY270115P00765000",
+     "q": 1,
+     "K": 765,
+     "isC": false
+    },
+    {
+     "occ": "SPY270115P00740000",
+     "q": -1,
+     "K": 740,
+     "isC": false
+    }
+   ],
+   "entry": 12.4,
+   "target": 18.6,
+   "stop": 6.2,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 12.4,
+   "width": 25,
+   "px": 739.7482,
+   "grade": "A",
+   "score": 0.8148,
+   "ev": 0.0765,
+   "evPct": 0.0062,
+   "pWin": 0.5275,
+   "planEv": -0.2758,
+   "pop": 0.5738,
+   "iv": 0.1748,
+   "sigPath": 0.1606,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-sell|SPY261211C00758000/SPY261211C00765000",
+   "structId": "SPY261211C00758000/SPY261211C00765000",
+   "date": "2026-11-16",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "SPY",
+   "label": "SPY Dec 11 $758/$765 Call credit spread",
+   "exp": "2026-12-11",
+   "legs": [
+    {
+     "occ": "SPY261211C00758000",
+     "q": 1,
+     "K": 758,
+     "isC": true
+    },
+    {
+     "occ": "SPY261211C00765000",
+     "q": -1,
+     "K": 765,
+     "isC": true
+    }
+   ],
+   "entry": 2.325,
+   "target": 1.1625,
+   "stop": 6.975,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 4.675,
+   "width": 7,
+   "px": 739.7482,
+   "grade": "A",
+   "score": 0.7637,
+   "ev": 0.1874,
+   "evPct": 0.0401,
+   "pWin": 0.755,
+   "planEv": 0.1068,
+   "pop": 0.7291,
+   "iv": 0.1607,
+   "sigPath": 0.1451,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-sell|QQQ261218C00700000/QQQ261218C00705000",
+   "structId": "QQQ261218C00700000/QQQ261218C00705000",
+   "date": "2026-11-16",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "QQQ",
+   "label": "QQQ Dec 18 $700/$705 Call credit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "QQQ261218C00700000",
+     "q": 1,
+     "K": 700,
+     "isC": true
+    },
+    {
+     "occ": "QQQ261218C00705000",
+     "q": -1,
+     "K": 705,
+     "isC": true
+    }
+   ],
+   "entry": 1.2475,
+   "target": 0.6237,
+   "stop": 3.7425,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 3.7525,
+   "width": 5,
+   "px": 661.9458,
+   "grade": "A",
+   "score": 0.5571,
+   "ev": 0.0384,
+   "evPct": 0.0102,
+   "pWin": 0.7,
+   "planEv": -0.0531,
+   "pop": 0.7839,
+   "iv": 0.2447,
+   "sigPath": 0.2323,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-16|spread-sell|IWM261218C00279000/IWM261218C00285000",
+   "structId": "IWM261218C00279000/IWM261218C00285000",
+   "date": "2026-11-16",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "IWM",
+   "label": "IWM Dec 18 $279/$285 Call credit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "IWM261218C00279000",
+     "q": 1,
+     "K": 279,
+     "isC": true
+    },
+    {
+     "occ": "IWM261218C00285000",
+     "q": -1,
+     "K": 285,
+     "isC": true
+    }
+   ],
+   "entry": 1.9975,
+   "target": 0.9988,
+   "stop": 5.9925,
+   "hold": 21,
+   "closeBy": "2026-12-07",
+   "risk": 4.0025,
+   "width": 6,
+   "px": 272.6589,
+   "grade": "A",
+   "score": 0.508,
+   "ev": 0.1037,
+   "evPct": 0.0259,
+   "pWin": 0.6775,
+   "planEv": -0.0945,
+   "pop": 0.6935,
+   "iv": 0.1885,
+   "sigPath": 0.1729,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  }
+ ],
  "rules": {
   "plan": {
    "buy": {
@@ -19,6 +476,266 @@
   "marks": "once a day at about 2:45 PM ET, same fill model",
   "source": "Cboe delayed quotes (15 min)"
  },
- "updated": "2026-11-14T00:28:25.803Z",
- "ivlog": {}
+ "updated": "2026-11-16T23:50:20.433Z",
+ "ivlog": {
+  "SPY": [
+   [
+    "2026-11-16",
+    0.1855
+   ]
+  ],
+  "QQQ": [
+   [
+    "2026-11-16",
+    0.279
+   ]
+  ],
+  "IWM": [
+   [
+    "2026-11-16",
+    0.2181
+   ]
+  ],
+  "AAPL": [
+   [
+    "2026-11-16",
+    0.2401
+   ]
+  ],
+  "MSFT": [
+   [
+    "2026-11-16",
+    0.307
+   ]
+  ],
+  "NVDA": [
+   [
+    "2026-11-16",
+    0.6334
+   ]
+  ],
+  "AMZN": [
+   [
+    "2026-11-16",
+    0.3653
+   ]
+  ],
+  "GOOGL": [
+   [
+    "2026-11-16",
+    0.3608
+   ]
+  ],
+  "META": [
+   [
+    "2026-11-16",
+    0.423
+   ]
+  ],
+  "TSLA": [
+   [
+    "2026-11-16",
+    0.4978
+   ]
+  ],
+  "AMD": [
+   [
+    "2026-11-16",
+    0.7412
+   ]
+  ],
+  "NFLX": [
+   [
+    "2026-11-16",
+    0.3617
+   ]
+  ],
+  "AVGO": [
+   [
+    "2026-11-16",
+    0.6312
+   ]
+  ],
+  "COIN": [
+   [
+    "2026-11-16",
+    0.7255
+   ]
+  ],
+  "PLTR": [
+   [
+    "2026-11-16",
+    0.5596
+   ]
+  ],
+  "SOFI": [
+   [
+    "2026-11-16",
+    0.5365
+   ]
+  ],
+  "F": [
+   [
+    "2026-11-16",
+    0.3264
+   ]
+  ],
+  "BAC": [
+   [
+    "2026-11-16",
+    0.2761
+   ]
+  ],
+  "INTC": [
+   [
+    "2026-11-16",
+    0.7325
+   ]
+  ],
+  "HOOD": [
+   [
+    "2026-11-16",
+    0.7104
+   ]
+  ],
+  "MRVL": [
+   [
+    "2026-11-16",
+    0.8965
+   ]
+  ],
+  "MU": [
+   [
+    "2026-11-16",
+    0.7533
+   ]
+  ],
+  "UBER": [
+   [
+    "2026-11-16",
+    0.3489
+   ]
+  ],
+  "ARM": [
+   [
+    "2026-11-16",
+    0.8101
+   ]
+  ]
+ },
+ "paper": {
+  "v": 1,
+  "start": 1000,
+  "cash": 652.38,
+  "created": "2026-11-16",
+  "spy0": 739.748217064181,
+  "open": [
+   {
+    "id": "2026-11-16|IWM261211C00283000/IWM261211C00285000",
+    "sym": "IWM",
+    "label": "IWM Dec 11 $283/$285 Call credit spread",
+    "expDay": "2026-12-11",
+    "kind": "spread",
+    "side": "sell",
+    "isC": true,
+    "K": 283,
+    "K2": 285,
+    "exp": 1797022800000,
+    "legs": [
+     {
+      "occ": "IWM261211C00283000",
+      "q": 1,
+      "K": 283,
+      "isC": true
+     },
+     {
+      "occ": "IWM261211C00285000",
+      "q": -1,
+      "K": 285,
+      "isC": true
+     }
+    ],
+    "qty": 1,
+    "entry": 0.5,
+    "target": 0.25,
+    "stop": 1.5,
+    "width": 2,
+    "risk": 1.5,
+    "opened": "2026-11-16",
+    "closeBy": "2026-12-07",
+    "fees": 0.06,
+    "S0": 272.66,
+    "pWin": 0.7567,
+    "odds": 0.7451,
+    "evPct": 0.0205,
+    "planEv": 0.0085,
+    "iv": 0.1923,
+    "last": 0.5,
+    "lastAt": "2026-11-16"
+   },
+   {
+    "id": "2026-11-16|SPY261211C00759000/SPY261211C00762000",
+    "sym": "SPY",
+    "label": "SPY Dec 11 $759/$762 Call credit spread",
+    "expDay": "2026-12-11",
+    "kind": "spread",
+    "side": "sell",
+    "isC": true,
+    "K": 759,
+    "K2": 762,
+    "exp": 1797022800000,
+    "legs": [
+     {
+      "occ": "SPY261211C00759000",
+      "q": 1,
+      "K": 759,
+      "isC": true
+     },
+     {
+      "occ": "SPY261211C00762000",
+      "q": -1,
+      "K": 762,
+      "isC": true
+     }
+    ],
+    "qty": 1,
+    "entry": 1.025,
+    "target": 0.5125,
+    "stop": 3.075,
+    "width": 3,
+    "risk": 1.975,
+    "opened": "2026-11-16",
+    "closeBy": "2026-12-07",
+    "fees": 0.06,
+    "S0": 739.75,
+    "pWin": 0.7533,
+    "odds": 0.7337,
+    "evPct": 0.0301,
+    "planEv": 0.0163,
+    "iv": 0.1618,
+    "last": 1.025,
+    "lastAt": "2026-11-16"
+   }
+  ],
+  "closed": [],
+  "hist": [
+   {
+    "d": "2026-11-16",
+    "eq": 999.88,
+    "spy": 739.75
+   }
+  ],
+  "log": [
+   {
+    "d": "2026-11-16",
+    "t": "Opened SPY Dec 11 $759/$762 Call credit spread ×1 at $1.02 credit: risk $198, profit odds 73%, EV 3.0%"
+   },
+   {
+    "d": "2026-11-16",
+    "t": "Opened IWM Dec 11 $283/$285 Call credit spread ×1 at $0.50 credit: risk $150, profit odds 75%, EV 2.1%"
+   }
+  ],
+  "lastPick": "2026-11-16",
+  "picks": 2
+ }
 }
