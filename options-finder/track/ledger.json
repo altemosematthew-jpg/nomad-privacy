@@ -38,7 +38,13 @@
    "iv": 0.6817,
    "sigPath": 0.715,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 8.85,
+     "px": 55.0463
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -80,7 +86,13 @@
    "iv": 0.3434,
    "sigPath": 0.3514,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 10.0375,
+     "px": 257.674
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -122,7 +134,13 @@
    "iv": 0.2407,
    "sigPath": 0.2456,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 13.4,
+     "px": 351.638
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -164,7 +182,13 @@
    "iv": 0.6899,
    "sigPath": 0.6634,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 12.6375,
+     "px": 68.8751
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -212,7 +236,13 @@
    "iv": 0.2767,
    "sigPath": 0.2627,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 10.0075,
+     "px": 657.0333
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -260,7 +290,13 @@
    "iv": 0.2183,
    "sigPath": 0.202,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 4.9075,
+     "px": 268.927
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -308,7 +344,13 @@
    "iv": 0.1748,
    "sigPath": 0.1606,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 12.97,
+     "px": 732.0187
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -356,7 +398,13 @@
    "iv": 0.1607,
    "sigPath": 0.1451,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 1.835,
+     "px": 732.0187
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -404,7 +452,13 @@
    "iv": 0.2447,
    "sigPath": 0.2323,
    "status": "open",
-   "marks": [],
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 1.28,
+     "px": 657.0333
+    }
+   ],
    "exit": null,
    "pl": null,
    "plPct": null,
@@ -452,6 +506,468 @@
    "iv": 0.1885,
    "sigPath": 0.1729,
    "status": "open",
+   "marks": [
+    {
+     "d": "2026-11-17",
+     "v": 1.6,
+     "px": 268.927
+    }
+   ],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|single-buy|AAPL270115C00350000",
+   "structId": "AAPL270115C00350000",
+   "date": "2026-11-17",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "AAPL",
+   "label": "AAPL Jan 15 $350 Call",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "AAPL270115C00350000",
+     "q": 1,
+     "K": 350,
+     "isC": true
+    }
+   ],
+   "entry": 16.6125,
+   "target": 24.9188,
+   "stop": 8.3063,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 16.6125,
+   "width": null,
+   "px": 351.638,
+   "grade": "A",
+   "score": 0.755,
+   "ev": -0.0579,
+   "evPct": -0.0035,
+   "pWin": 0.46,
+   "planEv": -0.1094,
+   "pop": 0.3475,
+   "iv": 0.2579,
+   "sigPath": 0.2593,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|single-buy|INTC270115P00065000",
+   "structId": "INTC270115P00065000",
+   "date": "2026-11-17",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "INTC",
+   "label": "INTC Jan 15 $65 Put",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "INTC270115P00065000",
+     "q": 1,
+     "K": 65,
+     "isC": false
+    }
+   ],
+   "entry": 12.5625,
+   "target": 18.8438,
+   "stop": 6.2813,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 12.5625,
+   "width": null,
+   "px": 55.0463,
+   "grade": "A",
+   "score": 0.7293,
+   "ev": 0.1271,
+   "evPct": 0.0101,
+   "pWin": 0.4675,
+   "planEv": -0.1846,
+   "pop": 0.4763,
+   "iv": 0.6909,
+   "sigPath": 0.7237,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|single-buy|SOFI270115P00014000",
+   "structId": "SOFI270115P00014000",
+   "date": "2026-11-17",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "SOFI",
+   "label": "SOFI Jan 15 $14 Put",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "SOFI270115P00014000",
+     "q": 1,
+     "K": 14,
+     "isC": false
+    }
+   ],
+   "entry": 1.055,
+   "target": 1.5825,
+   "stop": 0.5275,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 1.055,
+   "width": null,
+   "px": 14.3037,
+   "grade": "A",
+   "score": 0.6221,
+   "ev": 0.0343,
+   "evPct": 0.0325,
+   "pWin": 0.445,
+   "planEv": -0.0128,
+   "pop": 0.3548,
+   "iv": 0.5482,
+   "sigPath": 0.5659,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|single-buy|NFLX270115P00060000",
+   "structId": "NFLX270115P00060000",
+   "date": "2026-11-17",
+   "cat": "single-buy",
+   "side": "buy",
+   "kind": "single",
+   "sym": "NFLX",
+   "label": "NFLX Jan 15 $60 Put",
+   "exp": "2027-01-15",
+   "legs": [
+    {
+     "occ": "NFLX270115P00060000",
+     "q": 1,
+     "K": 60,
+     "isC": false
+    }
+   ],
+   "entry": 3.5125,
+   "target": 5.2688,
+   "stop": 1.7563,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 3.5125,
+   "width": null,
+   "px": 59.6636,
+   "grade": "A",
+   "score": 0.615,
+   "ev": -0.0825,
+   "evPct": -0.0235,
+   "pWin": 0.4675,
+   "planEv": -0.0284,
+   "pop": 0.3663,
+   "iv": 0.3665,
+   "sigPath": 0.3618,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-buy|ARM261218P00200000/ARM261218P00175000",
+   "structId": "ARM261218P00200000/ARM261218P00175000",
+   "date": "2026-11-17",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "ARM",
+   "label": "ARM Dec 18 $200/$175 Put debit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "ARM261218P00200000",
+     "q": 1,
+     "K": 200,
+     "isC": false
+    },
+    {
+     "occ": "ARM261218P00175000",
+     "q": -1,
+     "K": 175,
+     "isC": false
+    }
+   ],
+   "entry": 13.7625,
+   "target": 20.6437,
+   "stop": 6.8813,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 13.7625,
+   "width": 25,
+   "px": 182.8076,
+   "grade": "A",
+   "score": 0.7675,
+   "ev": -0.1662,
+   "evPct": -0.0121,
+   "pWin": 0.525,
+   "planEv": -0.2244,
+   "pop": 0.5726,
+   "iv": 0.8204,
+   "sigPath": 0.864,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-buy|QQQ261218P00675000/QQQ261218P00655000",
+   "structId": "QQQ261218P00675000/QQQ261218P00655000",
+   "date": "2026-11-17",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "QQQ",
+   "label": "QQQ Dec 18 $675/$655 Put debit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "QQQ261218P00675000",
+     "q": 1,
+     "K": 675,
+     "isC": false
+    },
+    {
+     "occ": "QQQ261218P00655000",
+     "q": -1,
+     "K": 655,
+     "isC": false
+    }
+   ],
+   "entry": 9.6425,
+   "target": 14.4638,
+   "stop": 4.8213,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 9.6425,
+   "width": 20,
+   "px": 657.0333,
+   "grade": "A",
+   "score": 0.7578,
+   "ev": -0.1982,
+   "evPct": -0.0206,
+   "pWin": 0.505,
+   "planEv": -0.3829,
+   "pop": 0.5598,
+   "iv": 0.2936,
+   "sigPath": 0.2952,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-buy|PLTR261218P00170000/PLTR261218P00150000",
+   "structId": "PLTR261218P00170000/PLTR261218P00150000",
+   "date": "2026-11-17",
+   "cat": "spread-buy",
+   "side": "buy",
+   "kind": "spread",
+   "sym": "PLTR",
+   "label": "PLTR Dec 18 $170/$150 Put debit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "PLTR261218P00170000",
+     "q": 1,
+     "K": 170,
+     "isC": false
+    },
+    {
+     "occ": "PLTR261218P00150000",
+     "q": -1,
+     "K": 150,
+     "isC": false
+    }
+   ],
+   "entry": 10.85,
+   "target": 16.275,
+   "stop": 5.425,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 10.85,
+   "width": 20,
+   "px": 156.5008,
+   "grade": "A",
+   "score": 0.7392,
+   "ev": -0.1709,
+   "evPct": -0.0157,
+   "pWin": 0.5175,
+   "planEv": -0.3659,
+   "pop": 0.565,
+   "iv": 0.5777,
+   "sigPath": 0.538,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-sell|SPY261204C00748000/SPY261204C00756000",
+   "structId": "SPY261204C00748000/SPY261204C00756000",
+   "date": "2026-11-17",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "SPY",
+   "label": "SPY Dec 4 $748/$756 Call credit spread",
+   "exp": "2026-12-04",
+   "legs": [
+    {
+     "occ": "SPY261204C00748000",
+     "q": 1,
+     "K": 748,
+     "isC": true
+    },
+    {
+     "occ": "SPY261204C00756000",
+     "q": -1,
+     "K": 756,
+     "isC": true
+    }
+   ],
+   "entry": 2.665,
+   "target": 1.3325,
+   "stop": 7.995,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 5.335,
+   "width": 8,
+   "px": 732.0187,
+   "grade": "A",
+   "score": 0.756,
+   "ev": 0.2517,
+   "evPct": 0.0472,
+   "pWin": 0.8175,
+   "planEv": 0.2982,
+   "pop": 0.7281,
+   "iv": 0.1843,
+   "sigPath": 0.1647,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-sell|IWM261218C00275000/IWM261218C00283000",
+   "structId": "IWM261218C00275000/IWM261218C00283000",
+   "date": "2026-11-17",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "IWM",
+   "label": "IWM Dec 18 $275/$283 Call credit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "IWM261218C00275000",
+     "q": 1,
+     "K": 275,
+     "isC": true
+    },
+    {
+     "occ": "IWM261218C00283000",
+     "q": -1,
+     "K": 283,
+     "isC": true
+    }
+   ],
+   "entry": 2.665,
+   "target": 1.3325,
+   "stop": 7.995,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 5.335,
+   "width": 8,
+   "px": 268.927,
+   "grade": "A",
+   "score": 0.4733,
+   "ev": 0.1698,
+   "evPct": 0.0318,
+   "pWin": 0.6825,
+   "planEv": -0.1107,
+   "pop": 0.6952,
+   "iv": 0.2043,
+   "sigPath": 0.1859,
+   "status": "open",
+   "marks": [],
+   "exit": null,
+   "pl": null,
+   "plPct": null,
+   "closed": null
+  },
+  {
+   "id": "2026-11-17|spread-sell|QQQ261218C00690000/QQQ261218C00698000",
+   "structId": "QQQ261218C00690000/QQQ261218C00698000",
+   "date": "2026-11-17",
+   "cat": "spread-sell",
+   "side": "sell",
+   "kind": "spread",
+   "sym": "QQQ",
+   "label": "QQQ Dec 18 $690/$698 Call credit spread",
+   "exp": "2026-12-18",
+   "legs": [
+    {
+     "occ": "QQQ261218C00690000",
+     "q": 1,
+     "K": 690,
+     "isC": true
+    },
+    {
+     "occ": "QQQ261218C00698000",
+     "q": -1,
+     "K": 698,
+     "isC": true
+    }
+   ],
+   "entry": 2.32,
+   "target": 1.16,
+   "stop": 6.96,
+   "hold": 21,
+   "closeBy": "2026-12-08",
+   "risk": 5.68,
+   "width": 8,
+   "px": 657.0333,
+   "grade": "A",
+   "score": 0.3043,
+   "ev": -0.1012,
+   "evPct": -0.0178,
+   "pWin": 0.685,
+   "planEv": -0.2475,
+   "pop": 0.7504,
+   "iv": 0.2638,
+   "sigPath": 0.2653,
+   "status": "open",
    "marks": [],
    "exit": null,
    "pl": null,
@@ -476,150 +992,246 @@
   "marks": "once a day at about 2:45 PM ET, same fill model",
   "source": "Cboe delayed quotes (15 min)"
  },
- "updated": "2026-11-17T02:37:51.714Z",
+ "updated": "2026-11-17T23:08:15.666Z",
  "ivlog": {
   "SPY": [
    [
     "2026-11-16",
     0.1858
+   ],
+   [
+    "2026-11-17",
+    0.2063
    ]
   ],
   "QQQ": [
    [
     "2026-11-16",
     0.2793
+   ],
+   [
+    "2026-11-17",
+    0.2952
    ]
   ],
   "IWM": [
    [
     "2026-11-16",
     0.2185
+   ],
+   [
+    "2026-11-17",
+    0.2397
    ]
   ],
   "AAPL": [
    [
     "2026-11-16",
     0.2406
+   ],
+   [
+    "2026-11-17",
+    0.2541
    ]
   ],
   "MSFT": [
    [
     "2026-11-16",
     0.3076
+   ],
+   [
+    "2026-11-17",
+    0.3431
    ]
   ],
   "NVDA": [
    [
     "2026-11-16",
     0.634
+   ],
+   [
+    "2026-11-17",
+    0.6513
    ]
   ],
   "AMZN": [
    [
     "2026-11-16",
     0.3659
+   ],
+   [
+    "2026-11-17",
+    0.3799
    ]
   ],
   "GOOGL": [
    [
     "2026-11-16",
     0.3614
+   ],
+   [
+    "2026-11-17",
+    0.3727
    ]
   ],
   "META": [
    [
     "2026-11-16",
     0.4239
+   ],
+   [
+    "2026-11-17",
+    0.4419
    ]
   ],
   "TSLA": [
    [
     "2026-11-16",
     0.4986
+   ],
+   [
+    "2026-11-17",
+    0.5137
    ]
   ],
   "AMD": [
    [
     "2026-11-16",
     0.742
+   ],
+   [
+    "2026-11-17",
+    0.7722
    ]
   ],
   "NFLX": [
    [
     "2026-11-16",
     0.3624
+   ],
+   [
+    "2026-11-17",
+    0.3594
    ]
   ],
   "AVGO": [
    [
     "2026-11-16",
     0.632
+   ],
+   [
+    "2026-11-17",
+    0.6486
    ]
   ],
   "COIN": [
    [
     "2026-11-16",
     0.727
+   ],
+   [
+    "2026-11-17",
+    0.7536
    ]
   ],
   "PLTR": [
    [
     "2026-11-16",
     0.5604
+   ],
+   [
+    "2026-11-17",
+    0.5772
    ]
   ],
   "SOFI": [
    [
     "2026-11-16",
     0.5373
+   ],
+   [
+    "2026-11-17",
+    0.5602
    ]
   ],
   "F": [
    [
     "2026-11-16",
     0.327
+   ],
+   [
+    "2026-11-17",
+    0.3426
    ]
   ],
   "BAC": [
    [
     "2026-11-16",
     0.2766
+   ],
+   [
+    "2026-11-17",
+    0.2877
    ]
   ],
   "INTC": [
    [
     "2026-11-16",
     0.7337
+   ],
+   [
+    "2026-11-17",
+    0.7638
    ]
   ],
   "HOOD": [
    [
     "2026-11-16",
     0.7117
+   ],
+   [
+    "2026-11-17",
+    0.7272
    ]
   ],
   "MRVL": [
    [
     "2026-11-16",
     0.8975
+   ],
+   [
+    "2026-11-17",
+    0.9248
    ]
   ],
   "MU": [
    [
     "2026-11-16",
     0.7542
+   ],
+   [
+    "2026-11-17",
+    0.7935
    ]
   ],
   "UBER": [
    [
     "2026-11-16",
     0.3495
+   ],
+   [
+    "2026-11-17",
+    0.3644
    ]
   ],
   "ARM": [
    [
     "2026-11-16",
     0.8113
+   ],
+   [
+    "2026-11-17",
+    0.8367
    ]
   ]
  },
@@ -670,8 +1282,8 @@
     "evPct": 0.0205,
     "planEv": 0.0085,
     "iv": 0.1923,
-    "last": 0.54,
-    "lastAt": "2026-11-16"
+    "last": 0.415,
+    "lastAt": "2026-11-17"
    },
    {
     "id": "2026-11-16|SPY261211C00759000/SPY261211C00762000",
@@ -713,8 +1325,8 @@
     "evPct": 0.0301,
     "planEv": 0.0163,
     "iv": 0.1618,
-    "last": 1.095,
-    "lastAt": "2026-11-16"
+    "last": 0.85,
+    "lastAt": "2026-11-17"
    }
   ],
   "closed": [],
@@ -723,9 +1335,18 @@
     "d": "2026-11-16",
     "eq": 988.88,
     "spy": 739.76
+   },
+   {
+    "d": "2026-11-17",
+    "eq": 1025.88,
+    "spy": 732.02
    }
   ],
   "log": [
+   {
+    "d": "2026-11-17",
+    "t": "No new trade: 16 contracts met every rule, but none fit the risk budget or the symbols were already held"
+   },
    {
     "d": "2026-11-16",
     "t": "Opened SPY Dec 11 $759/$762 Call credit spread ×1 at $1.02 credit: risk $198, profit odds 73%, EV 3.0%"
@@ -735,7 +1356,7 @@
     "t": "Opened IWM Dec 11 $283/$285 Call credit spread ×1 at $0.50 credit: risk $150, profit odds 75%, EV 2.1%"
    }
   ],
-  "lastPick": "2026-11-16",
+  "lastPick": "2026-11-17",
   "picks": 2
  }
 }
