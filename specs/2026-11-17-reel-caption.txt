@@ -1,0 +1,33 @@
+A new US chip rule hits 5 countries | China warns of countermeasures
+
+Chinese AI firms have been renting computing power on US chips in data centers abroad. On Monday, Washington moved to close that route. Watch to the end.
+
+What happened:
+- The US Commerce Department issued an interim rule on Monday. Shipping advanced AI chips to data centers in Singapore, Malaysia, Thailand, Indonesia and Brazil will need a US license.
+- Large data centers anywhere that give China-headquartered companies remote access to that computing power also need a license. Those already doing it get 90 days.
+- US-headquartered companies can be exempt if they report to the government.
+
+Why:
+- Commerce says the five countries carry a "higher-than-normal risk" of chips being diverted.
+- Reuters has reported Chinese AI firms rushing to rent Nvidia-powered computing abroad before the rule.
+
+The market:
+- SMH, a fund of big chip stocks, fell 5.1% on Monday, the day the rule came out. Nvidia's leadership turmoil weighed too.
+
+China's reply:
+- Foreign ministry spokesperson Guo Jiakun called the rule "typical economic coercion" and said China will take necessary measures.
+- China's commerce ministry says it will take countermeasures if the US persists, and urges talks.
+- The rule's own text calls it a "logical extension of existing controls."
+
+Coming up:
+- Xi hosts APEC leaders in Shenzhen on 18–19 November. Trump is expected to attend.
+
+Will the rule work? Comment CLOSED or MOVED.
+
+Prices are closing prices up to Monday 16 November (SMH fund).
+
+Sources: US Commerce Department via TechCrunch, Fortune, Forbes and Yahoo Finance (IBT), Reuters via Asia Times, Xinhua, Global Times, TechFlow, CappNotes, Motley Fool, political.org, SCMP, Robinhood.
+
+This is news, not financial advice. Always do your own research.
+
+#chips #china #geopolitics #stockmarket #investing

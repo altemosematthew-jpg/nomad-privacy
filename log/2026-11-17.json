@@ -1,0 +1,84 @@
+{
+ "date": "2026-11-17",
+ "built": "2026-11-17 08:22-08:43 CT (scheduled run; the session first started 03:06 CT and was resumed at 08:22 CT, so the RUNBOOK late-run rule applied)",
+ "edition": "daily",
+ "session_date": "2026-11-16",
+ "tape": {
+  "tickers": [
+   [
+    "NVDA",
+    -4.12
+   ],
+   [
+    "TSM",
+    -6.34
+   ],
+   [
+    "AMD",
+    -5.58
+   ],
+   [
+    "TSN",
+    8.72
+   ],
+   [
+    "COIN",
+    -6.11
+   ],
+   [
+    "TU",
+    12.19
+   ],
+   [
+    "MU",
+    -7.62
+   ],
+   [
+    "MOH",
+    11.27
+   ],
+   [
+    "SMMT",
+    -16.47
+   ],
+   [
+    "POWL",
+    5.94
+   ]
+  ],
+  "metricool_id": 431547880,
+  "uuid": "-6233577017877050921",
+  "scheduled_for": "2026-11-17T09:00:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-6233577017877050921",
+  "media": "gilded-ticker-media-2026-11/2026-11-17/tape/01-fe42c68f60.jpg ... 10-b927fc856f.jpg"
+ },
+ "reel": {
+  "title": "A new US chip rule hits 5 countries | China warns of countermeasures",
+  "topic": "US Commerce (BIS) interim final rule of 16 Nov on remote access to advanced AI chips: licenses for data centers in Singapore, Malaysia, Thailand, Indonesia, Brazil; 90 days for existing operators; China's foreign ministry (Guo Jiakun) calls it 'typical economic coercion', MOFCOM threatens countermeasures if the US persists; SMH -5.1% on 16 Nov; APEC Shenzhen 18-19 Nov",
+  "question": "CLOSED or MOVED?",
+  "first_comment": "CLOSED or MOVED? One word. Then tell me why.",
+  "seconds": 53.0,
+  "scenes": 7,
+  "metricool_id": 431548244,
+  "uuid": "1364363828531579743",
+  "scheduled_for": "2026-11-17T09:10:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=1364363828531579743",
+  "media": "gilded-ticker-media-2026-11/2026-11-17/reel/reel-3888a3fa5c.mp4, cover-a099f81a23.jpg"
+ },
+ "skipped": [
+  "CGON (+13.95%, PIVOT-006 Phase 3) - only StockTitan had it; the other articles found were from April 2025",
+  "INTC (-7.0%), DELL (-7.0%), HOOD (-7.5%) - no specific sourced reason beyond the chip/crypto selloff",
+  "NVO - flat at the close despite premarket CagriSema headlines"
+ ],
+ "notes": [
+  "Tyson: CappNotes says the quarter missed, Motley Fool says it beat; the slide avoids beat/miss and uses the company's own numbers (adj. EPS $0.61, -47%; FY2027 dividend rate +2%).",
+  "TU move is +12.19% on the official close 9.57 (StockTitan's +12.37% used the 9.585 last trade).",
+  "Index moves (S&P 500 -1.9%, Nasdaq -2.5%, Dow -1.4%) from CappNotes and Motley Fool; Robinhood get_index_quotes gives live values only. SPY/QQQ/DIA closes agree.",
+  "Reel: the Taiex -6% on 16 Nov happened before the rule was issued (TechTimes), so the Reel's market scene uses SMH on Monday and does not link Taiwan's drop to the rule.",
+  "Reel: 'Trump is expected to attend' APEC (political.org, SCMP headline); no confirmed bilateral date found this run.",
+  "Metricool shows no posts for 14, 15 or 16 Nov.",
+  "Posts created on Metricool this month: 10 (Free plan: 20)."
+ ]
+}
