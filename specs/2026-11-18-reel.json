@@ -1,0 +1,894 @@
+{
+ "title": "Trump, Xi and Putin in one room | The first three-way summit",
+ "seed": "2026-11-18-shenzhen-trilateral",
+ "publish_date": "2026-11-18",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "NOV 19 · SHENZHEN",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "TRUMP, XI AND PUTIN\n[IN ONE ROOM]",
+   "sub": "Thursday in Shenzhen. The first meeting of its kind.",
+   "map": {
+    "bbox": [
+     -100,
+     2,
+     140,
+     68
+    ],
+    "bbox_to": [
+     -92,
+     6,
+     134,
+     64
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "text": "Washington",
+     "tone": "gold",
+     "t": 0.15,
+     "dx": 18,
+     "dy": 26
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -24
+    },
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "text": "Beijing",
+     "tone": "gold",
+     "t": 0.45,
+     "dx": -18,
+     "dy": -22,
+     "anchor": "rm"
+    },
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen",
+     "tone": "amber",
+     "t": 0.2,
+     "dx": 0,
+     "dy": 78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       -77.04,
+       38.9
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.2,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0.5,
+     "dur": 1.2,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       37.62,
+       55.75
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.14,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0.7,
+     "dur": 1.2,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       116.4,
+       39.9
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.0,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0.9,
+     "dur": 1.2,
+     "width": 5
+    }
+   ],
+   "src": "Sources: AP, SCMP, Financial Times · lines illustrative"
+  },
+  {
+   "dur": 6.0,
+   "tag": "What happened",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THREE LEADERS,\n[10,000+ WARHEADS]",
+   "sub": "The White House, the Kremlin and Beijing have all confirmed the meeting.",
+   "map": {
+    "bbox": [
+     -128,
+     14,
+     150,
+     72
+    ],
+    "bbox_to": [
+     -122,
+     16,
+     146,
+     70
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    610,
+    1010,
+    900
+   ],
+   "names": [
+    {
+     "lon": -100,
+     "lat": 40,
+     "text": "United States"
+    },
+    {
+     "lon": 95,
+     "lat": 61,
+     "text": "Russia"
+    },
+    {
+     "lon": 103,
+     "lat": 35,
+     "text": "China"
+    }
+   ],
+   "panel": {
+    "y": 930,
+    "t": 0.8,
+    "title": "Nuclear warheads · estimates",
+    "bars": [
+     {
+      "label": "United States",
+      "value": "5,000+",
+      "frac": 1.0,
+      "tone": "gold"
+     },
+     {
+      "label": "Russia",
+      "value": "5,000+",
+      "frac": 1.0,
+      "tone": "gold"
+     },
+     {
+      "label": "China",
+      "value": "600+",
+      "frac": 0.12,
+      "tone": "gold"
+     }
+    ]
+   },
+   "src": "Sources: AP, Al Jazeera (SIPRI and Pentagon estimates), TASS, SCMP"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Why now",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "THE LAST ARMS TREATY\n[EXPIRED] IN FEBRUARY",
+   "sub": "New START was the last US-Russia nuclear arms control deal.",
+   "map": {
+    "bbox": [
+     -100,
+     22,
+     62,
+     68
+    ],
+    "bbox_to": [
+     -96,
+     24,
+     58,
+     66
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "text": "Washington",
+     "tone": "gold",
+     "t": 0.2,
+     "dx": 18,
+     "dy": 26
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "gold",
+     "t": 0.5,
+     "dx": 18,
+     "dy": -24
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       -77.04,
+       38.9
+      ],
+      [
+       37.62,
+       55.75
+      ]
+     ],
+     "arc": 0.16,
+     "dash": true,
+     "tone": "grey",
+     "t0": 0.7,
+     "dur": 1.2,
+     "width": 5
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Trump turned down a one-year extension\nand wants a new deal that includes China"
+   },
+   "src": "Sources: AP, Al Jazeera, Outlook India"
+  },
+  {
+   "dur": 6.5,
+   "tag": "Beijing's answer",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "BEIJING HAS RESISTED\n[THREE-WAY] LIMITS",
+   "sub": "It has said the US and Russia should reduce their much larger stockpiles first.",
+   "map": {
+    "bbox": [
+     98,
+     18,
+     134,
+     47
+    ],
+    "bbox_to": [
+     101,
+     20,
+     131,
+     45
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    890
+   ],
+   "names": [
+    {
+     "lon": 104,
+     "lat": 35,
+     "text": "China"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "text": "Beijing",
+     "tone": "gold",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -24
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 30,
+     "tone": "amber",
+     "t": 0.5,
+     "text": "Shenzhen",
+     "text_dy": -52
+    }
+   ],
+   "panel": {
+    "y": 920,
+    "t": 0.8,
+    "list": [
+     {
+      "kicker": "China's foreign ministry",
+      "text": "Says Thursday's meeting has \"groundbreaking significance.\"",
+      "tone": "amber",
+      "size": 42
+     },
+     {
+      "kicker": "Putin, at the APEC CEO summit",
+      "text": "Says he expects a big benefit from the three-way meeting.",
+      "tone": "amber",
+      "size": 42,
+      "t": 3.6
+     }
+    ]
+   },
+   "src": "Sources: Al Jazeera, Outlook India, Newsquawk, Admirals, The Nation"
+  },
+  {
+   "dur": 6.5,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "BRENT OIL FUND:\n[−17%] SINCE 30 OCT",
+   "sub": "Trump plans to raise the Iran war on Thursday too, a US official told AP.",
+   "map": {
+    "bbox": [
+     34,
+     12,
+     78,
+     42
+    ],
+    "bbox_to": [
+     38,
+     14,
+     74,
+     40
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    790
+   ],
+   "pins": [
+    {
+     "lon": 56.4,
+     "lat": 26.6,
+     "text": "Strait of Hormuz",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 18,
+     "dy": 0
+    }
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Brent oil fund (BNO) · daily close to 17 Nov",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       62.95
+      ],
+      [
+       "2026-10-02",
+       63.1
+      ],
+      [
+       "2026-10-05",
+       61.45
+      ],
+      [
+       "2026-10-06",
+       61.93
+      ],
+      [
+       "2026-10-07",
+       61.9
+      ],
+      [
+       "2026-10-08",
+       63.64
+      ],
+      [
+       "2026-10-09",
+       63.99
+      ],
+      [
+       "2026-10-12",
+       65.12
+      ],
+      [
+       "2026-10-13",
+       65.1
+      ],
+      [
+       "2026-10-14",
+       65.06
+      ],
+      [
+       "2026-10-15",
+       64.86
+      ],
+      [
+       "2026-10-16",
+       67.19
+      ],
+      [
+       "2026-10-19",
+       67.12
+      ],
+      [
+       "2026-10-20",
+       66.87
+      ],
+      [
+       "2026-10-21",
+       67.05
+      ],
+      [
+       "2026-10-22",
+       68.91
+      ],
+      [
+       "2026-10-23",
+       70.99
+      ],
+      [
+       "2026-10-26",
+       70.07
+      ],
+      [
+       "2026-10-27",
+       69.67
+      ],
+      [
+       "2026-10-28",
+       70.14
+      ],
+      [
+       "2026-10-29",
+       70.76
+      ],
+      [
+       "2026-10-30",
+       71.39
+      ],
+      [
+       "2026-11-02",
+       65.95
+      ],
+      [
+       "2026-11-03",
+       66.11
+      ],
+      [
+       "2026-11-04",
+       60.4
+      ],
+      [
+       "2026-11-05",
+       62.53
+      ],
+      [
+       "2026-11-06",
+       62.22
+      ],
+      [
+       "2026-11-09",
+       58.93
+      ],
+      [
+       "2026-11-10",
+       58.36
+      ],
+      [
+       "2026-11-11",
+       58.75
+      ],
+      [
+       "2026-11-12",
+       61.01
+      ],
+      [
+       "2026-11-13",
+       61.06
+      ],
+      [
+       "2026-11-16",
+       58.66
+      ],
+      [
+       "2026-11-17",
+       58.96
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 3.0,
+     "marks": [
+      {
+       "date": "2026-10-30",
+       "text": "$71.39 · 30 OCT",
+       "tone": "white",
+       "dy": -58,
+       "dx": -120
+      },
+      {
+       "date": "2026-11-17",
+       "text": "$58.96",
+       "tone": "red",
+       "dy": -112,
+       "dx": 0
+      }
+     ]
+    }
+   },
+   "src": "Sources: AP, Robinhood (BNO closes to 17 Nov)"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "US OFFICIALS EXPECT\n[NO DEAL] THURSDAY",
+   "sub": "One senior official called it \"the first conversation.\"",
+   "map": {
+    "bbox": [
+     96,
+     8,
+     132,
+     38
+    ],
+    "bbox_to": [
+     100,
+     11,
+     128,
+     35
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    950
+   ],
+   "pins": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 0,
+     "dy": -74,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 44,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "panel": {
+    "y": 980,
+    "t": 0.8,
+    "list": [
+     {
+      "kicker": "Kremlin aide Ushakov",
+      "text": "A joint statement is still being negotiated.",
+      "tone": "amber",
+      "size": 42
+     },
+     {
+      "kicker": "Analysts, via AP and PA",
+      "text": "Do not expect substantive breakthroughs.",
+      "tone": "amber",
+      "size": 42,
+      "t": 3.0
+     }
+    ]
+   },
+   "src": "Sources: Newsquawk, AP, Financial Times, PA"
+  },
+  {
+   "dur": 6.5,
+   "tag": "Not in the room",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "UKRAINE [WON'T BE]\nAT THE TABLE",
+   "sub": "Zelenskyy has voiced concern about a Ukraine deal discussed without Kyiv.",
+   "map": {
+    "bbox": [
+     6,
+     34,
+     58,
+     62
+    ],
+    "bbox_to": [
+     14,
+     4,
+     128,
+     64
+    ],
+    "tint": {}
+   },
+   "cam_span": [
+    1.6,
+    4.0
+   ],
+   "pins": [
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -24
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 40,
+     "tone": "amber",
+     "t": 3.6,
+     "text": "Shenzhen"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 4.2,
+    "text": "US officials first said Ukraine was off the\nagenda. Trump said Monday he would raise it."
+   },
+   "src": "Sources: AP, Newsquawk, Outlook India, PA"
+  },
+  {
+   "dur": 5.5,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THURSDAY, 2:30 PM\n[SHENZHEN TIME]",
+   "sub": "That is 1:30 a.m. Eastern. Trump and Xi meet first, with trade on the table.",
+   "map": {
+    "bbox": [
+     107,
+     17,
+     121,
+     28
+    ],
+    "bbox_to": [
+     110,
+     19.5,
+     118,
+     25.5
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen · APEC summit",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": -100,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 64,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.5
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "The US-China tariff truce\nruns to 10 January 2027"
+   },
+   "src": "Sources: White House schedule (Mace News), TASS, Newsquawk, FT"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THURSDAY IN SHENZHEN:\n[START] OR [SHOW]?",
+   "sub": "The start of a deal, or a show. Comment one word.",
+   "map": {
+    "bbox": [
+     -98,
+     4,
+     138,
+     66
+    ],
+    "bbox_to": [
+     -94,
+     6,
+     136,
+     64
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "routes": [
+    {
+     "points": [
+      [
+       -77.04,
+       38.9
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.2,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0,
+     "dur": 0.01,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       37.62,
+       55.75
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.14,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0,
+     "dur": 0.01,
+     "width": 5
+    },
+    {
+     "points": [
+      [
+       116.4,
+       39.9
+      ],
+      [
+       114.06,
+       22.54
+      ]
+     ],
+     "arc": 0.0,
+     "dash": true,
+     "tone": "gold",
+     "t0": 0,
+     "dur": 0.01,
+     "width": 5
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 17 Nov 2026"
+  }
+ ]
+}

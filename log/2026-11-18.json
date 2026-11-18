@@ -1,0 +1,71 @@
+{
+ "date": "2026-11-18",
+ "built": "2026-11-18 05:36-06:00 CT (scheduled run, started 05:35 CT)",
+ "budget": {
+  "used_before": 10,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "geo"
+   ],
+   "default": "geo",
+   "remaining": 10,
+   "weekdays_left": 8,
+   "why": "10 left for 8 trading days: one Reel (geo by default)"
+  },
+  "swap": null,
+  "used_after": 11,
+  "left_this_month": 9
+ },
+ "reel": {
+  "type": "geo",
+  "title": "Trump, Xi and Putin in one room | The first three-way summit",
+  "hook": "TRUMP, XI AND PUTIN [IN ONE ROOM]",
+  "topic": "First Trump-Xi-Putin three-way meeting, Thursday 19 Nov, 2:30 pm local at Kylin Villa, Shenzhen, on the APEC sidelines (White House schedule via Mace News, TASS, Newsquawk). Nuclear arms control after New START expired in Feb 2026 (US and Russia 5,000+ warheads each, China 600+; SIPRI and Pentagon estimates via AP, Al Jazeera); Trump rejected a one-year extension and wants a deal that includes China; Beijing has resisted three-way limits; a senior US official expects no agreement ('the first conversation'); China's foreign ministry: 'groundbreaking significance'; Putin expects a big benefit; Ukraine not at the table (Zelenskyy's concern, AP); Iran war on the agenda; Trump-Xi bilateral first, trade truce runs to 10 Jan 2027.",
+  "market_scene": "BNO (Brent oil fund) official closes: 71.39 on 30 Oct -> 58.96 on 17 Nov = -17.4%",
+  "question": "START or SHOW?",
+  "first_comment": "START or SHOW? One word.",
+  "seconds": 51.5,
+  "scenes": 9,
+  "metricool_id": 432735152,
+  "uuid": "-655230003365393736",
+  "scheduled_for": "2026-11-18T10:00:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-655230003365393736",
+  "media": "gilded-ticker-media-2026-11/2026-11-18/reel/reel-27cb13990b.mp4, cover-f798f5ec8c.jpg",
+  "spec": "specs/2026-11-18-reel.json",
+  "caption": "specs/2026-11-18-reel-caption.txt"
+ },
+ "finance": null,
+ "skipped": [
+  "Finance Reel (Ten on the Tape): not built. budget.py allows one Reel today and Wednesday's default is geopolitics; no swap, because the three-way summit is the bigger story and Nvidia's post-earnings session is Wednesday's (Thursday's finance Reel)."
+ ],
+ "sources": [
+  "AP (via FOX5 Vegas, 14 Nov)",
+  "Financial Times (via To Vima, 16 Nov)",
+  "SCMP",
+  "ANI via Times of Oman (16 Nov)",
+  "TASS (16 Nov)",
+  "White House schedule via Mace News / TradingView (18 Nov)",
+  "Newsquawk primer (18 Nov 11:01 UTC) and crude wrap (16 Nov)",
+  "PA via TheJournal.ie (18 Nov)",
+  "ABC News live blog (18 Nov)",
+  "The Nation Thailand (18 Nov)",
+  "Outlook India (14 Nov)",
+  "Al Jazeera (16 Nov)",
+  "Open Magazine (14 Nov)",
+  "Admirals (16 Nov)",
+  "Robinhood (BNO closes, close.date 2026-11-17)"
+ ],
+ "notes": [
+  "The scheduled task's stored prompt still describes the old plan (10-slide carousel at 06:00 and a Reel at 06:10, two posts a day). RUNBOOK.md (commit 7a2b6e7, owner's choices of 18 Nov: Reels at 07:30 and 10:00, Free plan budget) is newer and the prompt names it the source of truth, so this run followed the RUNBOOK: one geopolitics Reel at 10:00. The task prompt needs updating by the owner; this run did not change the task.",
+  "Tools named in the prompt that do not exist in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date, as the RUNBOOK allows) and add_repo (the repository was already attached; clone and pushes worked).",
+  "Ukraine on the agenda: US officials said on 13-14 Nov it would stay off; Trump said on 16 Nov he would raise it (Newsquawk, Admirals, PA). The Reel states both.",
+  "Warheads: AP gives 'more than 5,000' each for the US and Russia and 'more than 600' for China (Pentagon estimates); SIPRI via Al Jazeera and Open Magazine: Russia 5,420, US 5,042, China 620. The Reel says 5,000+, 5,000+, 600+ and '10,000+' combined.",
+  "Putin's remark is paraphrased (The Nation: 'big potential benefit'; Newsquawk: 'highly useful').",
+  "Ushakov's joint-statement remark is single-sourced (Newsquawk).",
+  "Could not open: VT Markets, BBN Times, cryptobriefing, plataformamedia, investingLive, NST, The Senior, The Well News (fetch errors or robots.txt). Nothing from them was used.",
+  "Oil: Brent settled at 92.44 on Mon 16 Nov, down 3.40 (Newsquawk); not shown on screen. The Reel makes no causal claim about the oil move.",
+  "Posts created on Metricool this month: 11 (Free plan: 20). 9 left for 7 trading days after today."
+ ]
+}
