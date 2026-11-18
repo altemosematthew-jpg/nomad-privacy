@@ -39,6 +39,7 @@ import sys, json, os, math, subprocess, wave, hashlib, re
 import numpy as np
 from PIL import Image, ImageDraw
 from kit import font, fit_font, save_jpg, HERE
+from finish import Finish, add_sfx
 
 RW, RH, FPS = 1080, 1920, 30
 OCEAN = (10, 15, 26)
@@ -731,7 +732,7 @@ def check_layout(scene, label, t=None, top=150, cover=False, step=0.5):
 
 
 # ---------------- music ----------------
-def make_music(path, dur, hits, seed="gt", sr=44100):
+def make_music(path, dur, hits, seed="gt", sr=44100, sfx=None, booms=True):
     rng = np.random.default_rng(int(hashlib.sha256(seed.encode()).hexdigest()[:8], 16))
     n = int(dur * sr)
     tt = np.arange(n) / sr
@@ -776,7 +777,7 @@ def make_music(path, dur, hits, seed="gt", sr=44100):
                     g = 0.035 if e == 0 else 0.022
                     L[h0:h0 + hl] += g * nz
                     R[h0:h0 + hl] += g * nz * 0.8
-    for ht in hits:  # riser into every scene change, then a low impact
+    for ht in (hits if booms else []):  # riser into every scene change, then a low impact
         i0 = int(ht * sr)
         r0 = max(0, i0 - int(0.7 * sr))
         m = i0 - r0
@@ -792,6 +793,8 @@ def make_music(path, dur, hits, seed="gt", sr=44100):
             boom = 0.5 * np.exp(-s * 4.5) * np.sin(2 * np.pi * (34 * s + 55 * (1 - np.exp(-s * 9)) / 9)) + 0.10 * rng.standard_normal(il) * np.exp(-s * 22)
             L[i0:i0 + il] += boom
             R[i0:i0 + il] += boom
+    if sfx:  # sound that follows the edit: whooshes on cuts, pops on pins, ticks on numbers
+        add_sfx(L, R, sr, sfx)
     fade = np.minimum(1, tt / 0.25) * np.minimum(1, (dur - tt) / 1.4)
     st = np.tanh(np.stack([L, R], axis=1) * fade[:, None] * 1.6) / np.tanh(1.6)
     st = st / np.abs(st).max() * 0.80
@@ -841,6 +844,8 @@ def build(spec_path, out_dir, preview=False, strict=False):
     if strict and issues:
         raise SystemExit("layout problems (see above)")
 
+    fin = Finish(RW, RH, seed=len(str(sb.get("seed", "gt"))))
+
     def frame(i):
         T = i / FPS
         k = max(j for j in range(len(scenes)) if starts[j] <= T + 1e-9)
@@ -848,10 +853,11 @@ def build(spec_path, out_dir, preview=False, strict=False):
         fi = (T - starts[k]) * FPS
         if k > 0 and fi < 3:  # 3-frame dip to dark on each cut
             im = Image.blend(Image.new("RGB", (RW, RH), OCEAN), im, (fi + 1) / 4)
-        return im
+        return fin.apply(im, i)
 
     # the profile grid crops covers to the middle of the frame, so the cover's text block starts lower
-    save_jpg(scenes[ci].render(min(scenes[ci].dur - 0.05, sb.get("cover_t", 4.0)), top=cover_top, cover=True), f"{out_dir}/cover.jpg", quality=92)
+    save_jpg(fin.apply(scenes[ci].render(min(scenes[ci].dur - 0.05, sb.get("cover_t", 4.0)), top=cover_top, cover=True), 0, handle=False),
+             f"{out_dir}/cover.jpg", quality=92)
     ts = []
     for s0, s in zip(starts, scenes):
         ts += [s0 + 0.5, s0 + s.dur * 0.55, s0 + s.dur - 0.1]
@@ -865,7 +871,17 @@ def build(spec_path, out_dir, preview=False, strict=False):
         return issues
     raw = f"{out_dir}/_music_raw.wav"
     wav = f"{out_dir}/_music.wav"
-    make_music(raw, total, starts[1:] + sb.get("extra_hits", []), seed=str(sb.get("seed", sb.get("title", "gt"))))
+    sfx = [(0.0, "impact", 0.8)]
+    for s0, s in zip(starts, scenes):
+        if s0 > 0:
+            sfx.append((s0 - 0.28, "whoosh", 0.7))
+        if s.sc.get("headline") and "[" in s.sc["headline"]:
+            sfx.append((s0 + 0.42, "tick", 0.55))
+        for pn in s.sc.get("pins", [])[:6]:
+            sfx.append((s0 + pn.get("t", 0), "pop", 0.5))
+        if s.sc.get("panel"):
+            sfx.append((s0 + s.sc["panel"].get("t", 0.8), "tick", 0.45))
+    make_music(raw, total, starts[1:] + sb.get("extra_hits", []), seed=str(sb.get("seed", sb.get("title", "gt"))), sfx=sfx)
     li = loudnorm(raw, wav)
     print(f"music: {li:.1f} LUFS -> -14 LUFS")
     mp4 = f"{out_dir}/reel.mp4"
