@@ -1,0 +1,129 @@
+{
+ "date": "2026-11-19",
+ "built": "2026-11-19 05:36-05:52 CT (scheduled run, started 05:35 CT)",
+ "budget": {
+  "used_before": 11,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "finance"
+   ],
+   "default": "finance",
+   "remaining": 9,
+   "weekdays_left": 7,
+   "why": "9 left for 7 trading days: one Reel (finance by default)"
+  },
+  "swap": null,
+  "used_after": 12,
+  "left_this_month": 8
+ },
+ "finance": {
+  "type": "finance",
+  "edition": "daily",
+  "session_date": "2026-11-18",
+  "hook": "NVIDIA BEAT. THE STOCK [FELL ANYWAY]",
+  "tickers": [
+   [
+    "NVDA",
+    -2.89
+   ],
+   [
+    "AMD",
+    5.31
+   ],
+   [
+    "UNH",
+    -10.21
+   ],
+   [
+    "TTWO",
+    6.22
+   ],
+   [
+    "TGT",
+    4.01
+   ],
+   [
+    "TJX",
+    8.05
+   ],
+   [
+    "PANW",
+    9.9
+   ],
+   [
+    "CVX",
+    -4.74
+   ],
+   [
+    "NEM",
+    -6.05
+   ],
+   [
+    "BRBR",
+    24.07
+   ]
+  ],
+  "headlines": {
+   "NVDA": "Sales doubled. Stock fell.",
+   "AMD": "Rose while Nvidia fell",
+   "UNH": "Proposed Medicare audit rule",
+   "TTWO": "GTA VI is out after 13 years",
+   "TGT": "Sales up 7%, outlook raised",
+   "TJX": "Sales beat estimates",
+   "PANW": "Rallied on a US cyber alert",
+   "CVX": "Crude oil kept falling",
+   "NEM": "Gold hit a 14-month low",
+   "BRBR": "Premier Protein sales up 7%"
+  },
+  "indices": "S&P 500 -0.2% (7,323.63, fifth straight loss) · Nasdaq +0.4% (24,429.89) · Dow -1.1% (50,198.17)",
+  "question": "Holding any of these? Drop the ticker.",
+  "first_comment": "Holding any of these? Drop the ticker.",
+  "seconds": 36.2,
+  "metricool_id": 434109755,
+  "uuid": "-5549502856907635365",
+  "scheduled_for": "2026-11-19T07:30:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-5549502856907635365",
+  "media": "gilded-ticker-media-2026-11/2026-11-19/finance/reel-f5465cd507.mp4, cover-d7598cfc19.jpg",
+  "spec": "specs/2026-11-19-tape.json",
+  "caption": "specs/2026-11-19-finance-caption.txt"
+ },
+ "reel": null,
+ "skipped": [
+  "Geopolitics Reel: not built. budget.py allows one Reel today and Thursday's default is finance. No swap: geopolitics went out on 17 and 18 Nov, and the RUNBOOK does not allow the same type three days in a row. Wednesday was also Nvidia's post-earnings session.",
+  "HUM (-12.98%), ELV, CNC, CVS: same Medicare audit story as UNH; one card for it.",
+  "CRWD (+7.95%), S, OKTA, QLYS, FTNT: same cyber alert story as PANW; one card for it.",
+  "VLO (-5.52%), MPC, PSX, XOM: same oil story as CVX; one card for it.",
+  "AMZN (+3.82%) and AVGO (+3.64%): reports tie the moves to Anthropic's IPO pricing. Left out; the RUNBOOK says not to feature Anthropic-related stories just because they exist.",
+  "DIS (+4.63%), GNRC, WRBY, OKTA, QLYS: no sourced reason for Wednesday's move.",
+  "JMIA (-40.8%), KRNT (-22.9%), ARDT, AAOI: details came only from a model-written summary of the StockTitan page's second half, not the page text.",
+  "HY (-41.1%): the only stated reason (a $125 million convertible note offer) does not obviously explain a move that size.",
+  "MSTR (-6.4%), COIN (-3.9%): bitcoin slide, the same story as COIN on the 17 Nov tape.",
+  "LOW (+1.05%): small move."
+ ],
+ "sources": [
+  "CappNotes, Closing Look, Wednesday 18 November 2026 (read in full)",
+  "StockTitan, Stock Market Today live blog, 18 Nov 2026 (first 39,915 characters read verbatim; the rest only as a summary and not used for any card)",
+  "Investopedia via Yahoo Finance, Markets News, 18 Nov 2026 (Stephen Wisnefski)",
+  "TradingKey, 18 Nov 2026 (Andy Chen; AI-translated page)",
+  "Fox Business, 18 Nov 2026 9:04 p.m. ET (Take-Two and GTA VI; cites Reuters and Sensor Tower)",
+  "BellRing Brands release of 18 Nov 2026 (SEC 8-K exhibit 99.1)",
+  "Search results seen, not opened: CISA alert of 17 Nov 2026 'Critical Java Vulnerability Requires Immediate Patching'; SecurityWeek and Techzine on Java4Shell; Quantisnow 'Cybersecurity stocks rallied hours before Palo Alto's report'; TokenPost 'Take-Two Shares Rise 6.22%'",
+  "Robinhood: get_equity_quotes (official closes, close.date 2026-11-18), get_equity_historicals (daily bars from 2026-08-14), get_equity_fundamentals (market_date 2026-11-18), get_earnings_calendar"
+ ],
+ "notes": [
+  "The scheduled task's stored prompt still describes the old plan (a 10-slide carousel at 06:00 and a Reel at 06:10, two posts a day, 'aim to have both scheduled by 05:30' although the run now starts at 05:35). RUNBOOK.md (owner's choices of 18 Nov: Reels at 07:30 and 10:00, Free plan budget of 20 a month) is newer and the prompt names it the source of truth, so this run followed the RUNBOOK, as the 18 Nov run did: one finance Reel at 07:30. The task prompt still needs updating by the owner; this run did not change the task.",
+  "Tools named in the prompt that do not exist in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date, as the RUNBOOK allows) and add_repo (the repository was already attached; the clone and both pushes worked). There was no direct WebFetch tool; pages were read through the session's fetch helper.",
+  "Could not open: CNBC 'Stocks making the biggest moves Wednesday' (fetch error). Nothing from it was used.",
+  "AMD: the first render said 'Nvidia's rivals rallied'. Chip stocks were mixed (Intel, Micron and Marvell fell; the Philadelphia chip index rose 0.1%), so the card was changed to 'Rose while Nvidia fell' and the Reel rendered again before anything was scheduled. The first file (reel-d1e0ff193b.mp4, media commit 72884ec) was never given to Metricool and was removed from the branch tip in commit de3c092.",
+  "PANW: the +9.9% is Wednesday's regular session, before its results. Palo Alto reported after the bell (fiscal Q1 revenue +39% to $3.44 billion, raised forecast, $4.5 billion all-stock deal for Applied Compute) and traded about 9% higher after hours; that move belongs to Thursday.",
+  "CVX: 18 Nov was Chevron's ex-dividend date ($1.78 a share), so about 0.8 points of the -4.7% is the dividend. No source printed Chevron's closing move (StockTitan: -4.33% at 1:01 p.m. ET).",
+  "BRBR: profit fell (net earnings $35.6 million vs $59.6 million; adjusted EBITDA $66.4 million vs $117.4 million) and the company withdrew its long-term targets, yet the stock rose 24%. No source read today explained the reaction, so the card states only the sales fact from the release (Premier Protein net sales +7.1%).",
+  "TTWO: 'GTA VI is out after 13 years' rests on Fox Business (rolling midnight launch across time zones ahead of the Thursday 19 Nov US release, per Reuters; '13-year wait').",
+  "Oil figures differ by source and time of day: CappNotes WTI -3.20% settled at $83.26; Investopedia -3.7% to $82.85; CNBC via StockTitan 'more than 4%' to $82.19 at 12:54 p.m. The card says only 'Crude oil kept falling'.",
+  "Nasdaq close: CappNotes 24,429.89; StockTitan/CNBC and TradingKey 24,429.88. Same percentage.",
+  "isAiGenerated is false in the Metricool request, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 12 (Free plan: 20). 8 left for 6 trading days after today."
+ ]
+}
