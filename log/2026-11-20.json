@@ -1,0 +1,73 @@
+{
+ "date": "2026-11-20",
+ "built": "2026-11-20 05:36-05:56 CT (scheduled run, started 05:35 CT)",
+ "budget": {
+  "used_before": 12,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "geo"
+   ],
+   "default": "geo",
+   "remaining": 8,
+   "weekdays_left": 6,
+   "why": "8 left for 6 trading days: one Reel (geo by default)"
+  },
+  "swap": null,
+  "used_after": 13,
+  "left_this_month": 7
+ },
+ "reel": {
+  "type": "geo",
+  "title": "Trump, Xi and Putin pledged more fuel | What their four-point declaration says",
+  "hook": "TRUMP, XI AND PUTIN PLEDGED [MORE FUEL]",
+  "topic": "Outcome of the first Trump-Xi-Putin three-way meeting (Shenzhen, Thursday 19 Nov, about 80 minutes, on the APEC sidelines): a four-point 'Declaration towards Peace' published by Xinhua and the Kremlin, later by the White House. Points: reform the UN; 'plan to increase the production and supply of refined petroleum products' and 'stable energy flows'; immunities of state officials and the ICC 'must not abuse' its jurisdiction; 'a nuclear war cannot be won and must never be fought' plus a dialogue on nuclear risks. No volumes, dates or targets (Rystad Energy via Rigzone; BeInCrypto; the text itself). The text does not mention Ukraine or Iran (RFE/RL, Euronews, the text). Leaders called it historic (Trump 'making history', Xi 'constructive' via China's foreign ministry, Putin 'very useful'); Germany's Merz called it a 'photo op' (RFE/RL), France's foreign minister Barrot said the three 'fundamentally disagree on everything' (Euronews). Next: G20 in Miami in December, Putin invited (Al Jazeera); the nuclear-risk dialogue has no date.",
+  "market_scene": "BNO (Brent oil fund) official closes: 58.02 on 18 Nov -> 58.84 on 19 Nov = +1.4%. Chart shows 6-19 Nov closes. Rystad Energy (via Rigzone): European gasoil fell 1.5% on the news.",
+  "question": "BARRELS or WORDS?",
+  "first_comment": "BARRELS or WORDS? One word.",
+  "seconds": 51.0,
+  "scenes": 9,
+  "metricool_id": 435460762,
+  "uuid": "5547081998773145384",
+  "scheduled_for": "2026-11-20T10:00:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=5547081998773145384",
+  "media": "gilded-ticker-media-2026-11/2026-11-20/reel/reel-ba72683fbd.mp4, cover-43e7026106.jpg (media commit e4b7e10)",
+  "spec": "specs/2026-11-20-reel.json",
+  "caption": "specs/2026-11-20-reel-caption.txt"
+ },
+ "finance": null,
+ "skipped": [
+  "Finance Reel (Ten on the Tape): not built. budget.py allows one Reel today and Friday's default is geopolitics. No swap: Thursday was a heavy day for stocks (Reuters' Trading Day column: S&P 500 -2%, Nasdaq -2.3%, Dow -2.2%, seven-month lows, the S&P 500's longest losing streak since April 2024), but the outcome of the first three-way summit is at least as big a story, and finance went out on Thursday. The session's main headline was also Anthropic's IPO debut, which the RUNBOOK says not to feature just because it exists. Thursday's selloff has not been covered by a finance Reel; the next one is due Tuesday 24 Nov by default.",
+  "US refinery utilization number: Rigzone prints 95.7% for the week to 13 Nov, but the table in EIA's own highlights file reads 94.5%. Left out; the Reel says only that US refiners 'already run close to capacity, Rystad says'.",
+  "Russian stock market: UNITED24 Media (a Ukrainian outlet, citing The Moscow Times) says the Moscow Exchange index fell 2.19% on Thursday to a one-month low. One source, not checkable on Robinhood. Left out.",
+  "Merz's 'Yalta format cannot bring peace' line: only RFE/RL had it. Left out. His 'photo op' remark is on screen with 'via RFE/RL' next to it, and in the caption with 'RFE/RL reports'."
+ ],
+ "sources": [
+  "RFE/RL, '4-Point Declaration Issued After Trump, Xi, And Putin Hold First-Ever Trilateral Meeting', 19 Nov 2026 (updated 21:34 CET; with reporting by Reuters)",
+  "Euronews, 'Trilateral summit ends with peace declaration but no mention of Ukraine and Iran', 19 Nov 2026 (Peter Barabas and Dogyu Lee; AFP)",
+  "Al Jazeera, 'Groundbreaking Trump-Xi-Putin summit: Five key takeaways', 19 Nov 2026 (Yashraj Sharma)",
+  "The National, 'Nuclear war cannot be won: Full text of China, Russia and US peace declaration', 19 Nov 2026 (text as published by Chinese state media)",
+  "Rigzone, 'Shenzhen Summit Fuel Pledge Offers Little Near-Term Relief', 20 Nov 2026 (Andreas Exarheas; Rystad Energy note by Jorge Leon; Finoro)",
+  "BeInCrypto via Yahoo Finance, 'Trump, Xi and Putin Promise More Fuel, But Markets Are Not Convinced', 19 Nov 2026",
+  "Reuters via Yahoo Finance, 'Oil prices rise as Middle East shipping attacks counter supply surplus outlook', 19 Nov 2026 (Seher Dareen)",
+  "Reuters via Yahoo Finance, 'Trading Day: World's biggest IPO? Pfft', 19 Nov 2026 (Jamie McGeever)",
+  "Search results seen, not opened: Bloomberg 'China, Russia, US Oil Boost Pledge Falls Flat' and 'Big Trump-Xi-Putin Power Play Delivers More Style Than Substance'; Al Jazeera 23 Sep 2026, AAP and Reuters headlines on the US inviting Putin to the December G20 in Miami; Babypips 'Trump, Xi and Putin Issue a Four-Point Peace Declaration'",
+  "Robinhood: get_equity_quotes (official closes, close.date 2026-11-19: BNO 58.84, SPY 715.87), get_equity_historicals (BNO daily bars 28 Sep to 19 Nov)"
+ ],
+ "notes": [
+  "The scheduled task's stored prompt still describes the old plan (a 10-slide carousel at 06:00 and a Reel at 06:10, two posts a day, 'aim to have both scheduled by 05:30' although the run starts at 05:35). RUNBOOK.md (owner's choices of 18 Nov: Reels at 07:30 and 10:00, Free plan budget of 20 a month) is newer and the prompt names it the source of truth, so this run followed the RUNBOOK, as the 18 and 19 Nov runs did: one geopolitics Reel at 10:00. The task prompt still needs updating by the owner; this run did not change the task.",
+  "Tools named in the prompt that do not exist in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date, as the RUNBOOK allows) and add_repo (the repository was already attached; the clone and both pushes worked). There was no direct WebFetch tool; pages were read through the session's fetch helper, which returns a report of each page rather than its raw text.",
+  "New chapter, not a repeat: the 18 Nov Reel was the preview of the summit (START or SHOW?). Today's is the result, with a new hook (the fuel pledge), new maps (Europe to Shenzhen, Kyiv to Hormuz, Miami) and a different market scene (BNO's move on the day, not the slide since 30 Oct).",
+  "Oil on Thursday, by source: BNO close to close +1.41% (58.02 -> 58.84; the fund trades to 4 p.m. ET, later than futures settle). Reuters' Trading Day says oil rose about 0.5%; BeInCrypto has Brent +0.18% early in the day; Rystad says crude 'barely moved'. The Reel's headline uses the number the chart shows and does not say why oil moved.",
+  "BNO's 18 Nov close (58.02) is the daily bar from get_equity_historicals; get_equity_quotes only gives the last session's official close (58.84, which matches its bar).",
+  "'European gasoil, a diesel benchmark' : the words 'a diesel benchmark' are my gloss of 'gasoil'; Rigzone's text says only 'European gasoil prices fell 1.5 percent on the news'.",
+  "'About 80 minutes' is Euronews ('an hour and 20 minutes'); Al Jazeera says 'more than one-hour-long'.",
+  "The four points are listed in the order of the Xinhua text as The National printed it (UN, energy, ICC, nuclear), without numbers; RFE/RL lists them in another order. TASS describes the document as a preamble and four paragraphs.",
+  "Translations differ slightly by outlet: Xi's remark is 'positive, constructive, and very productive' (RFE/RL, via spokesperson Mao Ning) or 'positive, constructive and fruitful' (Euronews, via state media); the Reel quotes only 'constructive'. The ICC line is 'must not abuse their jurisdiction' (The National) or 'abuse their positions' (Al Jazeera); the Reel quotes only 'abuse'.",
+  "Putin and the G20: Al Jazeera (19 Nov) says Trump has invited him to Miami next month; nothing read today says whether he will attend, and the Reel does not say so.",
+  "Discarded after reading: an AP market wrap on smdailyjournal.com that turned out to be from January 2026 (S&P 500 at 6,921); a bundesregierung.de press conference page from 3 Nov; an ORF article from 18 Nov (before the meeting); the EIA archive page (no figures). Could not open: nothing failed outright.",
+  "isAiGenerated is false in the Metricool request, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 13 (Free plan: 20). 7 left for 5 trading days after today (26 Nov is a market holiday)."
+ ]
+}

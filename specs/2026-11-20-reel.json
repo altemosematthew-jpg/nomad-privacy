@@ -1,0 +1,679 @@
+{
+ "title": "Trump, Xi and Putin pledged more fuel | What their four-point declaration says",
+ "seed": "2026-11-20-shenzhen-fuel-pledge",
+ "publish_date": "2026-11-20",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "NOV 19 · SHENZHEN",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "TRUMP, XI AND PUTIN\nPLEDGED [MORE FUEL]",
+   "sub": "It is one of four points in the declaration they released on Thursday.",
+   "map": {
+    "bbox": [
+     -132,
+     6,
+     154,
+     76
+    ],
+    "bbox_to": [
+     -122,
+     12,
+     146,
+     70
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "names": [
+    {
+     "lon": -100,
+     "lat": 40,
+     "text": "United States"
+    },
+    {
+     "lon": 95,
+     "lat": 61,
+     "text": "Russia"
+    },
+    {
+     "lon": 92,
+     "lat": 37,
+     "text": "China"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "src": "Sources: Xinhua text via The National, RFE/RL, Rigzone",
+   "pins": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen",
+     "tone": "amber",
+     "t": 0.2,
+     "dx": 0,
+     "dy": 80,
+     "anchor": "mm",
+     "size": 28
+    }
+   ]
+  },
+  {
+   "dur": 5.0,
+   "tag": "What happened",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "FIRST THREE-WAY MEETING:\n[ABOUT 80 MINUTES]",
+   "sub": "Trump, Xi and Putin met in Shenzhen on Thursday, beside the APEC summit.",
+   "map": {
+    "bbox": [
+     99,
+     11,
+     129,
+     35
+    ],
+    "bbox_to": [
+     105,
+     15,
+     123,
+     30
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 110,
+     "lat": 28.5,
+     "text": "China"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "text": "Shenzhen",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 0,
+     "dy": -92,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 58,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.4,
+    "text": "Trump met Xi and Putin one-on-one\nbefore the three sat down together"
+   },
+   "src": "Sources: RFE/RL, Euronews, Al Jazeera, The National"
+  },
+  {
+   "dur": 6.5,
+   "tag": "The text",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE DECLARATION HAS\n[FOUR POINTS]",
+   "sub": "Xinhua and the Kremlin published it first, then the White House.",
+   "map": {
+    "bbox": [
+     -132,
+     10,
+     154,
+     74
+    ],
+    "bbox_to": [
+     -126,
+     12,
+     150,
+     72
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    590,
+    1010,
+    750
+   ],
+   "panel": {
+    "y": 780,
+    "t": 0.7,
+    "list": [
+     {
+      "kicker": "United Nations",
+      "text": "Reform the UN.",
+      "tone": "amber",
+      "size": 40,
+      "t": 0.9
+     },
+     {
+      "kicker": "Energy",
+      "text": "More refined fuel and \"stable energy flows.\"",
+      "tone": "amber",
+      "size": 40,
+      "t": 1.9
+     },
+     {
+      "kicker": "International courts",
+      "text": "Immunity for state officials. The ICC must not \"abuse\" its jurisdiction.",
+      "tone": "amber",
+      "size": 40,
+      "t": 2.9
+     },
+     {
+      "kicker": "Nuclear weapons",
+      "text": "\"A nuclear war cannot be won.\" A dialogue on nuclear risks.",
+      "tone": "amber",
+      "size": 40,
+      "t": 3.9
+     }
+    ]
+   },
+   "src": "Sources: Xinhua text via The National, RFE/RL, Rigzone"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "BRENT OIL FUND:\n[+1.4%] ON THURSDAY",
+   "sub": "European gasoil, a diesel benchmark, fell 1.5% on the news, Rystad Energy says.",
+   "map": {
+    "bbox": [
+     -14,
+     34,
+     44,
+     64
+    ],
+    "bbox_to": [
+     -10,
+     36,
+     40,
+     62
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    790
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Brent oil fund (BNO) · close: Wed $58.02, Thu $58.84",
+    "chart": {
+     "series": [
+      [
+       "2026-11-06",
+       62.22
+      ],
+      [
+       "2026-11-09",
+       58.93
+      ],
+      [
+       "2026-11-10",
+       58.36
+      ],
+      [
+       "2026-11-11",
+       58.75
+      ],
+      [
+       "2026-11-12",
+       61.01
+      ],
+      [
+       "2026-11-13",
+       61.06
+      ],
+      [
+       "2026-11-16",
+       58.66
+      ],
+      [
+       "2026-11-17",
+       58.96
+      ],
+      [
+       "2026-11-18",
+       58.02
+      ],
+      [
+       "2026-11-19",
+       58.84
+      ]
+     ],
+     "tone": "amber",
+     "t0": 0.5,
+     "dur": 2.6,
+     "marks": [
+      {
+       "date": "2026-11-06",
+       "text": "$62.22 · 6 NOV",
+       "tone": "white",
+       "dy": -58,
+       "dx": 60
+      },
+      {
+       "date": "2026-11-19",
+       "text": "$58.84",
+       "tone": "amber",
+       "dy": -62,
+       "dx": 0
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (BNO closes to 19 Nov), Rystad Energy via Rigzone"
+  },
+  {
+   "dur": 6.5,
+   "tag": "Why",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "NO VOLUMES.\n[NO DATES.]",
+   "sub": "The text sets no volume target or timetable, Rystad Energy notes.",
+   "map": {
+    "bbox": [
+     -132,
+     10,
+     154,
+     74
+    ],
+    "bbox_to": [
+     -124,
+     12,
+     148,
+     72
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    820
+   ],
+   "names": [
+    {
+     "lon": -100,
+     "lat": 40,
+     "text": "United States"
+    },
+    {
+     "lon": 95,
+     "lat": 61,
+     "text": "Russia"
+    },
+    {
+     "lon": 92,
+     "lat": 37,
+     "text": "China"
+    }
+   ],
+   "panel": {
+    "y": 860,
+    "t": 0.7,
+    "list": [
+     {
+      "kicker": "United States",
+      "text": "Refiners already run close to capacity, Rystad says.",
+      "tone": "amber",
+      "size": 40,
+      "t": 1.0
+     },
+     {
+      "kicker": "Russia",
+      "text": "Ukrainian drone strikes have cut refinery output.",
+      "tone": "amber",
+      "size": 40,
+      "t": 2.6
+     },
+     {
+      "kicker": "China",
+      "text": "Has \"the most scope\" to change the outcome, Rystad says.",
+      "tone": "amber",
+      "size": 40,
+      "t": 4.2
+     }
+    ]
+   },
+   "src": "Sources: Rystad Energy via Rigzone, Reuters, BeInCrypto"
+  },
+  {
+   "dur": 6.0,
+   "tag": "Two readings",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE THREE LEADERS\nCALLED IT [HISTORIC]",
+   "sub": "Trump: \"making history.\" Xi: \"constructive.\" Putin: \"very useful.\"",
+   "map": {
+    "bbox": [
+     -6,
+     41,
+     30,
+     59
+    ],
+    "bbox_to": [
+     -8,
+     8,
+     126,
+     64
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    900
+   ],
+   "cam_span": [
+    1.4,
+    3.6
+   ],
+   "pins": [
+    {
+     "lon": 13.4,
+     "lat": 52.52,
+     "text": "Berlin",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -24
+    },
+    {
+     "lon": 2.35,
+     "lat": 48.86,
+     "text": "Paris",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": -18,
+     "dy": 26,
+     "anchor": "rm"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 30,
+     "tone": "amber",
+     "t": 3.4,
+     "text": "Shenzhen",
+     "text_dy": -52
+    }
+   ],
+   "panel": {
+    "y": 930,
+    "t": 0.8,
+    "title": "The view from Europe",
+    "list": [
+     {
+      "kicker": "Germany's chancellor Merz · via RFE/RL",
+      "text": "Called the meeting a \"photo op.\"",
+      "tone": "amber",
+      "size": 42,
+      "t": 1.1
+     },
+     {
+      "kicker": "France's foreign minister · via Euronews",
+      "text": "The three \"fundamentally disagree on everything.\"",
+      "tone": "amber",
+      "size": 42,
+      "t": 3.0
+     }
+    ]
+   },
+   "src": "Sources: RFE/RL, Euronews, Al Jazeera"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "THE TEXT NEVER MENTIONS\n[UKRAINE OR IRAN]",
+   "sub": "The Kremlin's spokesman said Ukraine was not the central topic.",
+   "map": {
+    "bbox": [
+     20,
+     43,
+     43,
+     54
+    ],
+    "bbox_to": [
+     18,
+     14,
+     70,
+     56
+    ],
+    "tint": {}
+   },
+   "cam_span": [
+    1.4,
+    3.6
+   ],
+   "names": [
+    {
+     "lon": 32,
+     "lat": 48.2,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 54,
+     "lat": 33,
+     "text": "Iran"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 18,
+     "dy": -24
+    },
+    {
+     "lon": 56.4,
+     "lat": 26.6,
+     "text": "Strait of Hormuz",
+     "tone": "amber",
+     "t": 3.5,
+     "dx": 18,
+     "dy": 26
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 56.4,
+     "lat": 26.6,
+     "tone": "amber",
+     "t": 3.6
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 4.0,
+    "text": "Iran's navy says mines disabled three tankers\neast of the Strait of Hormuz (via Reuters)"
+   },
+   "src": "Sources: The National, RFE/RL, Euronews, Al Jazeera, Reuters"
+  },
+  {
+   "dur": 5.5,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEXT MONTH: THE G20\nIN [MIAMI]",
+   "sub": "Trump is the host. He has invited Putin.",
+   "map": {
+    "bbox": [
+     -108,
+     10,
+     -58,
+     50
+    ],
+    "bbox_to": [
+     -100,
+     14,
+     -64,
+     44
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": -96,
+     "lat": 38,
+     "text": "United States"
+    }
+   ],
+   "pins": [
+    {
+     "lon": -80.19,
+     "lat": 25.76,
+     "text": "Miami · G20 summit",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": -96,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "rings": [
+    {
+     "lon": -80.19,
+     "lat": 25.76,
+     "r": 60,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pulses": [
+    {
+     "lon": -80.19,
+     "lat": 25.76,
+     "tone": "amber",
+     "t": 0.5
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "The declaration promises a dialogue\non nuclear risks. It gives no date."
+   },
+   "src": "Sources: Al Jazeera, Xinhua text via The National, Rigzone"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "MORE FUEL:\n[BARRELS] OR [WORDS]?",
+   "sub": "Does the pledge become barrels, or stay words? Comment one word.",
+   "map": {
+    "bbox": [
+     -130,
+     4,
+     152,
+     74
+    ],
+    "bbox_to": [
+     -124,
+     8,
+     148,
+     70
+    ],
+    "tint": {
+     "USA": "gold",
+     "RUS": "gold",
+     "CHN": "gold"
+    }
+   },
+   "rings": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 114.06,
+     "lat": 22.54,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 19 Nov 2026"
+  }
+ ]
+}
