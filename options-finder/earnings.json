@@ -1,4 +1,4 @@
-{"asOf": "2026-11-19", "source": "Nasdaq earnings date + Yahoo Finance", "timingUnknown": ["MU"], "d": {
+{"asOf": "2026-11-20", "source": "Nasdaq earnings date + Yahoo Finance", "timingUnknown": [], "d": {
   "AAPL": ["2027-01-28", "pm", false],
   "AMD": ["2027-02-02", "pm", false],
   "ARM": ["2027-02-03", "pm", true],
@@ -8,7 +8,7 @@
   "META": ["2027-01-27", "pm", false],
   "MRVL": ["2026-12-01", "pm", true],
   "MSFT": ["2027-01-27", "pm", false],
-  "MU": ["2026-12-16", "am", false],
+  "MU": ["2026-12-17", "pm", true],
   "NFLX": ["2027-01-19", "pm", false],
   "PLTR": ["2027-02-01", "pm", false],
   "SOFI": ["2027-01-29", "am", false],
