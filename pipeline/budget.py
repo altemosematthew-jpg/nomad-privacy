@@ -11,7 +11,9 @@ Usage:
 
 Prints one JSON line, e.g.
   {"post": ["geo"], "default": "geo", "remaining": 10, "weekdays_left": 8, "why": "..."}
-"post" lists what to publish today: "finance" (Ten on the Tape Reel, 07:30) and/or "geo" (geopolitics Reel, 10:00).
+"post" lists what to publish today: "finance" (Ten on the Tape Reel, 09:40) and/or "geo" (geopolitics Reel, 11:40).
+From 21 Nov 2026 the scheduled task asks for both Reels every day. Read "Posting budget" at the top of RUNBOOK.md
+before using this list to skip a Reel. Run it every day either way: "remaining" and "weekdays_left" go in the report.
 
 Rules (so the account posts every trading day instead of going dark at the end of the month):
   - unlimited plan: both Reels every day.

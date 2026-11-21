@@ -1,28 +1,56 @@
 # The Gilded Ticker — daily runbook
 
-Up to two Reels go out on Instagram **@thegildedticker** each day, through Metricool. The run starts at **05:35 CT**.
+Two Reels go out on Instagram **@thegildedticker** every day, through Metricool. The run starts at **05:35 CT**.
+
+## Reels only, new times, a shorter finance Reel (from 21 Nov 2026)
+On 20 Nov 2026 the owner asked: "can you make only reels, make the changes necessary to help the account", then
+approved the plan ("can you do it now with my approval"). The scheduled task's prompt was rewritten that day. It
+says that **where the prompt and this file differ, the prompt wins**. This file was brought into line on 21 Nov.
 
 | Time (America/Chicago) | Post | Built by |
 |---|---|---|
-| 07:30 | **Ten on the Tape** — a ~36-second finance Reel: ten stocks with big news, one chart each | `pipeline/tape_reel.py` |
-| 10:00 | **Geopolitics Reel** — 45–55 s map explainer ending in a one-word question | `pipeline/reel.py` |
+| 09:40 | **Ten on the Tape** — a 25–40 s finance Reel: the 3–5 stocks with the biggest news-driven moves | `pipeline/tape_reel.py` (short format) |
+| 11:40 | **Geopolitics Reel** — 45–60 s map explainer ending in a one-word question | `pipeline/reel.py` |
 
-**How many posts today** comes from `pipeline/budget.py` (step 0). On 18 Nov 2026 the owner chose to stay on
-Metricool's **Free plan: 20 scheduled posts a month**, so on most days only **one** of the two Reels goes out
-(finance on Tuesday and Thursday, geopolitics on the other days). Both go out only when the budget allows it.
+- **Finance Reel.** Scene 1 (2.4 s): the single biggest move as a giant number with its ticker and the reason,
+  all readable in the very first frame. Then one scene per stock: ticker badge, % move, one-line reason and the
+  2-month candlestick chart in a gold frame, then two facts worked out from the spec (volume against normal,
+  distance from the 52-week high). Last scene: the question card ("Which one are you watching?"). Put 3, 4 or 5
+  stocks in the spec and `tape_reel.py` builds this format (26–34 s). Ten stocks still gives the old 36-second one.
+- **Geopolitics Reel.** As described in step 5. Hook rule: the first 2 seconds must show the conflict and one
+  hard number on screen, so put the number in scene 1's headline ("3 MISSILES AT RIYADH. …").
+- **Late runs.** Never schedule a time that has passed: schedule that Reel 20 minutes from now and the other at
+  least 60 minutes after it.
+- **No carousels, no feed posts.** `pipeline/tape.py` (the old 10-slide carousel) stays in the repository; use
+  it only if the owner asks for it again.
 
-Why this shape (owner's decisions of 18 Nov 2026, from Metricool's own numbers for this account):
-- Reels reached about **263 accounts each**; the old carousels reached about **5** (the account had 6 followers).
-  Instagram shows Reels to people who don't follow you, so both formats are now Reels.
-- The audience is most active around **10:00 CT** (about 6x more than at 06:00). The finance Reel goes out at
-  07:30 so it lands before the 08:30 open.
+Why (Metricool's numbers, as the task prompt gives them): Reels reach 10–40x more people than the carousels did
+(best Reel 909 views, carousels 9–22). The audience is most active 9 AM–noon Central, peak about 10 AM. The Reel
+with the lowest skip rate ("Russia's oil, hit from two sides") opened on a clear conflict with a number on screen.
+
+### Posting budget: an open question for the owner (put to him in the 21 Nov report)
+The prompt asks for both Reels every day ("create exactly these two Reels"). Metricool's **Free plan still allows
+20 scheduled posts a month**. The owner chose to stay on it on 18 Nov, and `pipeline/budget.py` was written then
+to ration posts (one Reel on most days) so the account would not go quiet at the end of the month. The new prompt
+does not mention that limit.
+- **21 Nov:** 13 posts had been used, 7 were left for the 5 trading days to 30 Nov. Both Reels went out, because
+  two could be spent without taking a post away from any trading day. That left 5 for 5 trading days.
+- From 22 Nov the two instructions pull apart: two a day uses the last posts on Tuesday 24 Nov, and nothing can
+  go out from then to 30 Nov. In a full month, two a day lasts 10 days.
+- **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it. Count the
+  month's posts in step 0 as before and put "N left this month; at two a day they run out on <date>" at the top
+  of the report, every day. If Metricool refuses a post with a plan or limit error: no retry, no workaround,
+  report its exact message. When 20 are already used, build nothing and report that.
+- **When he answers,** write his answer here, delete this section's other bullets, and if he chooses to ration,
+  `budget.py` and the swap rule in step 0 decide again.
+
+Earlier decisions that still hold (18 Nov 2026, from Metricool's numbers for this account):
 - 46–60% of viewers swiped away in the first 3 seconds and the average watch was 5–12 s. The best Reel
   (21 Sep, 747 reached, 12.3 s average watch) had the lowest skip rate. **The first second decides everything.**
 - He asked for posts that look "way less like AI". Both renderers add film grain, a vignette, a handle bug and
   sound effects on every cut, pin and number (`pipeline/finish.py`); the voice guide below is for the words.
 
 The owner can delete or edit anything in Metricool before it goes out ("publish automatically, with a preview").
-The old 10-slide carousel (`pipeline/tape.py`) still works; use it only if the owner asks for it again.
 
 ## Rules that are not negotiable
 
@@ -43,9 +71,9 @@ The old 10-slide carousel (`pipeline/tape.py`) still works; use it only if the o
 6. **Your own words.** No copied sentences. At most a few quoted words from a speaker, attributed.
 7. **Git:** push only to `gilded-ticker` (code, specs, log) and `gilded-ticker-media-YYYY-MM` (media).
    Plain pushes only: no force-push, no branch deletion, never touch `main` or anything else in the repo.
-8. **Metricool:** brand `thegildedticker`, blogId `7018528`, timezone `America/Chicago`. Create only the posts
-   `budget.py` allows today. If a call fails with a plan or limit error, do not retry and do not work around it:
-   report its exact message and stop.
+8. **Metricool:** brand `thegildedticker`, blogId `7018528`, Instagram only, timezone `America/Chicago`. Create
+   exactly the two Reels above and nothing else. If a call fails with a plan or limit error, do not retry and do
+   not work around it: report its exact message and stop. A media error may be retried once.
 9. If anything needed for a post cannot be verified or built, **skip that post** and say so in the report.
    A missed post is fine. A wrong post is not.
 10. **Be economical.** This run shares the owner's usage allowance with his other tasks; on 17 Nov the 03:05
@@ -74,33 +102,39 @@ with `close.date` on SPY.
 - **Count this month's posts:** `getScheduledPosts(brandId="7018528", fromDate="<first of month>T00:00:00-06:00",
   toDate="<last of month>T23:59:59-06:00", timezone="America/Chicago")` (use -05:00 while daylight saving time is
   on). Count every post it returns, any status, drafts included = **N**. Then
-  `python3 pipeline/budget.py D --used N` → which Reels to post today (`post`), and why.
-  If `post` is empty, report "Nothing scheduled" with the `why` and stop.
-- **Already done?** From the same list, if today's finance Reel (07:30 slot, text starting with the Tape hook) or
-  today's geopolitics Reel is already there, drop it from today's list. More than one session can work on a day.
-- **Swapping the type** (only when one Reel is allowed): post the other Reel instead of `default` when its story
+  `python3 pipeline/budget.py D --used N` → `remaining` and `weekdays_left` for the report (see "Posting budget"
+  at the top for what its `post` list means now). If N is 20 or more, report "Nothing scheduled: 20 of 20
+  Metricool posts used this month" and stop.
+- **Already done?** From the same list, if today's finance Reel (text starting "Ten on the Tape |") or today's
+  geopolitics Reel is already there, drop it from today's list. More than one session can work on a day. If both
+  are there, report that and stop.
+- **Swapping the type** (only if the owner chooses to ration again and one Reel is allowed): post the other Reel instead of `default` when its story
   is clearly bigger today, e.g. a mega-cap's earnings reaction or a market-wide crash (finance), or a war,
   summit, sanctions or election abroad moving oil, gold or currencies (geopolitics). Never post the same type
   three days in a row (check `log/`). Say in the log why you swapped.
 
-### 1. Which edition of Ten on the Tape (finance days)
-**S** = the last completed US trading day before D (check `close.date` on a `get_equity_quotes` for SPY).
+### 1. Which edition of Ten on the Tape
+**S** = the last completed US trading day before D. On Tuesday to Friday mornings `close.date` on a
+`get_equity_quotes` for SPY is S. **On Saturday and Sunday it is still Thursday** (see "Weekend closes" in step 3).
 
 | D is… | Edition | Spec fields |
 |---|---|---|
-| Tue–Sat (S was yesterday) | **Daily**: ten stocks with big news on S | defaults |
-| Sunday | **Week**: the ten biggest news-driven movers of the week | `title_sub: "10 biggest movers of the week"`, `move_label: "This week"`, `move_bars`: sessions that week (usually 5) |
-| Monday | **Watch**: ten stocks with earnings or big events this week (`get_earnings_calendar`) | `title_sub: "10 stocks to watch this week"`, `move_label: "Last week"`, `move_bars`: 5 |
-| Day after a market holiday | Treat like Monday (Watch) or Sunday (Week), whichever is truer. Never repeat the last tape's ten. | |
+| Tue–Sat (S was yesterday) | **Daily**: the 3–5 stocks with the biggest news-driven moves on S | defaults |
+| Sunday | **Week**: the 3–5 biggest news-driven movers of the week | `move_label: "This week"`, `move_bars`: sessions that week (usually 5) |
+| Monday | **Watch**: 3–5 stocks with earnings or big events this week (`get_earnings_calendar`) | `move_label: "Last week"`, `move_bars`: 5 |
+| Day after a market holiday | Treat like Monday (Watch) or Sunday (Week), whichever is truer. Never repeat the last tape's stocks. | |
 
-### 2. Find the ten (daily edition)
+### 2. Find the three to five (daily edition)
+Steps 2–4 were written for ten stocks. The method is the same for three to five: collect many candidates, check
+every move yourself, keep the biggest moves that have a real, sourced reason. The single biggest of them opens the
+Reel, so its reason has to be the best-sourced one.
 - Read two or three market wraps for S (CappNotes' Closing Look, StockTitan's daily live blog, Motley Fool's
   "Stock Market Today", CNBC, Reuters, Yahoo Finance) and collect 20+ candidates with reasons. The Robinhood
   scanner's "% change" includes after-hours trading, so overnight it shows the wrong day: use it only during
   market hours. Check article dates: search results often surface the same headline from an earlier year.
 - For each candidate: official close and previous close from Robinhood. Compute the move yourself and drop
   anything that does not match the reports (articles sometimes mix up days, or use a last trade, not the close).
-- Pick ten with a real, sourced reason. Mix winners and losers. Prefer names people know and companies
+- Pick three to five with a real, sourced reason. Mix winners and losers. Prefer names people know and companies
   worth $1B+. Skip stocks under about $3. Do not feature Anthropic-related stories just because they exist.
   Do not repeat a stock from the last 3 days unless there is genuinely new news.
 - **Order = editorial**: the story most people will care about first, then by size and fame.
@@ -113,7 +147,15 @@ with `close.date` on SPY.
   no bar or an `interpolated: true` bar for S. For those, put `"session": [open, high, low, volume]` from
   `get_equity_fundamentals(bounds="regular")` in stories.json (check `market_date == S`). If you cannot get
   either, drop that stock and pick another. Do not build candles from hourly bars (incomplete).
-- `get_equity_fundamentals` also gives `average_volume_30_days`, `high_52_weeks`, `low_52_weeks`.
+- `get_equity_fundamentals` also gives `average_volume_30_days`, `high_52_weeks`, `low_52_weeks`. The short Reel
+  needs all three for every stock (it turns them into the two facts under the chart).
+- **Weekend closes.** On Saturday and Sunday `get_equity_quotes` still returns `close.date` = Thursday, because
+  the quote only rolls to the next session on Sunday evening. Friday's official close is then the `close_price`
+  of Friday's daily bar from `get_equity_historicals`. Use it only after three checks, and say so in the log:
+  the bar is not `interpolated` and has volume; the same symbol's Thursday bar equals `close.price` from
+  `get_equity_quotes`; and the move you compute matches a published closing move (CappNotes prints two decimals).
+  On 21 Nov all thirteen symbols checked this way matched to the cent. `last_trade_price` did not (SPY was $1.10
+  away from its close), so never use it.
 - Index moves for the outro and caption: CappNotes and Motley Fool print the S&P 500, Nasdaq and Dow closes
   and point changes (`get_index_quotes` only has live values). Put them in the spec as
   `"indices": [{"name": "S&P 500", "close": …, "prev_close": …}, …]` so the checker can compare.
@@ -123,23 +165,27 @@ with `close.date` on SPY.
   complete example). Per stock: `headline` ≤ about 28 characters, the way a person would say it ("A $2 billion
   cost cut", "Sales up 49%, forecast cut"); `body` = 2–3 short sentences (they go in the log and help you write
   the caption); `sources` = two outlet names + "Robinhood". Headlines must still be true on the day of posting.
-- Hook fields (the first second of the Reel, shown over the scoreboard of all ten moves):
-  `"reel_hook": "CHIP STOCKS SANK.\nNVIDIA [REPORTS TONIGHT]"` — two short lines of capitals, one `[highlight]`,
-  the day's real story in under 8 words. `"reel_sub"`: one plain sentence. Optional `"reel_outro"`
-  (default "WHICH ONE ARE\nYOU [WATCHING]?").
+- Hook fields (scene 1, under the giant number of the biggest move; `specs/2026-11-21-tape.json` is an example):
+  `"reel_hook": "REUTERS: SEC IS EXAMINING\n[ITS ACCOUNTING]"` — the reason for that move in two short lines of
+  capitals with one `[highlight]`, under 8 words, saying who reported it when it is a report. `"reel_sub"`: one
+  short plain sentence (it is on screen for 2.4 seconds). Optional `"reel_outro"`
+  (default "WHICH ONE ARE\nYOU [WATCHING]?"). The Reel prints `scene 1: $SYM −x.x%` so you can check which stock leads.
 - `python3 pipeline/mkspec.py work/stories.json specs/D-tape.json work/<history files>`
 - `python3 pipeline/tape_reel.py specs/D-tape.json out/D/finance --preview` (2 seconds). It stops with a clear
   message if a headline does not fit. **Look at** `out/D/finance/_preview.jpg` and `cover.jpg` with the Read
-  tool: every ticker, sign, price and headline against your notes. Then render once without `--preview`
+  tool: every ticker, sign, price and headline against your notes. `_first.jpg` is the very first frame: the
+  ticker, the number and the reason must all be readable in it. Then render once without `--preview`
   (about 2 minutes).
-- Caption → `out/D/finance_caption.txt` (see the voice guide; example in `specs/2026-11-17-finance-caption.txt`):
+- Caption → `out/D/finance_caption.txt` (see the voice guide; example in `specs/2026-11-21-finance-caption.txt`):
   ```
+  Ten on the Tape | <hook: the biggest move in plain words>
+
   <one or two plain sentences: what the day was about>
 
-  $NVDA −4.1% first earnings since Jensen Huang stepped down
-  … (10 lines, same order as the Reel: $SYM, the move with the real minus sign −, 3–8 words of why)
+  $NVDA −14.0% the SEC is examining its accounting, Reuters reports
+  … (one line per stock, same order as the Reel: $SYM, the move with the real minus sign −, 3–8 words of why)
 
-  Which one are you watching? Drop the ticker.   (vary this line; keep it one short question)
+  Which one are you watching? Comment the ticker.   (the question may vary; it always ends "Comment the ticker.")
 
   S&P 500 −1.9% · Nasdaq −2.5% · Dow −1.4%
   <Day D Month> closing prices. Sources: …, Robinhood. Not financial advice.
@@ -186,11 +232,11 @@ python3 pipeline/publish.py D --finance-first-comment "<question line>" --first-
 ```
 `publish.py` includes each post whose folder exists (`out/D/finance`, `out/D/reel`), hosts the files on the
 month's media branch under content-hash names, waits until every public link answers, and writes
-`out/D/metricool_finance.json` and/or `out/D/metricool_reel.json` (07:30 and 10:00 by default).
+`out/D/metricool_finance.json` and/or `out/D/metricool_reel.json` (09:40 and 11:40 by default).
 If your instructions give you lines to end commit messages with, pass each one with `--trailer`.
-**Late runs:** never schedule a time that has passed. If it is past 07:10, schedule the finance Reel 15 minutes
-from now (`--finance-time HH:MM`); if it is past 09:40, schedule the geopolitics Reel 15 minutes from now, and
-at least 30 minutes after the finance Reel when both go out.
+**Late runs:** never schedule a time that has passed. If 09:40 has passed, schedule the finance Reel 20 minutes
+from now (`--finance-time HH:MM`) and the geopolitics Reel at least 60 minutes after it (`--reel-time HH:MM`).
+If only 11:40 has passed, schedule the geopolitics Reel 20 minutes from now.
 
 ### 7. Schedule in Metricool
 **Check again right before you create anything:** call `getScheduledPosts` for D once more just before each
@@ -206,9 +252,10 @@ corrected file first (`publish.py` gives it a new name).
   title/hook, tickers with moves (finance) or topic and question (geo), Metricool id, uuid, planner link, time;
   anything skipped and why. Commit it with `specs/D-*` and the captions copied to `specs/D-finance-caption.txt` /
   `specs/D-reel-caption.txt` to `gilded-ticker`, and push.
-- Final message (it goes to the owner's phone): what is scheduled and for when; the ten tickers in one line
-  (finance) or the Reel's hook and question (geo); the Metricool planner link(s); posts left this month;
-  anything skipped; and, if Metricool refused a post, its exact message.
+- Final message (it goes to the owner's phone, under 15 lines): what is scheduled and for when; the finance
+  Reel's stocks and moves in one line; the geopolitics Reel's title and one-word question; the two Metricool
+  planner links; posts left this month and when they run out; anything skipped or uncertain; if Metricool refused
+  a post, its exact message; and a reminder that he can delete or edit either Reel in Metricool before it goes out.
 
 ## Voice guide: sound like a person, not a press release
 People scroll past anything that reads machine-written. The checker (`check.py`) flags the worst tells.
@@ -241,3 +288,9 @@ People scroll past anything that reads machine-written. The checker (`check.py`)
 - The workspace cannot reach static.metricool.com; trust the new file id Metricool returns.
 - Metricool's Instagram statistics appear some hours after a post goes live, not straight away.
 - Trending Instagram audio is not available here. The music is synthesized per day from the seed.
+- In `tape_reel.py`'s first and last scenes text is drawn straight onto the frame, and there Pillow ignores a
+  text colour's transparency: text is either absent or fully solid, never half faded (boxes and shapes do fade).
+  That is why scene 1 can show everything in the first frame. Do not rely on a text fade in those two scenes.
+- `get_equity_historicals` saves its answer to a file only when it is large. Ask for all the day's symbols in one
+  call from about 1 April (about 160 bars each) and it lands in the session's `tool-results/` folder, ready for
+  `mkspec.py`, which keeps the last 70 bars.

@@ -5,9 +5,11 @@ Usage (from the repo root):
 Exit code 1 if anything is wrong; every problem is printed with "!!".
 
 Checks
-  finance   out/D/finance/reel.mp4 is H.264 1080x1920 30 fps with AAC audio, 25-45 s; cover.jpg 1080x1920;
-            out/D/finance_caption.txt: the 10 "$SYM +x.x%" lines match the spec's tickers, order and moves (one decimal),
-            the session day is named, sources and the not-advice line are there
+  finance   out/D/finance/reel.mp4 is H.264 1080x1920 30 fps with AAC audio, 25-40 s; cover.jpg 1080x1920;
+            out/D/finance_caption.txt: one "$SYM +x.x%" line per stock in the spec (3-5 in the short format, 10 in the
+            classic one), matching its tickers, order and moves (one decimal); the session day is named, sources and
+            the not-advice line are there. Short format (from 21 Nov 2026): the first line is
+            "Ten on the Tape | <hook>" and the question line ends with "Comment the ticker."
   carousel  (old format, only if out/D/tape exists) 10 JPEGs, each 1080x1350
             caption: <= 2,200 characters, exactly 5 hashtags, the 10 numbered lines match the spec's tickers,
             order and moves (one decimal), "closing prices" names the session day, the not-advice line is there
@@ -96,7 +98,7 @@ def main(D):
     if os.path.isdir(fin_dir):
         n0 = len(problems)
         print("finance reel")
-        video_checks("finance reel.mp4", f"{fin_dir}/reel.mp4", 25, 45)
+        video_checks("finance reel.mp4", f"{fin_dir}/reel.mp4", 25, 40)
         cov = f"{fin_dir}/cover.jpg"
         if not os.path.exists(cov):
             bad(f"missing {cov}")
@@ -112,8 +114,15 @@ def main(D):
             spec = json.load(open(spec_p))
             common_caption_checks("finance caption", text)
             lines = re.findall(r"^\$([A-Z.]+) ([+−-])(\d+\.\d)%", text, flags=re.M)
-            if len(lines) != 10:
-                bad(f"finance caption: found {len(lines)} '$SYM +x.x%' lines, need 10 (one per stock, in Reel order)")
+            n_st = len(spec["stocks"])
+            if len(lines) != n_st:
+                bad(f"finance caption: found {len(lines)} '$SYM +x.x%' lines, need {n_st} (one per stock, in Reel order)")
+            if n_st != 10:  # short format: the caption opens on the series name and the hook, and asks for the ticker
+                first = text.split("\n")[0]
+                if not first.startswith("Ten on the Tape | ") or len(first) < len("Ten on the Tape | ") + 8:
+                    bad("finance caption: the first line should read 'Ten on the Tape | <hook>'")
+                if not re.search(r"\?\s+Comment the ticker\.\s*$", text, flags=re.M):
+                    bad("finance caption: the question line should end with 'Comment the ticker.'")
             for n, ((sym, sign, val), s) in enumerate(zip(lines, spec["stocks"]), 1):
                 p = (s["close"] / s["prev_close"] - 1) * 100
                 want_sign = "+" if p >= 0 else "−"

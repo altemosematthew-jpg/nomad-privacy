@@ -64,11 +64,12 @@ def pct(close, prev):
     return (close / prev - 1) * 100
 
 
-def validate(spec):
+def validate(spec, counts=(10,)):
+    """counts: how many stocks the caller can lay out (the carousel: exactly 10; tape_reel.py: 3-5 or 10)."""
     errs = []
     st = spec["stocks"]
-    if len(st) != 10:
-        errs.append(f"need exactly 10 stocks, got {len(st)}")
+    if len(st) not in counts:
+        errs.append(f"need {' or '.join(str(c) for c in counts)} stocks, got {len(st)}")
     if len({s["sym"] for s in st}) != len(st):
         errs.append("duplicate ticker")
     for s in st:

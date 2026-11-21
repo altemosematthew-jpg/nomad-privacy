@@ -2,7 +2,7 @@
 
 Usage (from the repo root, after the posts are rendered and checked):
   python3 pipeline/publish.py D [--finance out/D/finance] [--reel out/D/reel] [--media ../media]
-                              [--finance-time 07:30] [--reel-time 10:00]
+                              [--finance-time 09:40] [--reel-time 11:40]
                               [--finance-first-comment "..."] [--first-comment "PEACE or PAUSE? One word. Then tell me why."]
                               [--trailer "Co-Authored-By: ..."] [--dry-run]
   Each post is included when its folder exists (out/D/finance, out/D/reel, and the old carousel out/D/tape);
@@ -113,8 +113,8 @@ def main():
     ap.add_argument("--reel", default=None, help="geopolitics Reel folder (default out/D/reel if it exists)")
     ap.add_argument("--tape", default=None, help="old 10-slide carousel folder (default out/D/tape if it exists)")
     ap.add_argument("--media", default="../media")
-    ap.add_argument("--finance-time", default="07:30")
-    ap.add_argument("--reel-time", default="10:00")
+    ap.add_argument("--finance-time", default="09:40")  # owner's plan of 20 Nov 2026: inside the 9 AM-noon peak
+    ap.add_argument("--reel-time", default="11:40")
     ap.add_argument("--tape-time", default="07:30")
     ap.add_argument("--finance-caption", default=None)
     ap.add_argument("--reel-caption", default=None)
