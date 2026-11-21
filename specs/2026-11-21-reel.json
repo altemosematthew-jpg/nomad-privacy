@@ -1,0 +1,676 @@
+{
+ "title": "3 missiles at Riyadh, a threat to Saudi ports | Why oil still fell",
+ "seed": "2026-11-21-saudi-ports-houthi-threat",
+ "publish_date": "2026-11-21",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "NOV 21 · SAUDI ARABIA",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "3 MISSILES AT RIYADH.\nHOUTHIS THREATEN [SAUDI PORTS]",
+   "sub": "The Saudi-led coalition says it shot down all three early Saturday.",
+   "map": {
+    "bbox": [
+     30,
+     8,
+     62,
+     36
+    ],
+    "bbox_to": [
+     32,
+     10,
+     59,
+     34
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 44.5,
+     "lat": 28.2,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 47.5,
+     "lat": 15.6,
+     "text": "Yemen"
+    },
+    {
+     "lon": 38.6,
+     "lat": 17.4,
+     "text": "Red Sea"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 46.72,
+     "lat": 24.69,
+     "tone": "red",
+     "t": 0.2
+    }
+   ],
+   "rings": [
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "r": 44,
+     "tone": "amber",
+     "t": 1.0
+    }
+   ],
+   "pins": [
+    {
+     "lon": 46.72,
+     "lat": 24.69,
+     "text": "Riyadh",
+     "tone": "red",
+     "t": 0.2,
+     "dx": 22,
+     "dy": -30,
+     "size": 28
+    },
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "text": "Jeddah",
+     "tone": "amber",
+     "t": 1.0,
+     "dx": 0,
+     "dy": 78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "src": "Sources: Reuters, AFP, Arab News"
+  },
+  {
+   "dur": 5.5,
+   "tag": "What happened",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "FRIDAY: THE COALITION\nSTRUCK [HODEIDAH PORT]",
+   "sub": "It says the port was used to smuggle and move weapons and ballistic missiles.",
+   "map": {
+    "bbox": [
+     35.5,
+     9.5,
+     52.5,
+     22.5
+    ],
+    "bbox_to": [
+     38.5,
+     11.5,
+     49.5,
+     20
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 47.3,
+     "lat": 16.6,
+     "text": "Yemen"
+    },
+    {
+     "lon": 45.5,
+     "lat": 19.6,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 40.3,
+     "lat": 17.6,
+     "text": "Red Sea"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 42.95,
+     "lat": 14.8,
+     "tone": "red",
+     "t": 0.3
+    }
+   ],
+   "pins": [
+    {
+     "lon": 42.95,
+     "lat": 14.8,
+     "text": "Hodeidah port",
+     "tone": "red",
+     "t": 0.3,
+     "dx": 0,
+     "dy": 84,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 44.21,
+     "lat": 15.35,
+     "text": "Sanaa",
+     "tone": "amber",
+     "t": 1.2,
+     "dx": 20,
+     "dy": -28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Reuters: Hodeidah is the main port for food\nand supplies into northern Yemen"
+   },
+   "src": "Sources: Reuters, AFP, The National"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The reply",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "HOUTHIS TO SHIPS:\n[LEAVE SAUDI PORTS]",
+   "sub": "They threatened Jeddah and every Saudi port on the Red Sea, and told airlines to avoid Saudi airspace.",
+   "map": {
+    "bbox": [
+     30.5,
+     8.5,
+     51.5,
+     30.5
+    ],
+    "bbox_to": [
+     32.5,
+     10,
+     48.5,
+     28.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 44.6,
+     "lat": 24.8,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 46.8,
+     "lat": 15.6,
+     "text": "Yemen"
+    },
+    {
+     "lon": 37.6,
+     "lat": 18.6,
+     "text": "Red Sea"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "r": 52,
+     "tone": "amber",
+     "t": 0.5
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "tone": "amber",
+     "t": 0.6
+    }
+   ],
+   "pins": [
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "text": "Jeddah",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": 70,
+     "dy": 0,
+     "size": 28
+    },
+    {
+     "lon": 38.06,
+     "lat": 24.09,
+     "text": "Yanbu",
+     "tone": "amber",
+     "t": 1.3,
+     "dx": 20,
+     "dy": -26
+    },
+    {
+     "lon": 42.95,
+     "lat": 14.8,
+     "text": "Hodeidah",
+     "tone": "amber",
+     "t": 1.8,
+     "dx": 20,
+     "dy": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1350,
+    "tone": "red",
+    "t": 3.0,
+    "text": "\"Evacuate them immediately and stay away\"\nHouthi spokesman Yahya Saree, via Reuters"
+   },
+   "src": "Sources: Reuters, Middle East Eye, AFP"
+  },
+  {
+   "dur": 6.0,
+   "tag": "Why it matters",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE PIPELINE AROUND HORMUZ\nENDS [ON THAT COAST]",
+   "sub": "Saudi Arabia's East-West line runs 1,200 km to Yanbu and can carry about 7 million barrels a day.",
+   "map": {
+    "bbox": [
+     32.5,
+     14,
+     65.5,
+     33
+    ],
+    "bbox_to": [
+     35,
+     16,
+     63.5,
+     31.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 44.5,
+     "lat": 21.3,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 54.5,
+     "lat": 30.2,
+     "text": "Iran"
+    },
+    {
+     "lon": 36.9,
+     "lat": 20.2,
+     "text": "Red Sea"
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       49.67,
+       25.94
+      ],
+      [
+       46.4,
+       25.0
+      ],
+      [
+       42.3,
+       24.4
+      ],
+      [
+       38.06,
+       24.09
+      ]
+     ],
+     "tone": "gold",
+     "t0": 0.6,
+     "dur": 1.6,
+     "flow": true,
+     "width": 7
+    }
+   ],
+   "pins": [
+    {
+     "lon": 49.67,
+     "lat": 25.94,
+     "text": "Eastern oil fields",
+     "tone": "gold",
+     "t": 0.5,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    },
+    {
+     "lon": 38.06,
+     "lat": 24.09,
+     "text": "Yanbu",
+     "tone": "amber",
+     "t": 2.1,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 56.4,
+     "lat": 26.6,
+     "text": "Strait of Hormuz",
+     "tone": "grey",
+     "t": 3.0,
+     "dx": 0,
+     "dy": 40,
+     "anchor": "mm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1360,
+    "tone": "amber",
+    "t": 3.4,
+    "text": "Pipeline route shown is approximate"
+   },
+   "src": "Sources: Al Jazeera (17 Sep), OilPrice.com"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "BRENT OIL FUND:\n[−3.3%] THIS WEEK",
+   "sub": "It rose 0.3% on Friday. Crude still fell for a third week in a row.",
+   "map": {
+    "bbox": [
+     30,
+     8,
+     64,
+     36
+    ],
+    "bbox_to": [
+     33,
+     10,
+     61,
+     34
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    790
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Brent oil fund (BNO) · close: 13 Nov $61.06, 20 Nov $59.02",
+    "chart": {
+     "series": [
+      [
+       "2026-11-13",
+       61.06
+      ],
+      [
+       "2026-11-16",
+       58.66
+      ],
+      [
+       "2026-11-17",
+       58.96
+      ],
+      [
+       "2026-11-18",
+       58.02
+      ],
+      [
+       "2026-11-19",
+       58.84
+      ],
+      [
+       "2026-11-20",
+       59.02
+      ]
+     ],
+     "tone": "amber",
+     "t0": 0.5,
+     "dur": 2.4,
+     "marks": [
+      {
+       "date": "2026-11-13",
+       "text": "$61.06 · FRI 13 NOV",
+       "tone": "white",
+       "dy": 64,
+       "dx": 150
+      },
+      {
+       "date": "2026-11-20",
+       "text": "$59.02",
+       "tone": "amber",
+       "dy": -62,
+       "dx": 0
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (BNO closes to 20 Nov), Reuters, CappNotes"
+  },
+  {
+   "dur": 6.0,
+   "tag": "Why",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "REUTERS: GULF EXPORTS\n[STAYED STRONG]",
+   "sub": "Analysts also blamed the stock selloff for weaker demand hopes.",
+   "map": {
+    "bbox": [
+     30,
+     8,
+     64,
+     36
+    ],
+    "bbox_to": [
+     36,
+     12,
+     60,
+     32
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    800
+   ],
+   "panel": {
+    "y": 850,
+    "t": 0.7,
+    "list": [
+     {
+      "kicker": "BNP Paribas · via Reuters",
+      "text": "\"Relatively strong export flows out of the Middle East\" this week.",
+      "tone": "amber",
+      "size": 40,
+      "t": 1.0
+     },
+     {
+      "kicker": "Saxo · via Reuters",
+      "text": "The stock selloff and risk-off mood are weighing on prices.",
+      "tone": "amber",
+      "size": 40,
+      "t": 2.6
+     },
+     {
+      "kicker": "Oil's week · via Reuters",
+      "text": "A third weekly decline in a row.",
+      "tone": "amber",
+      "size": 40,
+      "t": 4.0
+     }
+    ]
+   },
+   "src": "Sources: Reuters (20 Nov, via RTE and Euronext)"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "MINE CLAIMS IN HORMUZ:\n[ALMOST DAILY]",
+   "sub": "Iran's Guards say 30+ ships hit mines this month. Analysts told The National they see almost no sign of mine damage.",
+   "map": {
+    "bbox": [
+     47,
+     20.5,
+     63,
+     31.5
+    ],
+    "bbox_to": [
+     49.5,
+     22,
+     61,
+     30
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 54.6,
+     "lat": 29.3,
+     "text": "Iran"
+    },
+    {
+     "lon": 57.6,
+     "lat": 24.0,
+     "text": "Oman"
+    },
+    {
+     "lon": 51.2,
+     "lat": 24.2,
+     "text": "Saudi Arabia"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 56.4,
+     "lat": 26.4,
+     "r": 64,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pins": [
+    {
+     "lon": 56.4,
+     "lat": 26.4,
+     "text": "Strait of Hormuz",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": 100,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 3.0,
+    "text": "UOB analysts, via Reuters: tanker incidents run\nabout one a day and add a risk premium"
+   },
+   "src": "Sources: The National (21 Nov), Reuters, Iran International"
+  },
+  {
+   "dur": 5.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEXT: OPEC+ MEETS\n[NOVEMBER 29]",
+   "sub": "Ministers will decide output policy for 2027.",
+   "map": {
+    "bbox": [
+     28,
+     8,
+     66,
+     40
+    ],
+    "bbox_to": [
+     31,
+     10,
+     63,
+     37
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 44.5,
+     "lat": 23.5,
+     "text": "Saudi Arabia"
+    },
+    {
+     "lon": 54.5,
+     "lat": 32.3,
+     "text": "Iran"
+    },
+    {
+     "lon": 43.5,
+     "lat": 33.2,
+     "text": "Iraq"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1330,
+    "tone": "amber",
+    "t": 2.2,
+    "text": "Brent crude settled at $92.57 on Friday,\nits third weekly loss in a row"
+   },
+   "src": "Sources: Reuters, FinanceFeeds, CappNotes"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "FOR OIL:\n[RISK] OR [NOISE]?",
+   "sub": "Do the attacks change the price of oil, or not? Comment one word.",
+   "map": {
+    "bbox": [
+     29,
+     7,
+     64,
+     37
+    ],
+    "bbox_to": [
+     31,
+     9,
+     61,
+     35
+    ],
+    "tint": {}
+   },
+   "rings": [
+    {
+     "lon": 39.19,
+     "lat": 21.49,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.3
+    },
+    {
+     "lon": 56.4,
+     "lat": 26.4,
+     "r": 40,
+     "tone": "amber",
+     "t": 0.6
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 20 Nov 2026"
+  }
+ ]
+}

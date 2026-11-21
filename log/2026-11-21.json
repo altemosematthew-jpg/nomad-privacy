@@ -1,0 +1,146 @@
+{
+ "date": "2026-11-21",
+ "built": "2026-11-21 05:36-06:15 CT (scheduled run, started 05:35 CT; first run on the task prompt rewritten on 20 Nov)",
+ "plan": "Reels only, from the task prompt of 20 Nov 2026: finance Reel 09:40 CT (short format, 3-5 stocks), geopolitics Reel 11:40 CT. RUNBOOK.md was brought into line in commit 9784242.",
+ "budget": {
+  "used_before": 13,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "geo"
+   ],
+   "default": "geo",
+   "remaining": 7,
+   "weekdays_left": 5,
+   "why": "spare posts (7 left for 5 trading days): one geopolitics Reel"
+  },
+  "decision": "Both Reels, as the task prompt asks ('create exactly these two Reels'; 'where they conflict, this prompt wins'). budget.py on its own would have allowed one geopolitics Reel today. Two could be spent without taking a post from any trading day: 5 are left for the 5 trading days to 30 Nov (23, 24, 25, 27, 30; the 26th is a market holiday).",
+  "used_after": 15,
+  "left_this_month": 5,
+  "open_question_for_owner": "The prompt asks for two Reels every day; the Free plan allows 20 posts a month. At two a day the last post goes out on Tuesday 24 Nov (22 Nov: 3 left, 23 Nov: 1 left) and nothing can go out from then to 30 Nov. Rationing as budget.py does would keep one Reel on every trading day. Asked in the report; RUNBOOK.md 'Posting budget' records it."
+ },
+ "finance": {
+  "type": "finance",
+  "edition": "daily",
+  "format": "short (5 stocks)",
+  "session_date": "2026-11-20",
+  "title": "Ten on the Tape | Nvidia fell 14% in one day",
+  "hook": "$NVDA −14.0% · REUTERS: SEC IS EXAMINING [ITS ACCOUNTING]",
+  "hook_sub": "Reuters notes many inquiries end with no action.",
+  "tickers": [
+   [
+    "NVDA",
+    -14.01
+   ],
+   [
+    "MU",
+    -13.89
+   ],
+   [
+    "INTU",
+    -12.77
+   ],
+   [
+    "GAP",
+    11.44
+   ],
+   [
+    "GPN",
+    9.95
+   ]
+  ],
+  "headlines": {
+   "NVDA": "Reuters: SEC accounting inquiry",
+   "MU": "Chip stocks sank with Nvidia",
+   "INTU": "Cut its Credit Karma forecast",
+   "GAP": "Profit beat estimates",
+   "GPN": "Top holder weighs a takeover"
+  },
+  "facts_on_screen": {
+   "NVDA": "2.4x normal volume, hit a 52-week low",
+   "MU": "1.8x normal volume, -53% from 52-week high",
+   "INTU": "3.1x normal volume, -60% from 52-week high",
+   "GAP": "3.7x normal volume, -29% from 52-week high",
+   "GPN": "2.3x normal volume, -11% from 52-week high"
+  },
+  "indices": "S&P 500 -3.7% (6,910.39, seventh straight loss) · Nasdaq -5.3% (22,617.73) · Dow -1.9% (48,147.33)",
+  "question": "Which one are you watching? Comment the ticker.",
+  "first_comment": "Which one are you watching? Comment the ticker.",
+  "seconds": 34.0,
+  "metricool_id": 436616370,
+  "uuid": "-5917557616765156983",
+  "scheduled_for": "2026-11-21T09:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-5917557616765156983",
+  "media": "gilded-ticker-media-2026-11/2026-11-21/finance/reel-1eb98f79da.mp4 (12.1 MB), cover-a10ef79e10.jpg (media commit d196425)",
+  "spec": "specs/2026-11-21-tape.json",
+  "caption": "specs/2026-11-21-finance-caption.txt"
+ },
+ "reel": {
+  "type": "geo",
+  "title": "3 missiles at Riyadh, a threat to Saudi ports | Why oil still fell",
+  "hook": "3 MISSILES AT RIYADH. HOUTHIS THREATEN [SAUDI PORTS]",
+  "topic": "Saudi-Houthi escalation of 19-21 Nov and what it means for oil. Thursday: a Houthi attack damaged the Public Investment Fund tower in Riyadh (Saudi statement via Al Jazeera/Reuters). Friday: the Saudi-led coalition warned civilians away from Yemen's Hodeidah port, then said it destroyed 'operational capabilities at the port that were used in smuggling operations and the transport of weapons and ballistic missiles' (AFP, Reuters); Yemen's information minister said the port 'remains fully operational' (Reuters). Houthi spokesman Yahya Saree: 'Jeddah port and all ports of the Saudi enemy on the Red Sea coast will be a target' (via Middle East Eye), workers should 'evacuate them immediately and stay away', shipping companies should pull their ships out, airlines should avoid Saudi airspace (via Reuters). Early Saturday: the coalition said it intercepted and destroyed three ballistic missiles fired towards Riyadh (Reuters, AFP, Arab News); the Houthis said they were striking targets across Saudi Arabia. Why it matters for oil: Saudi Arabia's 1,200 km East-West pipeline ends at Yanbu on the Red Sea and has a maximum capacity of about 7 million barrels a day (Al Jazeera, 17 Sep; OilPrice.com). The market: oil fell for a third week; Reuters put it down to strong Middle East export flows (BNP Paribas's Aldo Spanjer) and the stock selloff (Saxo). The catch: Iran's Guards claim 30+ ships hit mines this month, announced 'almost daily since mid-October'; analysts told The National they see almost no evidence of mine damage; UOB (via Reuters) counts roughly one tanker incident a day in November and says it adds a risk premium. Next: OPEC+ ministers meet on 29 Nov to decide 2027 output policy.",
+  "market_scene": "BNO (Brent oil fund) closes: 61.06 on Fri 13 Nov -> 59.02 on Fri 20 Nov = -3.3% on the week; 58.84 on Thu 19 Nov -> 59.02 = +0.3% on Friday. Third weekly drop in a row (71.39 on 30 Oct, 62.22 on 6 Nov, 61.06, 59.02). Brent futures settled at $92.57 on Friday, +0.64%, third weekly loss (CappNotes; FinanceFeeds citing EnergyNow).",
+  "question": "RISK or NOISE?",
+  "first_comment": "RISK or NOISE? One word.",
+  "seconds": 50.0,
+  "scenes": 9,
+  "metricool_id": 436616572,
+  "uuid": "747274680184359258",
+  "scheduled_for": "2026-11-21T11:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=747274680184359258",
+  "media": "gilded-ticker-media-2026-11/2026-11-21/reel/reel-e635d2e0ce.mp4 (34.9 MB), cover-0c0de994b5.jpg (media commit d196425)",
+  "spec": "specs/2026-11-21-reel.json",
+  "caption": "specs/2026-11-21-reel-caption.txt"
+ },
+ "skipped": [
+  "Anthropic (ANT, -8.5% on its first full trading day, per CappNotes): left out; the RUNBOOK says not to feature Anthropic-related stories just because they exist.",
+  "NBIS (-16.1%), SNDK (-16.0%), ARM (-14.1%), AMD (-13.2%), AVGO (-12.2%), CRWV (-12.0%): the same chip and AI selloff as Micron; one scene for it. AMD was also on the 19 Nov tape. SNDK's quote shows a split on the day (previous close 755.16, adjusted 94.395).",
+  "KEYS (-7.1%, supply constraints), BJ (-5.4%), BILL (-4.1%, $63.25 cash buyout below the last close), ROST (-2.9%), UNH (+2.8%, TD Cowen upgrade): smaller moves than the five chosen.",
+  "California attorney general's subpoena to Nvidia (Motley Fool, Yahoo/TIKR): left out. It concerns a named person's conduct, and the RUNBOOK keeps such stories to what moves the market.",
+  "'Nvidia lost nearly $500 billion in a day' (Motley Fool: about $491 billion): one source, left out.",
+  "Shipments through Hormuz: Reuters says crude shipments 'have returned to roughly pre-war levels'; Lloyd's List Intelligence via The National says ship crossings are '80 per cent down on prewar levels'. The two do not agree, so neither is in the Reel.",
+  "Casualty claims: the Houthis say coalition strikes killed 41 people in 24 hours; Yemen's Saudi-backed forces say 193 Houthi fighters were killed or wounded; AFP calls the figures impossible to verify independently. Left out.",
+  "Houthi claim of 'accurate and direct' hits on the Al-Shuqaiq power station and Jazan port, against the coalition's account of two missiles intercepted over Jazan: left out.",
+  "How much oil the East-West pipeline carries today: nothing read this run gives a current figure (the 9 Nov attack and September outage are in older reports), so the Reel states capacity only.",
+  "Russia's strike on Ukraine (400+ drones, 110+ missiles, per CappNotes) and Taiwan's record 17.5% weekly loss: considered as topics; the Saudi port threat is the newer story with a direct oil angle."
+ ],
+ "sources": [
+  "CappNotes, Closing Look, Friday 20 November 2026 (read in full): index closes, all stock moves, commodities",
+  "Motley Fool, 'Nvidia Stock Plunge Wipes Out Nearly $500 Billion in One Day as SEC Reportedly Probes Its Accounting' (Jonathan Ponciano, 20 Nov 4:07 PM ET) and 'Here's Why Nvidia Stock Crashed on Friday' (Joe Tenebruso, 20 Nov 8:25 PM ET), both relaying Reuters",
+  "Yahoo Finance / TIKR, 'Nvidia Sinks 7% on New Probes...' (20 Nov, intraday)",
+  "Seeking Alpha news, 'Intuit meets FQ1 earnings estimates, Credit Karma hits guidance, Mailchimp sale disclosed' (19 Nov 4:04 PM ET); TradingKey, 'Intuit Slides Toward $279.66...' (20 Nov)",
+  "Gap Inc. press release, 19 Nov 2026 (SEC 8-K exhibit 99.1)",
+  "Reuters via AOL, 'GTCR explores potential takeover of payments firm Global Payments' (20 Nov; Milana Vinn, Pritam Biswas)",
+  "Reuters via RTE and Euronext, 'Oil prices set for third straight weekly decline on strong Middle East export flows' (20 Nov; Anna Hirtenstein)",
+  "FinanceFeeds, 'Brent Crude Price $92.57: 8 Days to OPEC+ 2027 Quota Call' (21 Nov; cites EnergyNow, AP, OPEC)",
+  "Reuters via gCaptain, Cyprus Mail and Baird Maritime (20 Nov; Yasmine Ghania, Eman Abouhassira); Reuters via ThePrint (21 Nov)",
+  "AFP via Yahoo News, 'Yemen's Houthis launch strikes after Saudi coalition's special operation' (21 Nov); Dawn (agencies, 21 Nov)",
+  "Al Jazeera, 'Saudi-led coalition intercepts three Houthi missiles headed for Riyadh' (21 Nov, with AFP) and 'Saudi Arabia says Houthi attack damaged Riyadh tower' (19 Nov, with Reuters)",
+  "Arab News, 'Coalition air defenses intercept 3 Houthi ballistic missiles targeting Riyadh' (21 Nov)",
+  "The National, 'Saudi-led coalition tells civilians to leave Yemen's Hodeidah port ahead of strikes' (20 Nov) and 'Iran exaggerates Hormuz sea mine threat but uses fear to tighten grip' (21 Nov)",
+  "Middle East Eye live blog, 'Evacuate immediately: Houthis threaten to target Saudi Red Sea ports' (20 Nov 11:53 GMT)",
+  "Iran International (19 Nov), Tasnim (20 Nov), AzerNews (19 Nov): the Iranian statements on mines",
+  "Al Jazeera, 'From Yanbu to Sohar: Tracking Saudi Arabia's alternative oil routes' (17 Sep 2026); OilPrice.com, 'The Red Sea Is Becoming Saudi Arabia's Biggest Oil Bottleneck' (24 Jul 2026)",
+  "Robinhood: get_equity_historicals (daily bars to 2026-11-20 for NVDA, MU, INTU, GAP, GPN, BNO and ten more checked), get_equity_quotes (official closes dated 2026-11-19), get_equity_fundamentals (market_date 2026-11-20)",
+  "Could not open (nothing from them was used): CNBC's oil story and Gap earnings story, EnergyNow, Anadolu, nacionale, Invezz, GuruFocus, stockinvest.us"
+ ],
+ "notes": [
+  "Task prompt against RUNBOOK. The prompt (20 Nov) says it wins where the two differ. It differed on the times (09:40 and 11:40, not 07:30 and 10:00), the finance format (3-5 stocks, not ten) and the number of posts (both Reels every day, not what budget.py allows). This run followed the prompt on all three and rewrote the RUNBOOK to match. pipeline/tape_reel.py already existed (the ten-stock Reel of 18 Nov), so the short format was added to it instead of writing a new file.",
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date), add_repo (the repository was already attached; the clone and all three pushes worked) and a direct WebFetch (pages were read through the session's fetch helper, which returns a report of each page).",
+  "Friday's closing prices on a Saturday. get_equity_quotes still returned close.date 2026-11-19 for every symbol, because the quote does not roll over until Sunday evening. The closes used are the 20 Nov daily bars from get_equity_historicals. Checks made: no bar interpolated; each symbol's 19 Nov bar equals its official close from get_equity_quotes; the 20 Nov moves of all thirteen symbols compared match CappNotes' printed moves to two decimals (NVDA -14.01, MU -13.89, INTU -12.77, GAP +11.44, GPN +9.95, AMD -13.25, AVGO -12.19, KEYS -7.07, BJ -5.35, UNH +2.84, BILL -4.12, SPY -3.64, QQQ -5.67); Motley Fool prints NVDA at $125.53 'as of 4:00 PM ET'. last_trade_price was not used (SPY's was 690.91 against a close of 689.81).",
+  "BNO's Friday close (59.02) is also its daily bar; it equals the last regular trade and no outside source prints BNO, so it has one source. Brent futures rose 0.64% on Friday by settlement; the fund's +0.3% is what the chart shows and what the Reel says.",
+  "Nvidia: nothing from Reuters was read directly. Two outlets (Motley Fool, CappNotes) relay the same report: SEC enforcement staff 'are examining potential accounting issues', citing two people briefed on the matter; Reuters could not determine which practices are under review; the SEC declined to comment. The Reel and caption carry Reuters' own caveat that many inquiries end with no action.",
+  "Gap: the $0.78 estimate is CappNotes' alone; the $0.82 adjusted profit, the 2% sales rise and the lowered full-year outlook are in Gap's release. The card says only 'Profit beat estimates'.",
+  "Global Payments: Reuters says the shares 'closed the day 10% higher'; the computed move is +9.95% and the Reel shows +9.9%. The $50 billion figure is Bloomberg's, relayed by Reuters; GTCR's filing says no decision has been made.",
+  "Geopolitics hook: 'three missiles' is the coalition's count (Reuters, AFP, Arab News agree on it); witnesses for Reuters and AFP reported a projectile and explosions over Riyadh. The sub line says who gave the count.",
+  "The Houthi statement names Jeddah and 'all ports' on the Saudi Red Sea coast. It does not name Yanbu. The Reel says the pipeline ends 'on that coast' and shows Yanbu on the map without saying it was named.",
+  "The pipeline line on the map is approximate and is labelled so; its eastern pin sits at Abqaiq and is labelled 'Eastern oil fields', following Al Jazeera's wording.",
+  "Scene 7 rests on The National's reporting of the Iranian claims and of the analysts who doubt them (Washington Institute, FPRI, a former Royal Navy captain, Intertanko, RAND). Iran International, Tasnim and AzerNews carry the Iranian statements themselves.",
+  "The countries are not tinted in any scene, so neither side of the conflict is coloured differently.",
+  "isAiGenerated is false in both Metricool requests, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 15 (Free plan: 20). 5 left."
+ ]
+}
