@@ -70,6 +70,15 @@ def common_caption_checks(name, text):
         bad(f"{name}: {len(tags)} hashtags, the account uses exactly 5")
     if len(set(t.lower() for t in tags)) != len(tags):
         bad(f"{name}: repeated hashtag")
+    low = [t.lower() for t in tags]
+    if low and low[0] != "#thegildedticker":
+        bad(f"{name}: the first hashtag should be #thegildedticker")
+    broad = {"#stocks", "#stockmarket", "#investing", "#trading", "#finance", "#news", "#fyp", "#viral",
+             "#explore", "#reels", "#instagood", "#trending"}
+    if sum(t in broad for t in low) > 1:
+        bad(f"{name}: more than one broad hashtag ({', '.join(t for t in low if t in broad)}); use specific ones")
+    if any(t in {"#fyp", "#viral", "#explore", "#reels", "#instagood", "#trending"} for t in low):
+        bad(f"{name}: trending/unrelated hashtags hurt reach; use topic tags")
     if not text.rstrip().split("\n")[-1].strip().startswith("#"):
         bad(f"{name}: the hashtags should be the last line")
     for bad_word in ("PINNED COMMENT", "TODO", "TBD", "XXX", "lorem", "<", ">", "**", "__", "{", "}"):

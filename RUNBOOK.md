@@ -28,6 +28,20 @@ Why (Metricool's numbers, as the task prompt gives them): Reels reach 10–40x m
 (best Reel 909 views, carousels 9–22). The audience is most active 9 AM–noon Central, peak about 10 AM. The Reel
 with the lowest skip rate ("Russia's oil, hit from two sides") opened on a clear conflict with a number on screen.
 
+
+## Discovery: hashtags, keywords and on-screen text (owner's request, 22 Nov 2026)
+Instagram caps posts and Reels at 5 hashtags (caption and comments together) and ranks mostly on caption keywords,
+on-screen text and the video. So every caption follows these rules (`pipeline/check.py` enforces the starred ones):
+- *Exactly 5 hashtags, last line. The first is always `#thegildedticker`.
+- *At most one broad tag (#stocks, #stockmarket, #investing, #trading, #finance, #news). The others are specific:
+  the company or sector (#nvidia, #chipstocks, #oilprices), the country or theme (#saudiarabia, #tariffs), and a
+  niche community tag (#stockmarketnews, #marketnews, #geopoliticsnews, #macroeconomics).
+- Never trending or unrelated tags (#fyp, #viral, #explore, #reels): Instagram says they hurt reach.
+- *The caption's first line holds searchable words people type: the company name and ticker, and a plain topic
+  phrase ("stock market news", "oil prices", "Saudi Arabia"). Keep the hook; add the words to it.
+- The Reel's opening title card uses the same key words as the first line (Instagram reads on-screen text).
+- Do not delete and repost a Reel to change its tags: edit the caption in the Instagram app instead.
+
 ### Posting budget: an open question for the owner (put to him in the 21 Nov report)
 The prompt asks for both Reels every day ("create exactly these two Reels"). Metricool's **Free plan still allows
 20 scheduled posts a month**. The owner chose to stay on it on 18 Nov, and `pipeline/budget.py` was written then
@@ -205,7 +219,7 @@ Reel, so its reason has to be the best-sourced one.
   S&P 500 −1.9% · Nasdaq −2.5% · Dow −1.4%
   <Day D Month> closing prices. Sources: …, Robinhood. Not financial advice.
 
-  #stocks #stockmarket #investing #<topic> #<topic>      (exactly 5, last line)
+  #thegildedticker #stockmarketnews #<company or sector> #<company or theme> #<niche tag>   (exactly 5, last line; see "Discovery")
   ```
 
 ### 5. The geopolitics Reel
@@ -236,7 +250,7 @@ Reel, so its reason has to be the best-sourced one.
 
   Sources: …, Robinhood. Prices to <Day D Mon> close. Not financial advice.
 
-  #five #hashtags #only
+  #thegildedticker #geopolitics #<country or region> #<market: oil, tariffs, gold…> #<niche tag>   (see "Discovery")
   ```
   Under about 1,300 characters. First comment: the question again in one line ("CLOSED or MOVED? One word.").
 
