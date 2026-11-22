@@ -122,9 +122,15 @@ def spaced_w(d, txt, fnt, spacing=3):
     return sum(d.textlength(ch, font=fnt) + spacing for ch in txt) - spacing
 
 
+def week(spec):
+    """True for the Sunday and Monday editions, where the % move covers several sessions (move_bars > 1)."""
+    return spec.get("move_bars", 1) > 1
+
+
 def header(d, spec):
     f = font("Mono-SemiBold", 23)
-    spaced(d, MX, 166, f"TEN ON THE TAPE · {spec['session_short'].upper()} CLOSE", f, rgba(GOLD, 0.95), spacing=3)
+    txt = f"WEEK TO {spec['session_short'].upper()}" if week(spec) else f"{spec['session_short'].upper()} CLOSE"
+    spaced(d, MX, 166, f"TEN ON THE TAPE · {txt}", f, rgba(GOLD, 0.95), spacing=3)
 
 
 def ticker_tape(d, spec, T, current=None):
@@ -162,12 +168,14 @@ def fine_print(d, txt, y=1490, a=1.0):
 
 
 def facts(s, spec):
-    """Two facts for the stock scene, computed from the spec (the same sums as the carousel's stat row)."""
-    last = s["bars"][-1]
-    out = [f"{last[5] / s['avg_volume_30d']:.1f}× normal volume"]
-    if spec.get("move_bars", 1) == 1 and last[3] <= s["low_52w"] * 1.0005:
+    """Two facts for the stock scene, computed from the spec (the same sums as the carousel's stat row).
+    They cover the same sessions as the % move: one day in the daily edition, the whole week in the week edition
+    (average daily volume over those sessions; a 52-week low or high touched on any of them)."""
+    span = s["bars"][-spec.get("move_bars", 1):]
+    out = [f"{sum(b[5] for b in span) / len(span) / s['avg_volume_30d']:.1f}× normal volume"]
+    if min(b[3] for b in span) <= s["low_52w"] * 1.0005:
         out.append("hit a 52-week low")
-    elif spec.get("move_bars", 1) == 1 and last[2] >= s["high_52w"] * 0.9995:
+    elif max(b[2] for b in span) >= s["high_52w"] * 0.9995:
         out.append("hit a 52-week high")
     elif s["close"] >= s["high_52w"] * 0.995:
         out.append(f"{pct_text(tape.pct(s['close'], s['low_52w']), 0)} from 52-week low")
@@ -445,7 +453,8 @@ def outro(spec, t, cover=False):
     if spec.get("indices"):
         a2 = ease(ramp(t, 0.8, 0.35))
         yy = y + 170
-        d.text((MX, yy), f"THE WHOLE MARKET, {spec['session_day'].upper()}", font=font("Mono-SemiBold", 24), fill=rgba(GOLD, a2), anchor="lm")
+        when = spec.get("move_label", spec["session_day"]) if week(spec) else spec["session_day"]  # the spec's indices cover the same span
+        d.text((MX, yy), f"THE WHOLE MARKET, {when.upper()}", font=font("Mono-SemiBold", 24), fill=rgba(GOLD, a2), anchor="lm")
         yy += 60
         for ix in spec["indices"]:
             p = (ix["close"] / ix["prev_close"] - 1) * 100

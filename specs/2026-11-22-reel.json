@@ -1,0 +1,868 @@
+{
+ "title": "2 Russian missiles crashed in Poland | Mistake or message?",
+ "seed": "2026-11-22-poland-russian-missiles-nato",
+ "publish_date": "2026-11-22",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "FRI 20 NOV · POLAND",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "2 RUSSIAN MISSILES\nCRASHED [IN POLAND]",
+   "sub": "That is Warsaw's count, plus a jet-powered drone. No one was hurt.",
+   "map": {
+    "bbox": [
+     9,
+     42.5,
+     39,
+     59.5
+    ],
+    "bbox_to": [
+     17.2,
+     47.4,
+     28.6,
+     54.6
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 19.0,
+     "lat": 52.9,
+     "text": "Poland"
+    },
+    {
+     "lon": 26.6,
+     "lat": 49.3,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 26.9,
+     "lat": 53.5,
+     "text": "Belarus"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 22.55,
+     "lat": 50.36,
+     "tone": "red",
+     "t": 0.15
+    }
+   ],
+   "pins": [
+    {
+     "lon": 22.55,
+     "lat": 50.36,
+     "text": "3 crash sites",
+     "tone": "red",
+     "t": 0.15,
+     "dx": 0,
+     "dy": -84,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 21.01,
+     "lat": 52.23,
+     "text": "Warsaw",
+     "tone": "amber",
+     "t": 1.0,
+     "dx": 20,
+     "dy": -28
+    }
+   ],
+   "src": "Sources: AP, Poland's defence ministry via Al Jazeera"
+  },
+  {
+   "dur": 5.5,
+   "tag": "What happened",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "3 CRASH SITES IN\n[SOUTHEAST POLAND]",
+   "sub": "Prosecutors confirmed one Kh-101 cruise missile. The other two sites are still being examined.",
+   "map": {
+    "bbox": [
+     20.5,
+     49.3,
+     24.7,
+     51.35
+    ],
+    "bbox_to": [
+     21.0,
+     49.55,
+     24.3,
+     51.1
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 21.75,
+     "lat": 50.95,
+     "text": "Poland"
+    },
+    {
+     "lon": 23.9,
+     "lat": 49.95,
+     "text": "Ukraine"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 22.817,
+     "lat": 50.433,
+     "tone": "red",
+     "t": 0.3
+    },
+    {
+     "lon": 22.241,
+     "lat": 50.444,
+     "tone": "red",
+     "t": 0.9
+    },
+    {
+     "lon": 22.87,
+     "lat": 50.13,
+     "tone": "red",
+     "t": 1.5
+    }
+   ],
+   "pins": [
+    {
+     "lon": 22.817,
+     "lat": 50.433,
+     "text": "Nowy Lipowiec\nKh-101 missile",
+     "tone": "red",
+     "t": 0.3,
+     "dx": 0,
+     "dy": -74,
+     "anchor": "mm"
+    },
+    {
+     "lon": 22.241,
+     "lat": 50.444,
+     "text": "Rudnik nad Sanem\nsuspected missile",
+     "tone": "red",
+     "t": 0.9,
+     "dx": -22,
+     "dy": -12,
+     "anchor": "rm"
+    },
+    {
+     "lon": 22.87,
+     "lat": 50.13,
+     "text": "Mołodycz (approx.)\nsuspected jet drone",
+     "tone": "red",
+     "t": 1.5,
+     "dx": 0,
+     "dy": 46,
+     "anchor": "mm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "Polish prosecutors, via dpa: the missile was\n\"manufactured in the fourth quarter of this year\""
+   },
+   "src": "Sources: dpa, AP, Kyiv Post, Global Security Centre"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The timing",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "35 KM FROM AN\n[11-NATION DRILL]",
+   "sub": "About 2,800 troops, led by Britain and France, were training for a possible postwar mission in Ukraine.",
+   "map": {
+    "bbox": [
+     20.75,
+     49.8,
+     23.6,
+     51.05
+    ],
+    "bbox_to": [
+     21.1,
+     49.97,
+     23.2,
+     50.9
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 22.75,
+     "lat": 50.78,
+     "text": "Poland"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 21.767,
+     "lat": 50.417,
+     "r": 74,
+     "tone": "amber",
+     "t": 0.3,
+     "text": "Koalicja 26.2 drill",
+     "text_dy": 112
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       21.767,
+       50.417
+      ],
+      [
+       22.241,
+       50.444
+      ]
+     ],
+     "tone": "white",
+     "t0": 1.0,
+     "dur": 0.9,
+     "dash": true,
+     "width": 5
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 22.241,
+     "lat": 50.444,
+     "tone": "red",
+     "t": 1.7
+    }
+   ],
+   "pins": [
+    {
+     "lon": 21.767,
+     "lat": 50.417,
+     "text": "Nowa Dęba",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 0,
+     "dy": -104,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 22.241,
+     "lat": 50.444,
+     "text": "Rudnik nad Sanem",
+     "tone": "red",
+     "t": 1.7,
+     "dx": 24,
+     "dy": 38
+    }
+   ],
+   "callout": {
+    "lon": 22.0,
+    "lat": 50.43,
+    "dx": 14,
+    "dy": -150,
+    "tone": "amber",
+    "t": 2.2,
+    "text": "About 35 km (AP)"
+   },
+   "src": "Sources: AP, dpa, Al Jazeera"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Warsaw's view",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "TUSK: AN “INTENTIONAL\n[PROVOCATION]”",
+   "sub": "Moscow had not commented on the crashes by Saturday. It said its strikes that night hit military sites in Ukraine.",
+   "map": {
+    "bbox": [
+     11,
+     43.5,
+     43,
+     60.5
+    ],
+    "bbox_to": [
+     14,
+     45.2,
+     40.5,
+     59
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 17.6,
+     "lat": 51.2,
+     "text": "Poland"
+    },
+    {
+     "lon": 31.5,
+     "lat": 48.6,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 36.5,
+     "lat": 53.0,
+     "text": "Russia"
+    },
+    {
+     "lon": 27.9,
+     "lat": 53.6,
+     "text": "Belarus"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 22.55,
+     "lat": 50.36,
+     "tone": "red",
+     "t": 0.2
+    }
+   ],
+   "pins": [
+    {
+     "lon": 21.01,
+     "lat": 52.23,
+     "text": "Warsaw",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "grey",
+     "t": 1.3,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "grey",
+     "t": 1.8,
+     "dx": 18,
+     "dy": 26
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "Zelenskyy: Russia fired 400+ drones and\n110+ missiles at Ukraine that night (AP)"
+   },
+   "src": "Sources: AP, Global Security Centre (21 Nov, 12:00 CET)"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Before the crash",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "TRUMP, HOURS EARLIER:\n[“BY MISTAKE”]",
+   "sub": "He told Fox News that Putin's drones and missiles had been landing in Poland by mistake.",
+   "map": {
+    "bbox": [
+     -104,
+     16,
+     50,
+     68
+    ],
+    "bbox_to": [
+     -96,
+     20,
+     44,
+     66
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "text": "Washington",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 21.01,
+     "lat": 52.23,
+     "text": "Warsaw",
+     "tone": "amber",
+     "t": 1.1,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "red",
+    "t": 2.6,
+    "text": "Tusk, after the crash: \"This doesn't look\nlike an accident.\" (via Newsweek)"
+   },
+   "src": "Sources: Newsweek, UPI, Al Jazeera, HNGN"
+  },
+  {
+   "dur": 5.0,
+   "tag": "NATO",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NATO'S CHIEF IN WARSAW:\n[“EVERY INCH”]",
+   "sub": "Mark Rutte said on Saturday that NATO will defend all of Poland's territory.",
+   "map": {
+    "bbox": [
+     8,
+     45.5,
+     34,
+     59.5
+    ],
+    "bbox_to": [
+     11.5,
+     47,
+     31.5,
+     57.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 18.4,
+     "lat": 53.3,
+     "text": "Poland"
+    },
+    {
+     "lon": 29.5,
+     "lat": 49.2,
+     "text": "Ukraine"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 22.55,
+     "lat": 50.36,
+     "r": 46,
+     "tone": "red",
+     "t": 0.4
+    }
+   ],
+   "pins": [
+    {
+     "lon": 21.01,
+     "lat": 52.23,
+     "text": "Warsaw",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.4,
+    "text": "Poland asked allies for AWACS radar planes\nand F-35 jets, RBC-Ukraine reports"
+   },
+   "src": "Sources: dpa, Kyiv Post, RBC-Ukraine"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "POLAND'S STOCK FUND:\n[−4.9%] ON FRIDAY",
+   "sub": "Warsaw's WIG20 index lost 4.5%. Polish stocks were Europe's worst performers that day.",
+   "map": {
+    "bbox": [
+     12.5,
+     47.6,
+     26,
+     56
+    ],
+    "bbox_to": [
+     13.3,
+     48.3,
+     25.2,
+     55.4
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    1480
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Poland fund (EPOL) · close: 19 Nov $41.89, 20 Nov $39.83",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       43.25
+      ],
+      [
+       "2026-10-02",
+       43.03
+      ],
+      [
+       "2026-10-05",
+       43.51
+      ],
+      [
+       "2026-10-06",
+       44.5
+      ],
+      [
+       "2026-10-07",
+       43.6
+      ],
+      [
+       "2026-10-08",
+       43.44
+      ],
+      [
+       "2026-10-09",
+       43.82
+      ],
+      [
+       "2026-10-12",
+       43.92
+      ],
+      [
+       "2026-10-13",
+       44.48
+      ],
+      [
+       "2026-10-14",
+       44.01
+      ],
+      [
+       "2026-10-15",
+       44.45
+      ],
+      [
+       "2026-10-16",
+       44.56
+      ],
+      [
+       "2026-10-19",
+       44.09
+      ],
+      [
+       "2026-10-20",
+       44.21
+      ],
+      [
+       "2026-10-21",
+       45.08
+      ],
+      [
+       "2026-10-22",
+       44.12
+      ],
+      [
+       "2026-10-23",
+       43.5
+      ],
+      [
+       "2026-10-26",
+       43.59
+      ],
+      [
+       "2026-10-27",
+       44.14
+      ],
+      [
+       "2026-10-28",
+       44.22
+      ],
+      [
+       "2026-10-29",
+       44.72
+      ],
+      [
+       "2026-10-30",
+       43.4
+      ],
+      [
+       "2026-11-02",
+       42.69
+      ],
+      [
+       "2026-11-03",
+       42.67
+      ],
+      [
+       "2026-11-04",
+       44.04
+      ],
+      [
+       "2026-11-05",
+       43.4
+      ],
+      [
+       "2026-11-06",
+       42.79
+      ],
+      [
+       "2026-11-09",
+       43.79
+      ],
+      [
+       "2026-11-10",
+       43.75
+      ],
+      [
+       "2026-11-11",
+       43.62
+      ],
+      [
+       "2026-11-12",
+       43.94
+      ],
+      [
+       "2026-11-13",
+       44.13
+      ],
+      [
+       "2026-11-16",
+       43.74
+      ],
+      [
+       "2026-11-17",
+       43.17
+      ],
+      [
+       "2026-11-18",
+       42.72
+      ],
+      [
+       "2026-11-19",
+       41.89
+      ],
+      [
+       "2026-11-20",
+       39.83
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 2.4,
+     "marks": [
+      {
+       "date": "2026-11-19",
+       "text": "$41.89 THU",
+       "tone": "white",
+       "dy": -150,
+       "dx": -120
+      },
+      {
+       "date": "2026-11-20",
+       "text": "$39.83 FRI",
+       "tone": "red",
+       "dy": -16,
+       "dx": -190
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (EPOL closes to 20 Nov), ad-hoc-news, Briefs"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "BUT MARKETS FELL\n[WORLDWIDE] THAT DAY",
+   "sub": "A Warsaw fund manager called the missiles an “additional local factor” in a global selloff.",
+   "map": {
+    "bbox": [
+     -100,
+     18,
+     50,
+     68
+    ],
+    "bbox_to": [
+     -92,
+     22,
+     44,
+     66
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    830
+   ],
+   "panel": {
+    "y": 850,
+    "t": 0.7,
+    "title": "Friday 20 November, close to close",
+    "bars": [
+     {
+      "label": "EPOL · Poland fund, New York",
+      "value": "−4.9%",
+      "frac": 1.0,
+      "tone": "red"
+     },
+     {
+      "label": "WIG20 · Warsaw",
+      "value": "−4.5%",
+      "frac": 0.91,
+      "tone": "red"
+     },
+     {
+      "label": "S&P 500 · United States",
+      "value": "−3.7%",
+      "frac": 0.75,
+      "tone": "amber"
+     }
+    ],
+    "note": "WIG20 is still up about 28% this year (Briefs)",
+    "note_tone": "amber"
+   },
+   "src": "Sources: Briefs (Andrzej Bieniek, Esaliens TFI), ad-hoc-news, Robinhood"
+  },
+  {
+   "dur": 5.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "MONDAY: NATO'S COUNCIL\n[MEETS IN BRUSSELS]",
+   "sub": "The session is dedicated to the breach, Poland's NATO mission says.",
+   "map": {
+    "bbox": [
+     -7,
+     43.5,
+     32,
+     59.5
+    ],
+    "bbox_to": [
+     -3,
+     45,
+     29,
+     58
+    ],
+    "tint": {}
+   },
+   "routes": [
+    {
+     "points": [
+      [
+       21.01,
+       52.23
+      ],
+      [
+       4.35,
+       50.85
+      ]
+     ],
+     "tone": "gold",
+     "t0": 1.0,
+     "dur": 1.4,
+     "arc": 0.2,
+     "flow": true,
+     "width": 7
+    }
+   ],
+   "pins": [
+    {
+     "lon": 21.01,
+     "lat": 52.23,
+     "text": "Warsaw",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": 0,
+     "dy": 40,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 4.35,
+     "lat": 50.85,
+     "text": "Brussels",
+     "tone": "amber",
+     "t": 2.2,
+     "dx": 0,
+     "dy": 40,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "Poland's defence minister says Warsaw expects\n\"strong support\" from allies (Kyiv Post)"
+   },
+   "src": "Sources: Kyiv Post (Polskie Radio), RBC-Ukraine"
+  },
+  {
+   "dur": 5.0,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "IN POLAND:\n[MISTAKE] OR [MESSAGE]?",
+   "sub": "A stray from the war next door, or a signal to NATO? Comment one word.",
+   "map": {
+    "bbox": [
+     10,
+     43,
+     38,
+     59
+    ],
+    "bbox_to": [
+     13,
+     45,
+     34,
+     57
+    ],
+    "tint": {}
+   },
+   "rings": [
+    {
+     "lon": 22.55,
+     "lat": 50.36,
+     "r": 44,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 20 Nov 2026"
+  }
+ ]
+}

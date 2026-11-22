@@ -120,9 +120,19 @@ with `close.date` on SPY.
 | D is… | Edition | Spec fields |
 |---|---|---|
 | Tue–Sat (S was yesterday) | **Daily**: the 3–5 stocks with the biggest news-driven moves on S | defaults |
-| Sunday | **Week**: the 3–5 biggest news-driven movers of the week | `move_label: "This week"`, `move_bars`: sessions that week (usually 5) |
+| Sunday | **Week**: the 3–5 biggest news-driven movers of the week (see "Week edition" below) | `move_label: "This week"`, `move_bars`: sessions that week (usually 5) |
 | Monday | **Watch**: 3–5 stocks with earnings or big events this week (`get_earnings_calendar`) | `move_label: "Last week"`, `move_bars`: 5 |
 | Day after a market holiday | Treat like Monday (Watch) or Sunday (Week), whichever is truer. Never repeat the last tape's stocks. | |
+
+**Week edition (first made 22 Nov 2026; `specs/2026-11-22-tape.json` is the example).**
+- Candidates: every stock from the week's daily tapes, the week's earnings (`get_earnings_calendar` with
+  `filter="high_market_cap"`) and the big index names. One `get_equity_historicals` call (up to 75 symbols, about
+  two weeks of daily bars) gives every Friday-to-Friday move at once. Pick one stock per story.
+- With `move_bars` above 1, `tape_reel.py` writes "WEEK TO FRIDAY 20 NOV" in the header, measures volume as the
+  week's average against normal, shows "hit a 52-week low" if any session that week touched it, and labels the
+  last card "THE WHOLE MARKET, THIS WEEK". Put the week's index closes in `indices` (previous Friday as `prev_close`).
+- The single biggest weekly move opens the Reel, so every stock still needs a reason read that morning, and the
+  caption says "Moves are for the week, up to Friday D Month closing prices."
 
 ### 2. Find the three to five (daily edition)
 Steps 2–4 were written for ten stocks. The method is the same for three to five: collect many candidates, check
@@ -155,9 +165,14 @@ Reel, so its reason has to be the best-sourced one.
   the bar is not `interpolated` and has volume; the same symbol's Thursday bar equals `close.price` from
   `get_equity_quotes`; and the move you compute matches a published closing move (CappNotes prints two decimals).
   On 21 Nov all thirteen symbols checked this way matched to the cent. `last_trade_price` did not (SPY was $1.10
-  away from its close), so never use it.
-- Index moves for the outro and caption: CappNotes and Motley Fool print the S&P 500, Nasdaq and Dow closes
-  and point changes (`get_index_quotes` only has live values). Put them in the spec as
+  away from its close), so never use it. Where a published Friday close can be found (22 Nov): the quote box on any
+  Motley Fool article about the stock ("As of 4:00 PM ET 11/20/26"), `fool.com/quote/…` ("Last close" with its
+  date), Yahoo Finance's chart page ("At close: November 20 at 4:00:02 PM EST") and news stories that print the
+  close. Google Finance, Yahoo's main quote page and Finviz came back stale or blocked; check the date label.
+- Index moves for the outro and caption: `get_index_historicals` gives official daily closes for the S&P 500, the
+  Nasdaq 100 and the Dow (take the instrument ids from `get_index_quotes(symbols=["SPX","NDX","DJX"])`; DJX is the
+  Dow divided by 100). The Nasdaq Composite is not on Robinhood: use the Nasdaq 100 and call it that, or take the
+  Composite from CappNotes or Motley Fool. Put them in the spec as
   `"indices": [{"name": "S&P 500", "close": …, "prev_close": …}, …]` so the checker can compare.
 
 ### 4. Write and render the finance Reel
@@ -291,6 +306,9 @@ People scroll past anything that reads machine-written. The checker (`check.py`)
 - In `tape_reel.py`'s first and last scenes text is drawn straight onto the frame, and there Pillow ignores a
   text colour's transparency: text is either absent or fully solid, never half faded (boxes and shapes do fade).
   That is why scene 1 can show everything in the first frame. Do not rely on a text fade in those two scenes.
+- Reading pages: the session's fetch helper only opens links that a web search returned in this session. A link
+  it finds on a page (or a redirect) is refused, and asking again through a new helper is refused too, so search
+  for the page instead. Search results mix years: check every page's date before using it.
 - `get_equity_historicals` saves its answer to a file only when it is large. Ask for all the day's symbols in one
   call from about 1 April (about 160 bars each) and it lands in the session's `tool-results/` folder, ready for
   `mkspec.py`, which keeps the last 70 bars.
