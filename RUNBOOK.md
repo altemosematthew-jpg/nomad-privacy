@@ -51,10 +51,15 @@ does not mention that limit.
   two could be spent without taking a post away from any trading day. That left 5 for 5 trading days.
 - From 22 Nov the two instructions pull apart: two a day uses the last posts on Tuesday 24 Nov, and nothing can
   go out from then to 30 Nov. In a full month, two a day lasts 10 days.
+- **22 and 23 Nov:** both Reels went out on each day, because the owner had not answered. **19 of 20 are used and
+  1 is left** for 24–30 Nov. On 24 Nov only one Reel can be scheduled, then nothing until 1 Dec unless he upgrades.
 - **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it. Count the
   month's posts in step 0 as before and put "N left this month; at two a day they run out on <date>" at the top
   of the report, every day. If Metricool refuses a post with a plan or limit error: no retry, no workaround,
-  report its exact message. When 20 are already used, build nothing and report that.
+  report its exact message. When 20 are already used, build nothing and report that. When only one is left,
+  build one Reel, not two (rule 10): the day's `default` from `budget.py`, or the other type if its story is
+  clearly bigger (the swap rule in step 0), and say in the report that the second was not built because the plan
+  has no post left for it.
 - **When he answers,** write his answer here, delete this section's other bullets, and if he chooses to ration,
   `budget.py` and the swap rule in step 0 decide again.
 
@@ -147,6 +152,18 @@ with `close.date` on SPY.
   last card "THE WHOLE MARKET, THIS WEEK". Put the week's index closes in `indices` (previous Friday as `prev_close`).
 - The single biggest weekly move opens the Reel, so every stock still needs a reason read that morning, and the
   caption says "Moves are for the week, up to Friday D Month closing prices."
+
+**Watch edition (first made in the short format on 23 Nov 2026; `specs/2026-11-23-tape.json` is the example).**
+- Candidates: `get_earnings_calendar(start_date=D, days=5, filter="high_market_cap")`, checked against a published
+  calendar (StockTitan's "Earnings Calendar for the Week of …" gives day, session and call time). One
+  `get_equity_historicals` call for about 20 of them gives every Friday-to-Friday move. Pick five names people know.
+- Each card's headline says when the company reports ("Reports Tuesday after the close"). It must fit one line
+  if it can: "Reports Wednesday before the open" wraps and leaves one word alone, "Reports Wednesday morning" fits.
+- The biggest of last week's five moves opens the Reel. Its hook gives the sourced reason for the fall and the
+  report day ("FELL WITH AI STOCKS.\n[EARNINGS ON TUESDAY]"); the sub gives one fact, such as the company's own forecast.
+- Analyst estimates differed widely between outlets on 23 Nov (and from Robinhood's), so keep them off the screen
+  unless two sources agree. The company's own guidance is safer.
+- The caption says "Moves are for last week, up to Friday D Month closing prices."
 
 ### 2. Find the three to five (daily edition)
 Steps 2–4 were written for ten stocks. The method is the same for three to five: collect many candidates, check

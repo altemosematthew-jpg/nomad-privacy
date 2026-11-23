@@ -1,0 +1,733 @@
+{
+ "title": "Taiwan vs short sellers after a 17.5% drop | Floor or delay?",
+ "seed": "2026-11-23-taiwan-short-selling-asia-rescue",
+ "publish_date": "2026-11-23",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "MON 23 NOV · TAIPEI",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "TAIWAN VS [SHORT SELLERS]\nAFTER A 17.5% DROP",
+   "sub": "Its stock index had the worst week in 35 years. New short-selling limits began on Monday.",
+   "map": {
+    "bbox": [
+     100,
+     8,
+     146,
+     46
+    ],
+    "bbox_to": [
+     117.4,
+     20.9,
+     125.6,
+     26.7
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 123.9,
+     "lat": 23.0,
+     "text": "Taiwan"
+    },
+    {
+     "lon": 118.2,
+     "lat": 26.2,
+     "text": "China"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "red",
+     "t": 0.15
+    }
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "text": "Taipei",
+     "tone": "red",
+     "t": 0.15,
+     "dx": 0,
+     "dy": -84,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "src": "Sources: Bloomberg via The Star, CNA via Seoul Economic Daily"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The rule",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NO SHORTING BELOW\n[THE PREVIOUS CLOSE]",
+   "sub": "Short sellers borrow shares and sell them, betting the price will fall. Taiwan now bars those sales below the last closing price.",
+   "map": {
+    "bbox": [
+     118.4,
+     21.2,
+     124.6,
+     26.4
+    ],
+    "bbox_to": [
+     119.0,
+     21.5,
+     124.0,
+     26.1
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 123.4,
+     "lat": 22.6,
+     "text": "Taiwan"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "text": "Taipei",
+     "tone": "amber",
+     "t": 0.3,
+     "dx": 22,
+     "dy": -6,
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Covers every listed stock from Mon 23 Nov.\nShort-sale margin: 150%, up from 130% (Bloomberg)"
+   },
+   "src": "Sources: Taiwan's FSC via Bloomberg (The Star, TNW), CNA"
+  },
+  {
+   "dur": 5.0,
+   "tag": "State buying",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "A $15 BILLION FUND\nIS [BUYING STOCKS]",
+   "sub": "Taiwan's stabilization fund has been in the market since 6 November.",
+   "map": {
+    "bbox": [
+     116.5,
+     20.5,
+     126.5,
+     27.5
+    ],
+    "bbox_to": [
+     117.5,
+     21.0,
+     125.5,
+     27.0
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    590,
+    1010,
+    870
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "panel": {
+    "y": 890,
+    "t": 0.7,
+    "title": "Taiwan's National Financial Stabilization Fund",
+    "stat": {
+     "text": "NT$500B",
+     "label": "about US$15 billion",
+     "tone": "amber",
+     "size": 150,
+     "notes": [
+      "Some lawmakers want it doubled to NT$1 trillion",
+      "Premier Cho: enough for now, but he is willing to review the size"
+     ],
+     "notes_t": 1.5,
+     "notes_gap": 1.0
+    }
+   },
+   "src": "Sources: Bloomberg via TNW and The Star, Radio Taiwan International"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "EWT, THE TAIWAN FUND:\n[−23%] IN A WEEK",
+   "sub": "It holds Taiwan stocks and trades in New York, after Taipei has closed.",
+   "map": {
+    "bbox": [
+     104,
+     10,
+     142,
+     40
+    ],
+    "bbox_to": [
+     107,
+     12,
+     139,
+     38
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    1480
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Taiwan fund (EWT) · close: 13 Nov $97.38, 20 Nov $74.77",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       112.78
+      ],
+      [
+       "2026-10-02",
+       116.33
+      ],
+      [
+       "2026-10-05",
+       118.0
+      ],
+      [
+       "2026-10-06",
+       117.61
+      ],
+      [
+       "2026-10-07",
+       116.24
+      ],
+      [
+       "2026-10-08",
+       113.34
+      ],
+      [
+       "2026-10-09",
+       114.31
+      ],
+      [
+       "2026-10-12",
+       114.27
+      ],
+      [
+       "2026-10-13",
+       113.46
+      ],
+      [
+       "2026-10-14",
+       110.94
+      ],
+      [
+       "2026-10-15",
+       109.14
+      ],
+      [
+       "2026-10-16",
+       106.26
+      ],
+      [
+       "2026-10-19",
+       107.26
+      ],
+      [
+       "2026-10-20",
+       107.33
+      ],
+      [
+       "2026-10-21",
+       108.99
+      ],
+      [
+       "2026-10-22",
+       103.99
+      ],
+      [
+       "2026-10-23",
+       104.9
+      ],
+      [
+       "2026-10-26",
+       105.61
+      ],
+      [
+       "2026-10-27",
+       107.25
+      ],
+      [
+       "2026-10-28",
+       108.94
+      ],
+      [
+       "2026-10-29",
+       105.99
+      ],
+      [
+       "2026-10-30",
+       101.11
+      ],
+      [
+       "2026-11-02",
+       100.66
+      ],
+      [
+       "2026-11-03",
+       98.27
+      ],
+      [
+       "2026-11-04",
+       97.08
+      ],
+      [
+       "2026-11-05",
+       85.88
+      ],
+      [
+       "2026-11-06",
+       89.24
+      ],
+      [
+       "2026-11-09",
+       95.65
+      ],
+      [
+       "2026-11-10",
+       94.68
+      ],
+      [
+       "2026-11-11",
+       100.19
+      ],
+      [
+       "2026-11-12",
+       97.25
+      ],
+      [
+       "2026-11-13",
+       97.38
+      ],
+      [
+       "2026-11-16",
+       90.8
+      ],
+      [
+       "2026-11-17",
+       88.69
+      ],
+      [
+       "2026-11-18",
+       88.73
+      ],
+      [
+       "2026-11-19",
+       83.96
+      ],
+      [
+       "2026-11-20",
+       74.77
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 2.4,
+     "marks": [
+      {
+       "date": "2026-11-13",
+       "text": "$97.38",
+       "tone": "white",
+       "dy": -64,
+       "dx": -30
+      },
+      {
+       "date": "2026-11-20",
+       "text": "$74.77 FRI",
+       "tone": "red",
+       "dy": -16,
+       "dx": -190
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (EWT closes to 20 Nov)"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Same weekend",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "SOUTH KOREA AND CHINA\n[MOVED TOO]",
+   "sub": "Seoul put a fund of about 10 trillion won on standby. China's exchanges will ease a margin rule on 30 November.",
+   "map": {
+    "bbox": [
+     118.8,
+     21.4,
+     124.2,
+     26.2
+    ],
+    "bbox_to": [
+     104,
+     17,
+     141,
+     44
+    ],
+    "tint": {}
+   },
+   "cam_span": [
+    0.4,
+    2.4
+   ],
+   "names": [
+    {
+     "lon": 110.0,
+     "lat": 34.5,
+     "text": "China"
+    },
+    {
+     "lon": 138.0,
+     "lat": 36.6,
+     "text": "Japan"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "text": "Taipei\nshort-sale curbs",
+     "tone": "red",
+     "t": 0.2,
+     "dx": 22,
+     "dy": -8
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "text": "Seoul\nfund on standby",
+     "tone": "amber",
+     "t": 2.5,
+     "dx": 22,
+     "dy": -8
+    },
+    {
+     "lon": 121.47,
+     "lat": 31.23,
+     "text": "Shanghai\nmargin rule eased",
+     "tone": "amber",
+     "t": 3.2,
+     "dx": -22,
+     "dy": -8,
+     "anchor": "rm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 3.8,
+    "text": "China: the minimum margin ratio for buying shares\non credit falls to 80% from 100% (Reuters)"
+   },
+   "src": "Sources: Reuters via stockanalysis.com, Korea JoongAng Daily, Seoul Economic Daily"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Why it fell",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "MINISTERS POINT TO\n[THE AI SELLOFF]",
+   "sub": "Officials in Taipei and Seoul cite global causes.",
+   "map": {
+    "bbox": [
+     108,
+     16,
+     138,
+     44
+    ],
+    "bbox_to": [
+     110,
+     17.5,
+     136,
+     42.5
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    860
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "amber",
+     "t": 0.3
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "amber",
+     "t": 0.6
+    }
+   ],
+   "panel": {
+    "y": 880,
+    "t": 0.7,
+    "title": "What the two ministers cite",
+    "list": [
+     {
+      "text": "Doubts about AI spending",
+      "t": 1.0,
+      "size": 42
+     },
+     {
+      "text": "The leadership change at Nvidia",
+      "t": 1.7,
+      "size": 42
+     },
+     {
+      "text": "US limits on chips for China",
+      "t": 2.4,
+      "size": 42
+     },
+     {
+      "text": "A possible Fed rate rise in December",
+      "t": 3.1,
+      "size": 42
+     }
+    ]
+   },
+   "src": "Sources: RTI (Kung Ming-hsin), Korea JoongAng Daily (Lee Hyoung-il)"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Day one",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "MONDAY: TAIPEI ^+2.2%^,\nSEOUL {−3.3%}",
+   "sub": "Taiwan's index rose 778 points on the rule's first day. South Korea's Kospi fell again.",
+   "map": {
+    "bbox": [
+     110,
+     17,
+     136,
+     43
+    ],
+    "bbox_to": [
+     112,
+     18.5,
+     134,
+     41.5
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    600,
+    1010,
+    850
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "green",
+     "t": 0.3
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "red",
+     "t": 0.6
+    }
+   ],
+   "panel": {
+    "y": 870,
+    "t": 0.7,
+    "title": "Monday 23 November, at the close",
+    "bars": [
+     {
+      "label": "Taiex · Taipei · 36,811.89",
+      "value": "+2.2%",
+      "frac": 0.65,
+      "tone": "green"
+     },
+     {
+      "label": "Kospi · Seoul · 4,708.54",
+      "value": "−3.3%",
+      "frac": 1.0,
+      "tone": "red"
+     }
+    ],
+    "note": "Premier Cho: Taiwan's fundamentals remain solid",
+    "note_tone": "amber"
+   },
+   "src": "Sources: Radio Taiwan International, Korea JoongAng Daily, Lapaas Voice"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The catch",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "TWO EARLIER CURBS\n[DID NOT STOP IT]",
+   "sub": "Bloomberg notes that two rounds of limits this month failed to steady Taiwan's market. Seoul chose not to add any.",
+   "map": {
+    "bbox": [
+     112,
+     18,
+     134,
+     42
+    ],
+    "bbox_to": [
+     114,
+     19.5,
+     132,
+     40.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 117.0,
+     "lat": 30.5,
+     "text": "China"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "text": "Taipei\n3 rounds of curbs",
+     "tone": "red",
+     "t": 0.4,
+     "dx": 22,
+     "dy": -8
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "text": "Seoul\nno new short-sale limits",
+     "tone": "amber",
+     "t": 1.4,
+     "dx": 22,
+     "dy": -8
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "red",
+    "t": 2.6,
+    "text": "Market writer Stephen Innes: such limits don't necessarily\nmake investors \"want to own the market\""
+   },
+   "src": "Sources: Bloomberg via The Star, Korea JoongAng Daily, Stephen Innes"
+  },
+  {
+   "dur": 5.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEXT TEST: US INFLATION\n[ON WEDNESDAY]",
+   "sub": "The Fed meets on 8 and 9 December. Last week futures priced a rate rise at over 90%.",
+   "map": {
+    "bbox": [
+     -128,
+     22,
+     -64,
+     52
+    ],
+    "bbox_to": [
+     -124,
+     24,
+     -66,
+     50
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "text": "Washington",
+     "tone": "amber",
+     "t": 0.5,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.4,
+    "text": "Also ahead: South Korea eases buyback limits on\nTuesday. China's margin change starts 30 Nov."
+   },
+   "src": "Sources: Kiplinger (CME FedWatch), TipRanks, AND Magazine"
+  },
+  {
+   "dur": 5.0,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "A [FLOOR] OR\nJUST [A DELAY]?",
+   "sub": "Do curbs and state buying stop a selloff, or only slow it? Comment one word.",
+   "map": {
+    "bbox": [
+     106,
+     14,
+     140,
+     44
+    ],
+    "bbox_to": [
+     109,
+     16,
+     137,
+     42
+    ],
+    "tint": {}
+   },
+   "rings": [
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "r": 44,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 20 Nov 2026"
+  }
+ ]
+}

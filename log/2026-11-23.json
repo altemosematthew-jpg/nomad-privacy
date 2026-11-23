@@ -1,0 +1,146 @@
+{
+ "date": "2026-11-23",
+ "built": "2026-11-23 05:36-06:03 CT (scheduled run, started 05:35 CT; Monday)",
+ "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Monday, so Ten on the Tape is the watch edition: five stocks with earnings this week, shown with last week's moves.",
+ "budget": {
+  "used_before": 17,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "geo"
+   ],
+   "default": "geo",
+   "remaining": 3,
+   "weekdays_left": 5,
+   "why": "3 left for 5 trading days: one Reel (geo by default)"
+  },
+  "decision": "Both Reels, as the task prompt asks ('Create exactly these two Reels') and as RUNBOOK.md 'Posting budget' says to do until the owner answers. budget.py on its own would have allowed one geopolitics Reel today.",
+  "used_after": 19,
+  "left_this_month": 1,
+  "open_question_for_owner": "Still open (asked 21 Nov, repeated 22 and 23 Nov): two Reels a day, or ration. One post is left for 24-30 Nov (trading days 24, 25, 27, 30; the 26th is a holiday). Tomorrow's run can schedule only one Reel; after that nothing can go out until 1 Dec unless he upgrades Metricool."
+ },
+ "finance": {
+  "type": "finance",
+  "edition": "watch",
+  "format": "short (5 stocks)",
+  "session_date": "2026-11-20",
+  "span": "Friday 13 Nov close to Friday 20 Nov close (5 sessions; move_bars 5; move_label 'Last week')",
+  "title": "Ten on the Tape | Dell stock (DELL) fell 19% before Tuesday's earnings. 5 stocks to watch this week",
+  "hook": "$DELL −19.3% · FELL WITH AI STOCKS. [EARNINGS ON TUESDAY]",
+  "hook_sub": "Dell forecast sales up about 80% for the quarter.",
+  "tickers": [
+   [
+    "DELL",
+    -19.3
+   ],
+   [
+    "HPE",
+    -15.28
+   ],
+   [
+    "ZM",
+    -18.58
+   ],
+   [
+    "BBY",
+    -5.88
+   ],
+   [
+    "DE",
+    -9.55
+   ]
+  ],
+  "headlines": {
+   "DELL": "Reports Tuesday after the close",
+   "HPE": "Reports Monday after the close",
+   "ZM": "Reports Monday after the close",
+   "BBY": "Reports Tuesday before the open",
+   "DE": "Reports Wednesday morning"
+  },
+  "facts_on_screen": {
+   "DELL": "1.1x normal volume, -53% from 52-week high",
+   "HPE": "1.0x normal volume, -44% from 52-week high",
+   "ZM": "1.3x normal volume, -29% from 52-week high",
+   "BBY": "1.0x normal volume, -8% from 52-week high",
+   "DE": "1.1x normal volume, -16% from 52-week high"
+  },
+  "indices": "Last week: S&P 500 -8.6% (7,561.67 -> 6,910.39) · Nasdaq 100 -10.4% (27,943.74 -> 25,028.98) · Dow -8.0% (DJX 523.48 -> 481.47)",
+  "question": "Which one are you watching? Comment the ticker.",
+  "first_comment": "Which one are you watching? Comment the ticker.",
+  "seconds": 34.0,
+  "metricool_id": 438683024,
+  "uuid": "3122423211696276425",
+  "scheduled_for": "2026-11-23T09:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=3122423211696276425",
+  "media": "gilded-ticker-media-2026-11/2026-11-23/finance/reel-f2f3ee38ed.mp4 (12.1 MB), cover-181545729d.jpg (media commit 3ab3bd1)",
+  "spec": "specs/2026-11-23-tape.json",
+  "caption": "specs/2026-11-23-finance-caption.txt"
+ },
+ "reel": {
+  "type": "geo",
+  "title": "Taiwan vs short sellers after a 17.5% drop | Floor or delay?",
+  "hook": "TAIWAN VS [SHORT SELLERS] AFTER A 17.5% DROP",
+  "topic": "Asian governments stepping into their stock markets after last week's AI-led selloff. Taiwan: the Taiex lost 17.5% (7,641.83 points) in the week to Friday 20 Nov and closed at 36,033.29 (CNA via Seoul Economic Daily; Bytes Europe), its worst week in 35 years (Bloomberg via The Star; 'since 1991', Bloomberg via TNW). On Saturday 21 Nov the Financial Supervisory Commission banned short sales below the previous day's closing price for all listed stocks from Monday 23 Nov, covering margin short sales and borrowed shares, with hedging by securities and futures firms exempt; it raised the short-sale margin to 150% from 130% and stopped taking applications for new put warrants (Bloomberg via The Star and TNW; stockanalysis.com citing the FSC release). It is the third round of curbs this month (9 Nov, 19 Nov); 'Two earlier rounds of short-selling restrictions this month have so far failed to stabilise the market' (Bloomberg via The Star). The NT$500 billion (about US$15 billion) National Financial Stabilization Fund has been buying since 6 Nov (Bloomberg via TNW; RTI). Monday 23 Nov: the Taiex 'opened lower but closed up 778 points, or 2.16%, at 36,811.89'; Premier Cho Jung-tai said the government is willing to review enlarging the fund, after some commentators and lawmakers urged NT$1 trillion, and that existing resources remain sufficient and fundamentals are solid; Economy Minister Kung Ming-hsin attributed the sell-off to global factors: doubts over sustained AI spending, possible tighter limits on computing power for China, personnel changes at Nvidia and a possible Fed rate rise (all RTI, 23 Nov 18:42). South Korea: Finance Minister Lee Hyoung-il chaired an emergency meeting on Sunday 22 Nov and said the stock market stabilisation fund (10.76 trillion won, Korea JoongAng Daily; 'about 10 trillion won', Seoul Economic Daily) would be made ready; daily buyback limits are eased for three months from Tuesday 24 Nov; no new short-selling limits, stronger enforcement instead (Korea JoongAng Daily, CoinCentral, Reuters via The Edge Malaysia). The Kospi closed Monday down 161.42 points (3.31%) at 4,708.54 (Yonhap caption in Korea JoongAng Daily; Lapaas Voice). China: the Shanghai, Shenzhen and Beijing exchanges cut the minimum margin ratio for margin financing to 80% from 100% from 30 Nov (Reuters and Bloomberg via stockanalysis.com; Lapaas Voice; Stephen Innes citing Reuters). The sceptical view: Stephen Innes writes that such steps can make it harder to sell and easier to buy but 'Neither necessarily makes them want to own the market'. Next: US PCE inflation on Wednesday 25 Nov (Kiplinger, TipRanks); the Fed meets 8-9 Dec (TipRanks) with a rate rise priced at over 90% last week (CME FedWatch via Kiplinger: above 97%; AND Magazine: more than 90%).",
+  "market_scene": "EWT (iShares MSCI Taiwan ETF, 'the Taiwan fund' on screen) official closes: 97.38 on Fri 13 Nov -> 74.77 on Fri 20 Nov = -23.2% on the week (-10.9% on Friday; stockanalysis.com prints -11.0%). Chart shows 1 Oct to 20 Nov closes. The fund's fall is bigger than the Taiex's 17.5% because it trades in New York after Taipei has closed and is priced in dollars; the Reel says it trades in New York after Taipei has closed and gives no further reason.",
+  "question": "FLOOR or DELAY?",
+  "first_comment": "FLOOR or DELAY? One word.",
+  "seconds": 52.5,
+  "scenes": 10,
+  "metricool_id": 438683396,
+  "uuid": "-4567083185097719395",
+  "scheduled_for": "2026-11-23T11:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-4567083185097719395",
+  "media": "gilded-ticker-media-2026-11/2026-11-23/reel/reel-5027c4bcc2.mp4 (35.6 MB), cover-2621f8e03a.jpg (media commit 3ab3bd1)",
+  "spec": "specs/2026-11-23-reel.json",
+  "caption": "specs/2026-11-23-reel-caption.txt"
+ },
+ "skipped": [
+  "Nvidia: Stocktwits says investors will watch for developments on Jensen Huang's possible return as CEO after President Trump backed it; Au79 Macro says the board refused. Left off the watch tape: Nvidia was on the 21 and 22 Nov tapes, and the story is about a named person.",
+  "Anthropic (ANT, its first full trading week): left out; the RUNBOOK says not to feature Anthropic-related stories just because they exist.",
+  "Other reports this week, with last week's moves: ADI -13.1% (Tue before the open), DKS -11.7%, WDAY -11.2%, SYM -10.7%, ADSK -7.5%, ANF -7.4%, KSS -7.3%, HPQ -4.8%, MDT -2.8%, A -2.1%, DLTR -0.1%, BURL +1.0%. Five better-known names were chosen; every candidate fell or was flat last week, so there is no winner on this tape.",
+  "Analyst estimates: the sources do not agree, so none is on screen. Dell: Stocktwits has revenue of $27.0 billion (+11%) and $2.59 a share; 24/7 Wall St, TradingKey and StockTitan give Dell's own guidance of about $49 billion (up about 80%) and $6.50, and Robinhood's estimate is $6.55. HPE: $1.29 (Stocktwits), $1.17 (StockTitan), $1.27 (Robinhood). Zoom: $1.49, $1.00, $1.39. Only Dell's own sales forecast is used.",
+  "Zoom's 18.6% fall last week (9.6% of it on Thursday): no source read gives a company-specific reason. Quiver Quantitative (19 Nov, intraday, AI-assisted page) ties it to positioning and to Zoom's Anthropic stake. The card shows only the report date.",
+  "Dell: price-target cuts by Morgan Stanley and Citi on 16 Nov (24/7 Wall St, TIKR via Yahoo) and a 13 Nov report on banned chips in Dell servers (TIKR) are not on screen. Cash from operations: 24/7 Wall St says it fell 13%, TradingKey 73%. Not used.",
+  "'The S&P 500's worst week since April 2025' and 'the Nasdaq Composite's and Dow's biggest weekly declines in more than six years': TipRanks only. Not used.",
+  "Taiwan, superlatives: 'worst weekly fall in 35 years' (Bloomberg via The Star), 'worst week since 1991' (Bloomberg via TNW) and 'the steepest ever' (Seoul Economic Daily, in points). The Reel says 35 years.",
+  "Taiex peak of 49,968.92 on 6 Oct and short interest of 5.28% of float (Bytes Europe only): not used. TSMC's Taipei move on Monday: no source read gives it.",
+  "South Korea: the fund's size in dollars ($8 billion in Korea JoongAng Daily, $6.8 billion in Seoul Economic Daily) and the Kospi's distance from its June peak ('more than 40%' on Friday per Reuters, 48% on Monday per Korea JoongAng Daily): not shown. Korea JoongAng Daily's text says the Kospi fell 3.06%; its Yonhap caption says 161.42 points (3.31%), which fits the exchange's opening figures and Lapaas Voice. The Reel uses 3.3%.",
+  "CoinCentral's intraday Kospi figures and an embedded social-media post about a trading halt: not used.",
+  "Other topics considered: Iran's Guards say they struck US air-defence radars in Bahrain over the weekend (Bahrain confirmed a fire at a civilian plant with two hurt; CENTCOM called an earlier Guards claim false), UKMTO logged two more tanker strikes near Khasab, and the Houthis claimed an attack on a Saudi refinery (AND Magazine, Au79 Macro, TipRanks): the same Gulf and oil story as the 21 Nov Reel, and oil fell again on Monday. NATO's council meets today on the missiles in Poland: yesterday's story, with no outcome at build time. The COP31 talks collapsing on Sunday: one source, read only as a summary."
+ ],
+ "sources": [
+  "Robinhood: get_equity_quotes (official closes dated 2026-11-20 for 26 symbols), get_equity_historicals (daily bars 1 Apr to 20 Nov for 22 symbols), get_equity_fundamentals (market_date 2026-11-20), get_earnings_calendar (23-27 Nov, high_market_cap), get_index_quotes and get_index_historicals (SPX, NDX, DJX)",
+  "24/7 Wall St, 'Dell Stock Plunges 10% in the AI Selloff and Heads for Its Worst Month Since Its 2018 Return to the Stock Market. Earnings Are Tuesday' (Jeremy Phillips, 20 Nov 2026 1:07 pm ET) and 'Thanksgiving Week Earnings: 73 Companies Report in Just Three Days' (20 Nov 2026)",
+  "TradingKey, 'Dell Heads Into Tuesday's Earnings 47% Below Its High' (Arslan Ali, 21 Nov 2026) and 'The Week Ahead' (Yulia Zeng, 22 Nov 2026)",
+  "StockTitan, 'Earnings Calendar for the Week of November 23, 2026' (20 Nov 2026 05:03 AM EST; first 39,913 characters read verbatim)",
+  "Stocktwits, 'Anthropic Stock Trend, Jensen Huang's Potential Return As Nvidia CEO And Dell's Q4 Results To Keep Tech Investors Busy This Week' (Yuvraj Malik, 23 Nov 2026 1:14 AM EST)",
+  "TIKR via Yahoo Finance, 'Dell Is Down 16% in a Week...' (Rexielyn Diaz, 19 Nov 2026); Quiver Quantitative on Zoom (19 Nov 2026)",
+  "TipRanks, 'Stock Market Today, Nov. 23: Markets See a Boost After Last Week's AI Selloff' (Sheryl Sheth, 23 Nov 2026); Kiplinger, 'What to Look Out for in Economic Data This Week (November 23-27)' (updated 20 Nov 2026); AND Magazine, 'Morning Brief' (22 Nov 2026)",
+  "Bloomberg via The Star (Malaysia), 'Taiwan widens short sale curbs after shares dive' (23 Nov 2026); TNW, 'Taiwan widens its short-selling ban after the Taiex's worst week since 1991' (Ana-Maria Stanciuc, 22 Nov 2026)",
+  "stockanalysis.com, 'Taiwan bans short sales below prior close as Asia moves to prop up stocks after AI rout' (22 Nov 2026 12:19 PM ET; cites Bloomberg, Reuters and the FSC release of 21 Nov)",
+  "Seoul Economic Daily, 'Taiwan Curbs Short Selling After 17.5% Weekly Plunge' (Park Chang-gyu, 21 Nov 2026, citing CNA) and 'KOSPI Opens Down 2.8% as Emergency Measures Blunt Selloff' (Yoon Min-hyuk, 23 Nov 2026); both AI-translated from Korean",
+  "Radio Taiwan International, 'Taiwan stocks rebound as Premier Cho considers larger market stabilization fund' (23 Nov 2026 18:42)",
+  "Korea JoongAng Daily, 'Gov't ready to activate market stabilization fund, will review size: Finance minister' (Jin Min-ji, 23 Nov 2026 5:51 p.m.); The Edge Malaysia, 'South Korea prepares market stabilisation funds after Kospi hits 10-month low' (22 Nov 2026); CoinCentral (23 Nov 2026); Lapaas Voice (Rohan Rawat, 23 Nov 2026)",
+  "Stephen Innes, 'Asia's Regulators Are in Panic Mode' (The Dark Side of the Boom, 23 Nov 2026); Bytes Europe / CryptoBriefing, 'Taiwan bans most short selling after Taiex's worst week since 1991' (22 Nov 2026)",
+  "Geopolitics Explained, 'This Week In Geopolitics' (22 Nov 2026, headlines only) and Au79 Macro (22 Nov 2026): the first sweep of the weekend's news",
+  "Could not open (nothing from them was used): CNBC Investing Club, heygotrade, two mlq.ai pages, BeInCrypto, a Trading Economics page ('PROVENANCE_REQUIRED: The permission request for this URL was not answered in time. Do not retry.'), a TVBS page (it redirects to another host, which the fetch helper did not follow). Read and set aside because of their dates: a Stocktwits Zoom preview (24 Nov 2025), a StockStory Zoom note (10 Apr 2026), a Taiwan News market report (11 Nov 2026)"
+ ],
+ "notes": [
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date), add_repo (the repository was already attached; the clone and both pushes worked) and a direct WebFetch (pages were read through the session's fetch helper, which reports on each page and keeps quotes short).",
+  "pipeline/tape_reel.py already existed and was not changed today. This is the first watch edition in the short format; move_label 'Last week' and move_bars 5 gave the header 'WEEK TO FRIDAY 20 NOV' and the last card 'THE WHOLE MARKET, LAST WEEK' with no code change.",
+  "On a Monday morning get_equity_quotes returned close.date 2026-11-20 for every symbol, so the closes are official closes; each equals the close of its 20 Nov daily bar.",
+  "The lead is chosen by the code: the biggest of the five moves, Dell (-19.3%). 'Fell with AI stocks' rests on 24/7 Wall St ('No company news came with the drop'), TradingKey (the slide had little to do with Dell itself) and TIKR. 'Sales up about 80%' is Dell's own September guidance of about $49 billion, as 24/7 Wall St, TradingKey and StockTitan report it.",
+  "Report days and sessions: Robinhood's calendar and StockTitan agree for all five. A Bespoke post quoted in a 24/7 Wall St sidebar says HPE and Zoom report before the open on Monday; Robinhood, StockTitan and 24/7 Wall St's own calendar say after the close.",
+  "Taiwan's Monday close has one full source, Radio Taiwan International. It fits Friday's close from CNA (36,033.29 + 778.60 = 36,811.89), and an mlq.ai headline seen in search results says the Taiex rose 2%.",
+  "The rule is not a ban on all short selling: short sales at or above the previous close are still allowed, and brokers' hedging is exempt. The Reel says 'curbs' and 'limits' and spells the rule out in scene 2.",
+  "Scene 6 lists what the two ministers cite. 'Doubts about AI spending' stands for Kung's 'doubts over sustained AI spending' and Lee's concern over how AI investment is financed. Kung's 'U.S. election effects on AI data center construction' is left out.",
+  "Stephen Innes's page prints no affiliation, so the Reel calls him a market writer and quotes five of his words.",
+  "The countries are not tinted in any scene. Pins for Taipei, Seoul, Shanghai and Washington use the cities' standard coordinates.",
+  "The geopolitics video is 35.6 MB at the default CRF 20, under the 45 MB limit, so it was not re-encoded. Frames from both finished files were looked at before scheduling.",
+  "isAiGenerated is false in both Metricool requests, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 19 (Free plan: 20). 1 left.",
+  "Report pushed to the owner's phone at about 06:03 CT with both planner links and the post count."
+ ]
+}
