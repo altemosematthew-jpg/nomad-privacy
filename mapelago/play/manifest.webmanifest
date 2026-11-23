@@ -1,0 +1,30 @@
+{
+  "name": "Mapelago",
+  "short_name": "Mapelago",
+  "description": "Mapelago is a free daily geography game. Slide tiles like 2048 to earn clues about a mystery city, then drop a pin on the map. A new city every day.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e6f1f7",
+  "theme_color": "#e6f1f7",
+  "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

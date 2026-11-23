@@ -1,0 +1,50 @@
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 400; src: url(fonts/overpass-latin-ext-400-normal.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 400; src: url(fonts/overpass-latin-400-normal.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 600; src: url(fonts/overpass-latin-ext-600-normal.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 600; src: url(fonts/overpass-latin-600-normal.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 800; src: url(fonts/overpass-latin-ext-800-normal.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Overpass'; font-style: normal; font-display: swap; font-weight: 800; src: url(fonts/overpass-latin-800-normal.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Overpass'; font-style: italic; font-display: swap; font-weight: 800; src: url(fonts/overpass-latin-ext-800-italic.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Overpass'; font-style: italic; font-display: swap; font-weight: 800; src: url(fonts/overpass-latin-800-italic.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+:root{
+  --paper:#fff;--shoal-pale:#dcedf5;--shoal:#a9d3e8;--shore:#9fc98b;--land:#f3d98a;--magenta:#b4237d;
+  --ink:#000;--ink-2:#555b61;--rule:#e2eaee;
+  --font:"Overpass","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--font)}
+a{color:var(--ink);text-decoration-thickness:2px;text-underline-offset:3px}
+a:hover{color:var(--magenta)}
+a:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+.wrap{max-width:620px;margin:0 auto;padding:16px 18px 56px}
+
+/* header: the same mark and wordmark as the game, linking back to it */
+.top{display:inline-flex;align-items:center;gap:8px;text-decoration:none;margin-bottom:30px}
+.top:hover{color:var(--ink)}
+.top .word{font-weight:800;font-style:italic;font-size:26px;line-height:1;letter-spacing:-.015em}
+
+h1{font-weight:800;font-style:italic;font-size:38px;line-height:1.05;letter-spacing:-.02em;margin:0 0 14px}
+h2{font-weight:800;font-size:22px;line-height:1.2;margin:38px 0 8px}
+p,li{max-width:62ch}
+p{margin:0 0 14px}
+.lede{font-size:19px;line-height:1.5}
+ol,ul{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:8px}
+li::marker{font-weight:800}
+
+/* tables borrow the clue legend from the game: one black frame, quiet rules inside */
+table{width:100%;border-collapse:separate;border-spacing:0;border:2px solid var(--ink);border-radius:6px;margin:14px 0 18px;font-size:16px}
+th,td{text-align:left;padding:9px 12px;border-top:1.5px solid var(--rule);vertical-align:middle}
+tr:first-child th,tr:first-child td{border-top:0}
+th{font-weight:800}
+td.n{font-weight:800;font-style:italic;white-space:nowrap}
+.sw{display:inline-grid;place-items:center;width:34px;height:34px;border:2px solid var(--ink);border-radius:4px;font-weight:800;font-style:italic;font-size:14px}
+.shape{display:inline-flex;vertical-align:-3px;margin-right:8px}
+
+.play{display:block;text-align:center;background:var(--magenta);color:#fff;text-decoration:none;font-weight:800;border:2px solid var(--ink);border-radius:6px;padding:14px;margin:30px 0 0;font-size:18px}
+.play:hover{color:#fff}
+.small{font-size:15px;color:var(--ink-2)}
+.foot{margin-top:46px;padding-top:16px;border-top:2px solid var(--ink);display:flex;flex-wrap:wrap;gap:6px 20px;font-size:15px;font-weight:600}
+@media (max-width:420px){h1{font-size:32px}}
