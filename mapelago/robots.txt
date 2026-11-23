@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://altemosematthew-jpg.github.io/nomad-privacy/mapelago/sitemap.xml
