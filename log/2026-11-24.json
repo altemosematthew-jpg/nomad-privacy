@@ -1,0 +1,153 @@
+{
+ "date": "2026-11-24",
+ "built": "2026-11-24 05:36-06:10 CT (scheduled run, started 05:35 CT; Tuesday)",
+ "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Tuesday, so Ten on the Tape is the daily edition: the five biggest news-driven moves of Monday 23 Nov.",
+ "budget": {
+  "used_before": 19,
+  "cap": 20,
+  "budget_py": {
+   "post": [
+    "finance"
+   ],
+   "default": "finance",
+   "remaining": 1,
+   "weekdays_left": 4,
+   "why": "1 left for 4 trading days: one Reel (finance by default)"
+  },
+  "decision": "Both Reels were built and both were sent to Metricool, as the task prompt asks ('Create exactly these two Reels'; 'where they conflict, this prompt wins'; 'if Metricool refuses a post ... report its exact message'). RUNBOOK.md said to build only one when one post is left; the prompt is newer and the count could not be checked against the plan itself (getBrandSettings shows no plan, and one of the 19 is a draft). The finance Reel was created first, so that it would hold the last post if the second was refused.",
+  "result": "Metricool refused nothing. The 20th post (finance, 09:40) and the 21st (geopolitics, 11:40) were both accepted with status PENDING and no plan or limit message.",
+  "used_after": 21,
+  "open_question_for_owner": "Still open (asked 21, 22 and 23 Nov): two Reels a day, or ration. New today: the limit of 20 did not stop scheduling. Either the plan has changed, or Metricool does not apply the limit when a post is scheduled through this connector. Not yet known: whether the 11:40 Reel, the 21st post of the month, also publishes. Tomorrow's run checks its status first (RUNBOOK.md 'Posting budget')."
+ },
+ "finance": {
+  "type": "finance",
+  "edition": "daily",
+  "format": "short (5 stocks)",
+  "session_date": "2026-11-23",
+  "title": "Ten on the Tape | Nvidia stock (NVDA) jumped 31% as Jensen Huang returned as CEO",
+  "hook": "$NVDA +31.5% · JENSEN HUANG IS [BACK AS CEO]",
+  "hook_sub": "The board voted unanimously, 11 days after he resigned.",
+  "tickers": [
+   [
+    "NVDA",
+    31.48
+   ],
+   [
+    "TSLA",
+    11.46
+   ],
+   [
+    "CRWD",
+    -8.92
+   ],
+   [
+    "ZS",
+    17.67
+   ],
+   [
+    "KYMR",
+    30.4
+   ]
+  ],
+  "headlines": {
+   "NVDA": "Jensen Huang is back as CEO",
+   "TSLA": "FSD v15 began rolling out",
+   "CRWD": "Buying Zscaler for $44 billion",
+   "ZS": "CrowdStrike is buying it",
+   "KYMR": "Eczema pill met its trial goal"
+  },
+  "closes": {
+   "NVDA": "125.53 -> 165.05",
+   "TSLA": "345.82 -> 385.46",
+   "CRWD": "229.44 -> 208.97",
+   "ZS": "194.82 -> 229.24",
+   "KYMR": "115.31 -> 150.37"
+  },
+  "facts_on_screen": {
+   "NVDA": "2.5x normal volume, -32% from 52-week high",
+   "TSLA": "1.3x normal volume, -23% from 52-week high",
+   "CRWD": "3.9x normal volume, -27% from 52-week high",
+   "ZS": "6.1x normal volume, -21% from 52-week high",
+   "KYMR": "5.8x normal volume, hit a 52-week high"
+  },
+  "indices": "Monday: S&P 500 +4.7% (6,910.39 -> 7,237.17, Robinhood SPX) · Nasdaq +6.5% (Composite 22,617.73 -> 24,089.56, CappNotes and Motley Fool) · Dow +3.0% (48,147.33 -> 49,595.31, CappNotes; Robinhood DJX 481.47 -> 495.95). Nasdaq 100 +6.9% (25,028.98 -> 26,746.10, Robinhood NDX) is not shown.",
+  "question": "Which one are you watching? Comment the ticker.",
+  "first_comment": "Which one are you watching? Comment the ticker.",
+  "seconds": 34.0,
+  "metricool_id": 440177933,
+  "uuid": "-9022768891398108374",
+  "scheduled_for": "2026-11-24T09:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-9022768891398108374",
+  "media": "gilded-ticker-media-2026-11/2026-11-24/finance/reel-cd12c207ac.mp4 (12.1 MB), cover-461e0e13d9.jpg (media commit 8e38e75)",
+  "spec": "specs/2026-11-24-tape.json",
+  "caption": "specs/2026-11-24-finance-caption.txt"
+ },
+ "reel": {
+  "type": "geo",
+  "title": "Kyiv: Russian warship sunk 2,400 km from the front | Wider war or isolated strikes?",
+  "hook": "KYIV: RUSSIAN WARSHIP SUNK [2,400 KM] FROM THE FRONT",
+  "topic": "Ukraine's sea-drone strike on Russian ships at Benghazi, Libya, on Sunday 22 Nov, and why oil did not react. Zelenskyy, in a post on X on Monday 23 Nov: seven domestically made naval drones were used, 'the Russian corvette Merkury was sunk' (commissioned in 2023), a Ka-27 helicopter was destroyed and the cargo ship Angara was hit (CBS/AP, Middle East Eye, RFE/RL, The Moscow Times; AP via The American Legion). The ship was docked at the Benghazi Naval Base, about 2,400 km from the front line (AP, Middle East Eye; CBS: some 1,500 miles). Two Libyan military officials told AP that at least four drones were intercepted and two struck the vessel, and that an initial investigation suggests the drones were launched from a facility run by Ukrainian forces in western Libya (AFP via Gulf News: 'not independently established'; The Moscow Times). Ukraine's SBU says they were launched from a 'mothership' near the target and calls both ships legitimate military targets (CBS/AP, Middle East Eye, RFE/RL). Satellite images from Vantor show the ship capsized in port (CBS: Vantor via Reuters; MEE: Vantor/AFP; RFE/RL); BBC Verify saw a vessel on fire at 05:47 GMT in Planet Labs images and later partly submerged. Russia: the Kremlin referred questions to the Defense Ministry (Peskov: 'Our defense ministry is handling this', RBC-Ukraine; CBS/AP; RFE/RL); 'Russia has not officially commented on the loss of the Merkury' (The Moscow Times, page updated 24 Nov 09:28 Moscow time; CBS updated 23 Nov 8:20 PM EST). Libya: the eastern government (backed by Khalifa Haftar's forces, which have ties with Russia, MEE; RFE/RL) said the ship had stopped for fuel and supplies under a maritime agreement with Russia (BBC, AFP, MEE), called the strike a violation of Libya's sovereignty (AFP, RFE/RL, RBC-Ukraine) and asked the UN for an international investigation (MEE, RBC-Ukraine); Tripoli's foreign ministry said the war 'gives neither side the right to conduct military operations on Libyan territory' (RFE/RL) and its government warned against involving ports in outside conflicts (BBC); Libyan officials told AP earlier this year that Ukrainian drone specialists work in western Libya (CBS/AP). The UN mission, UNSMIL: 'serious concern', an 'immediate, independent and transparent investigation', and Libya 'cannot afford, and must not become a battleground for foreign conflicts' (CBS/AP, MEE, AFP, RFE/RL). The day before, Saturday 21 Nov: drones hit the US-sanctioned Russian cargo ship Sparta II in the Gulf of Finland; Finland's military said it was likely a Ukrainian strike, Kyiv has neither confirmed nor denied it, and Peskov called it 'indeed a very dangerous trend' (CBS/AP; The Moscow Times). Oil: Reuters says prices fell on Monday as flows from the Middle East rose and Libya's Sharara pipeline reopened (Reuters via MarineLink); Libya's National Oil Corporation said an 'unlawful group' ('outlaws' in Xinhua) had shut a valve, threatening about 350,000 barrels a day, and that the line reopened after about 10 hours, with crude reaching the Akakus tanks at Zawiya, about 50 km west of Tripoli; Sharara is Libya's largest oil field, in the Murzuq Basin in the south-west, and oil is about 90% of the economy (Xinhua, Hydrocarbon Processing). None of the oil reports links the pipeline to the strike, and the Reel does not either.",
+  "market_scene": "BNO (United States Brent Oil Fund, 'the Brent oil fund' on screen) official closes: 59.02 on Fri 20 Nov -> 56.66 on Mon 23 Nov = -4.0%. Chart shows 1 Oct to 23 Nov closes. Brent futures fell 3.46% to $89.37 and WTI 3.88% to $80.17 (CappNotes; The Nation, Thailand); they are not on screen because the chart is the fund (rule 3).",
+  "question": "WIDER or ISOLATED?",
+  "first_comment": "WIDER or ISOLATED? One word.",
+  "seconds": 53.0,
+  "scenes": 10,
+  "metricool_id": 440178362,
+  "uuid": "-8292293318173768901",
+  "scheduled_for": "2026-11-24T11:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-8292293318173768901",
+  "media": "gilded-ticker-media-2026-11/2026-11-24/reel/reel-0e2ff57c02.mp4 (39.6 MB), cover-196ac471dc.jpg (media commit 8e38e75)",
+  "spec": "specs/2026-11-24-reel.json",
+  "caption": "specs/2026-11-24-reel-caption.txt"
+ },
+ "skipped": [
+  "Stocks that rose with Nvidia and had no confirmed news of their own: ALAB +23.2%, CRWV +22.3%, DELL +20.5% (reports tonight), NBIS +20.3%, MU +19.0%, HPE +17.4% (it reported after the close and fell about 7% after hours). Micron: Motley Fool's wrap cites new multi-year supply agreements, a Startup Fortune headline says no new contracts were behind the move; not used. MU, DELL and HPE were also on tapes in the last three days.",
+  "Oatly (OTLY +109.1%, closed $14.50): its board advised holders not to sell into Verlinvest's offer (StockTitan). The offer price as reported ($4.13 per ADS) does not fit the share price and the company is small; not used.",
+  "Capricor (CAPR -74.7% to $1.92, an FDA complete response letter): under $3, and it would have opened the Reel in place of Nvidia.",
+  "TXN +10.4% (Cantor upgrade; CappNotes only). Kohl's -4.7%: it reports this morning, so a card would be out of date by 09:40. Anthropic (ANT -1.4%): not featured, as the RUNBOOK says.",
+  "Nvidia: only what the company's filing says is on screen. Left out: TechCrunch's account of why Huang resigned, 'Trump told CNBC he convinced the board' (CappNotes; the CNBC and Washington Post pages were not read), 'best day since 2003' (CappNotes only), and the open SEC accounting review.",
+  "Tesla: headlines seen but not read tie the move to SpaceX merger reports (heygotrade, FX Leaders), and TradingKey prints +13.26%. The Reel uses the two pages read (FSD v15) and Robinhood's +11.46%.",
+  "Kymera began a proposed $1.5 billion share offering after the close (StockTitan): in the spec's body, not on screen.",
+  "Benghazi casualties: the eastern government first said none (BBC); medical sources said 10 Russians and Libyans had minor injuries (AFP; Reuters via The Moscow Times; RFE/RL); Al Jazeera's local sources, via The Moscow Times, said an unknown number were killed. Nothing about casualties is in the Reel.",
+  "Drone counts: 'more than 20 additional drone boats' intercepted (AFP's local military sources; Reuters via RFE/RL) against AP's four intercepted and two hits. The Reel uses Zelenskyy's seven and AP's two hits.",
+  "The second ship: Zelenskyy and the SBU name the Russian dry cargo ship Angara (CBS: under US sanctions); AFP's first report spoke of a Maltese-flagged commercial vessel. Not on screen.",
+  "Peskov's exact words on Benghazi come from one outlet (RBC-Ukraine), so scene 7 paraphrases them. He also accused Ukraine of 'terrorism' over the Baltic strike (The Moscow Times); the Reel quotes 'a very dangerous trend' (CBS/AP).",
+  "OPEC+ ministers meet on 29 Nov (Reuters); JPMorgan and Bank of America oil views; the Houthi claim on the Rabigh refinery and the attack in Bahrain (Reuters): left out.",
+  "Other topics considered: NATO's council meeting on the missiles in Poland (a second chapter of the 22 Nov Reel; NPR's page could not be read), gold's 3% rebound (not geopolitics), the Gulf attacks (the 21 Nov Reel's story), the COP31 talks."
+ ],
+ "sources": [
+  "Robinhood: get_equity_quotes (official closes dated 2026-11-23 for 21 symbols), get_equity_historicals (daily bars 1 Apr to 23 Nov for NVDA, TSLA, CRWD, ZS, KYMR, TXN, MU; 1 Sep to 23 Nov for BNO), get_equity_fundamentals (market_date 2026-11-23), get_index_quotes and get_index_historicals (SPX, NDX, DJX)",
+  "Nvidia press release, 23 Nov 2026, filed with the SEC: 'NVIDIA Board Reinstates Jensen Huang as President, CEO and Board Director'",
+  "Kymera Therapeutics press release and slides, 23 Nov 2026, filed with the SEC (BROADEN2 Phase 2b trial of KT-621)",
+  "AP via WSLS, 'Crowdstrike to acquire Zscaler in a $44 billion deal that would create a cybersecurity giant' (23 Nov 2026 8:05 AM); TechCrunch (Zack Whittaker; Kirsten Korosec on Nvidia), 23 Nov 2026",
+  "StockTitan, 'Stock Market Today, November 23, 2026: Nvidia Brings Back Jensen Huang as CEO' (updated 23 Nov 2026 08:31 PM EST; first 39,915 characters read verbatim)",
+  "CappNotes, 'Closing Look - Monday, November 23, 2026'; Motley Fool, 'Stock Market Today, Nov. 23: Markets Rebound From Correction on AI Relief Rally' (Josh Kohn-Lindquist, 23 Nov 2026 4:56 PM EST)",
+  "Tesla North, 'Tesla Stock Jumps 11.5% as FSD v15 Rolls Out' (Sarah Lee-Jones, 23 Nov 2026); Drive Tesla Canada, 'Tesla ($TSLA) posts its biggest one-day gain since April 2025' (23 Nov 2026 4:33 pm EST)",
+  "CBS/AP, 'Ukraine sinks Russian warship Merkury off Libya, damages sanctioned Russian cargo ship' (updated 23 Nov 2026 8:20 PM EST)",
+  "Middle East Eye, 'Ukraine claims drone attack that sank Russian warship at Libyan naval base' (23 Nov 2026 11:58 GMT)",
+  "AFP via Gulf News, 'UN condemns drone attacks off Libya, urges investigation' (23 Nov 2026); BBC via Yahoo News, 'Explosion on Russian ship at Libya port likely caused by drone attack, officials say' (Hafsa Khalil, 22 Nov 2026 3:50 PM UTC)",
+  "RFE/RL, 'Zelenskyy Confirms Ukraine Struck Russian Warship, Cargo Vessel Near Benghazi' (updated 23 Nov 2026 16:27 CET); The Moscow Times, 'Zelensky Confirms Attack Against Russian Warship in Libya' (23 Nov 2026, updated 24 Nov 09:28 Moscow time); RBC-Ukraine, 'Kremlin responds to Ukraine's destruction of Russian corvette Merkury off Libya's coast' (Liliana Oleniak, 23 Nov 2026 14:45)",
+  "The American Legion, 'Five Things to Know, Nov. 23, 2026' (AP's account: seven sea drones, roughly 2,400 km from the front, Peskov); Open Chronicle, 'Global News Brief', 23 Nov 2026 (the first sweep of the day's news only)",
+  "Reuters via MarineLink, 'Oil Prices Fall As Middle East Flows Increase' (23 Nov 2026, prices at 1436 GMT); The Nation (Thailand), 'Brent falls 3.46% on 23 Nov as Libya's Sharara line reopens' (24 Nov 2026)",
+  "Xinhua, 'Libya announces reopening of major oil pipeline after brief shutdown' (Tripoli, 23 Nov 2026); Hydrocarbon Processing, 'Libya's Sharara oil pipeline reopens after closure threatened 350,000 bpd of output' (23 Nov 2026)",
+  "TMGM 'Daily Financial Breakfast' and Steptoe 'Sanctions Update: November 23, 2026': read while choosing the topic, nothing from them is in the Reels",
+  "Could not open (nothing from them was used): Atalayar, two Chartmill pages, CNBC's oil story (two links), Axios, invezz, CBC, GuruFocus, Oil & Gas Middle East (each 'failed at its site (client_error)'); NBC News, NPR and BusinessMirror ('robots_disallowed')"
+ ],
+ "notes": [
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date), add_repo (the repository was already attached; the clone and both pushes worked) and a direct WebFetch (pages were read through the session's fetch helper, which reports on each page and keeps quotes short).",
+  "pipeline/tape_reel.py already existed and was not changed today. No code changed. RUNBOOK.md: the 'Posting budget' bullets and one line of step 0 were rewritten to record that Metricool accepted the 20th and 21st posts, so that tomorrow's run does not stop on the count alone.",
+  "On a Tuesday morning get_equity_quotes returned close.date 2026-11-23 for every symbol; each close equals the close of its 23 Nov daily bar, and every move matches a published closing move to two decimals.",
+  "The lead is chosen by the code: the biggest of the five moves, Nvidia (+31.48%, ahead of Kymera's +30.40%). The hook rests on the company's own press release (unanimous vote, effective immediately) and StockTitan (he resigned 11 days earlier, on 12 Nov).",
+  "'Eczema' stands for atopic dermatitis, the name Kymera's release uses. CrowdStrike's and Zscaler's cards tell one story from both sides: the buyer fell, the target rose.",
+  "'Its best day since April 2025' for the S&P 500 (caption only): CappNotes; Motley Fool says its largest rise in over a year and a half; StockTitan calls it the 33rd biggest one-day gain since 1957.",
+  "Geopolitics hook: the sinking is Kyiv's statement, so the headline says 'KYIV:'. Satellite images support it and Moscow had not confirmed it; both are on screen. Statements about Moscow are dated ('as of Monday night') so they stay true if Russia comments before 11:40.",
+  "The dashed line in scene 3 is a measure of distance, not the drones' route: it runs from a point on the front line in eastern Ukraine (marked approximate, about 2,390 km from Benghazi) to Benghazi, and the sub gives both accounts of where the drones were launched. The Sharara field, the pipeline's path and the Gulf of Finland pin are marked approximate or drawn as a straight guide.",
+  "No country is tinted in any scene. Pins use the cities' standard coordinates.",
+  "The geopolitics video is 39.6 MB at the default CRF 20, under the 45 MB limit, so it was not re-encoded. Frames from both finished files were looked at before scheduling.",
+  "isAiGenerated is false in both Metricool requests, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 21 (the RUNBOOK's assumed Free-plan limit: 20). The project's reference page still says nothing can go out after 24 Nov; it was left alone today because the answer is not complete until the 11:40 Reel has or has not gone out.",
+  "Report pushed to the owner's phone at about 06:10 CT with both planner links and the post count."
+ ]
+}

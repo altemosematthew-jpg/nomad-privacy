@@ -49,17 +49,23 @@ to ration posts (one Reel on most days) so the account would not go quiet at the
 does not mention that limit.
 - **21 Nov:** 13 posts had been used, 7 were left for the 5 trading days to 30 Nov. Both Reels went out, because
   two could be spent without taking a post away from any trading day. That left 5 for 5 trading days.
-- From 22 Nov the two instructions pull apart: two a day uses the last posts on Tuesday 24 Nov, and nothing can
-  go out from then to 30 Nov. In a full month, two a day lasts 10 days.
-- **22 and 23 Nov:** both Reels went out on each day, because the owner had not answered. **19 of 20 are used and
-  1 is left** for 24–30 Nov. On 24 Nov only one Reel can be scheduled, then nothing until 1 Dec unless he upgrades.
-- **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it. Count the
-  month's posts in step 0 as before and put "N left this month; at two a day they run out on <date>" at the top
-  of the report, every day. If Metricool refuses a post with a plan or limit error: no retry, no workaround,
-  report its exact message. When 20 are already used, build nothing and report that. When only one is left,
-  build one Reel, not two (rule 10): the day's `default` from `budget.py`, or the other type if its story is
-  clearly bigger (the swap rule in step 0), and say in the report that the second was not built because the plan
-  has no post left for it.
+- From 22 Nov the two instructions pull apart: if the limit of 20 holds, two a day uses the last posts on Tuesday
+  24 Nov, and nothing can go out from then to 30 Nov. In a full month, two a day lasts 10 days.
+- **22 and 23 Nov:** both Reels went out on each day, because the owner had not answered. That made 19.
+- **24 Nov: Metricool did not stop at 20.** 19 were used. The prompt still asked for both Reels, so both were built
+  and the finance Reel was created first, to hold the last post if the second was refused. Nothing was refused:
+  the 20th and the 21st post of the month were both accepted (PENDING for 09:40 and 11:40, no plan or limit
+  message). Either the plan has changed, or the limit of 20 is not applied when a post is scheduled through this
+  connector. It was not yet known that morning whether a post beyond the 20th also publishes. The next run that
+  sees the answer writes it here and, once, in the project's reference page (`claude/gilded-ticker-daily-format.md`,
+  "Open question"), which still says nothing can go out after 24 Nov.
+- **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it: both
+  Reels, every day. Count the month's posts in step 0 as before and put the count in the report. **Do not stop
+  at 20 on the count alone.** Look at yesterday's posts in the same list first: if the posts created beyond the
+  20th are PUBLISHED, carry on with both Reels. If one shows an error or never went out, Metricool is not
+  publishing past its limit: build nothing, report that status word for word, and stop. If a
+  `createScheduledPost` call is refused with a plan or limit error: no retry, no workaround, report its exact
+  message; if that happens on the first Reel, do not create the second.
 - **When he answers,** write his answer here, delete this section's other bullets, and if he chooses to ration,
   `budget.py` and the swap rule in step 0 decide again.
 
@@ -122,8 +128,9 @@ with `close.date` on SPY.
   toDate="<last of month>T23:59:59-06:00", timezone="America/Chicago")` (use -05:00 while daylight saving time is
   on). Count every post it returns, any status, drafts included = **N**. Then
   `python3 pipeline/budget.py D --used N` → `remaining` and `weekdays_left` for the report (see "Posting budget"
-  at the top for what its `post` list means now). If N is 20 or more, report "Nothing scheduled: 20 of 20
-  Metricool posts used this month" and stop.
+  at the top for what its `post` list means now). If N is 20 or more, do not stop on the count alone: on 24 Nov
+  Metricool accepted the 20th and 21st posts, so check that the posts beyond the 20th were PUBLISHED, as
+  "Posting budget" at the top says.
 - **Already done?** From the same list, if today's finance Reel (text starting "Ten on the Tape |") or today's
   geopolitics Reel is already there, drop it from today's list. More than one session can work on a day. If both
   are there, report that and stop.

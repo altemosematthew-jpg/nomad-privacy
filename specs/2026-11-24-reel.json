@@ -1,0 +1,855 @@
+{
+ "title": "Kyiv: Russian warship sunk 2,400 km from the front | Wider war or isolated strikes?",
+ "seed": "2026-11-24-ukraine-libya-benghazi-warship-oil",
+ "publish_date": "2026-11-24",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "SUN 22 NOV · BENGHAZI, LIBYA",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "KYIV: RUSSIAN WARSHIP SUNK\n[2,400 KM] FROM THE FRONT",
+   "sub": "Ukraine says its sea drones did it, in a Libyan port. As of Monday night, Moscow had not confirmed it.",
+   "map": {
+    "bbox": [
+     -4,
+     22,
+     48,
+     58
+    ],
+    "bbox_to": [
+     12.5,
+     27.2,
+     27.5,
+     36.8
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 17.3,
+     "lat": 28.6,
+     "text": "Libya"
+    },
+    {
+     "lon": 31.5,
+     "lat": 48.8,
+     "text": "Ukraine"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "tone": "red",
+     "t": 0.15
+    }
+   ],
+   "pins": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi",
+     "tone": "red",
+     "t": 0.15,
+     "dx": 0,
+     "dy": -84,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "src": "Sources: Zelenskyy via CBS/AP, Middle East Eye, The Moscow Times"
+  },
+  {
+   "dur": 5.5,
+   "tag": "What happened",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "7 SEA DRONES AT A\n[LIBYAN NAVAL BASE]",
+   "sub": "Zelenskyy says they sank the corvette Merkury. Libyan officials told AP two drones hit it.",
+   "map": {
+    "bbox": [
+     15.2,
+     28.4,
+     24.8,
+     35.0
+    ],
+    "bbox_to": [
+     16.2,
+     29.0,
+     23.8,
+     34.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 18.0,
+     "lat": 30.0,
+     "text": "Libya"
+    },
+    {
+     "lon": 19.4,
+     "lat": 33.9,
+     "text": "Mediterranean Sea"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "tone": "red",
+     "t": 0.3
+    }
+   ],
+   "pins": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi Naval Base",
+     "tone": "red",
+     "t": 0.3,
+     "dx": 0,
+     "dy": -84,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Satellite images show the ship capsized in port\n(Vantor, via Reuters and AFP)"
+   },
+   "src": "Sources: CBS/AP, Middle East Eye, AFP via Gulf News"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The distance",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "ABOUT [2,400 KM]\nFROM THE FRONT LINE",
+   "sub": "Kyiv's security service says a mothership launched the drones near the target. Libyan officials told AP an early inquiry points to western Libya.",
+   "map": {
+    "bbox": [
+     13,
+     27.5,
+     27,
+     36.5
+    ],
+    "bbox_to": [
+     2,
+     24,
+     50,
+     58
+    ],
+    "tint": {}
+   },
+   "cam_span": [
+    0.4,
+    2.4
+   ],
+   "names": [
+    {
+     "lon": 17.3,
+     "lat": 28.2,
+     "text": "Libya"
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       37.8,
+       49.0
+      ],
+      [
+       20.07,
+       32.12
+      ]
+     ],
+     "tone": "white",
+     "t0": 2.4,
+     "dur": 1.1,
+     "dash": true,
+     "width": 5
+    }
+   ],
+   "pins": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi",
+     "tone": "red",
+     "t": 0.2,
+     "dx": -22,
+     "dy": 4,
+     "anchor": "rm",
+     "size": 28
+    },
+    {
+     "lon": 37.8,
+     "lat": 49.0,
+     "text": "Front line\n(approx.)",
+     "tone": "amber",
+     "t": 2.5,
+     "dx": 0,
+     "dy": -62,
+     "anchor": "mm"
+    },
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "grey",
+     "t": 2.5,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    }
+   ],
+   "callout": {
+    "lon": 28.9,
+    "lat": 40.6,
+    "dx": 24,
+    "dy": -30,
+    "tone": "amber",
+    "t": 3.4,
+    "text": "About 2,400 km (AP)"
+   },
+   "src": "Sources: AP via The American Legion, Middle East Eye, CBS/AP"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "THE BRENT OIL FUND:\n[−4.0%] ON MONDAY",
+   "sub": "Oil fell the day after. Reuters cites more supply from the Middle East and a restarted Libyan pipeline.",
+   "map": {
+    "bbox": [
+     -2,
+     20,
+     44,
+     46
+    ],
+    "bbox_to": [
+     1,
+     22,
+     41,
+     44
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    1480
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Brent oil fund (BNO) · close: 20 Nov $59.02, 23 Nov $56.66",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       62.95
+      ],
+      [
+       "2026-10-02",
+       63.1
+      ],
+      [
+       "2026-10-05",
+       61.45
+      ],
+      [
+       "2026-10-06",
+       61.93
+      ],
+      [
+       "2026-10-07",
+       61.9
+      ],
+      [
+       "2026-10-08",
+       63.64
+      ],
+      [
+       "2026-10-09",
+       63.99
+      ],
+      [
+       "2026-10-12",
+       65.12
+      ],
+      [
+       "2026-10-13",
+       65.1
+      ],
+      [
+       "2026-10-14",
+       65.06
+      ],
+      [
+       "2026-10-15",
+       64.86
+      ],
+      [
+       "2026-10-16",
+       67.19
+      ],
+      [
+       "2026-10-19",
+       67.12
+      ],
+      [
+       "2026-10-20",
+       66.87
+      ],
+      [
+       "2026-10-21",
+       67.05
+      ],
+      [
+       "2026-10-22",
+       68.91
+      ],
+      [
+       "2026-10-23",
+       70.99
+      ],
+      [
+       "2026-10-26",
+       70.07
+      ],
+      [
+       "2026-10-27",
+       69.67
+      ],
+      [
+       "2026-10-28",
+       70.14
+      ],
+      [
+       "2026-10-29",
+       70.76
+      ],
+      [
+       "2026-10-30",
+       71.39
+      ],
+      [
+       "2026-11-02",
+       65.95
+      ],
+      [
+       "2026-11-03",
+       66.11
+      ],
+      [
+       "2026-11-04",
+       60.4
+      ],
+      [
+       "2026-11-05",
+       62.53
+      ],
+      [
+       "2026-11-06",
+       62.22
+      ],
+      [
+       "2026-11-09",
+       58.93
+      ],
+      [
+       "2026-11-10",
+       58.36
+      ],
+      [
+       "2026-11-11",
+       58.75
+      ],
+      [
+       "2026-11-12",
+       61.01
+      ],
+      [
+       "2026-11-13",
+       61.06
+      ],
+      [
+       "2026-11-16",
+       58.66
+      ],
+      [
+       "2026-11-17",
+       58.96
+      ],
+      [
+       "2026-11-18",
+       58.02
+      ],
+      [
+       "2026-11-19",
+       58.84
+      ],
+      [
+       "2026-11-20",
+       59.02
+      ],
+      [
+       "2026-11-23",
+       56.66
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 2.4,
+     "marks": [
+      {
+       "date": "2026-11-20",
+       "text": "$59.02 FRI",
+       "tone": "white",
+       "dy": -150,
+       "dx": -120
+      },
+      {
+       "date": "2026-11-23",
+       "text": "$56.66 MON",
+       "tone": "red",
+       "dy": 20,
+       "dx": -190
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (BNO closes to 23 Nov), Reuters via MarineLink"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Monday, western Libya",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "350,000 BARRELS A DAY\n[WERE AT RISK]",
+   "sub": "Libya's state oil company said an “unlawful group” shut a pipeline valve on Monday. It reopened about 10 hours later.",
+   "map": {
+    "bbox": [
+     6.5,
+     23.2,
+     26.5,
+     35.2
+    ],
+    "bbox_to": [
+     7.5,
+     23.8,
+     25.5,
+     34.8
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 18.5,
+     "lat": 27.0,
+     "text": "Libya"
+    }
+   ],
+   "routes": [
+    {
+     "points": [
+      [
+       12.2,
+       26.6
+      ],
+      [
+       12.5,
+       29.7
+      ],
+      [
+       12.73,
+       32.76
+      ]
+     ],
+     "tone": "gold",
+     "t0": 0.9,
+     "dur": 1.4,
+     "flow": true,
+     "width": 7
+    }
+   ],
+   "pins": [
+    {
+     "lon": 12.2,
+     "lat": 26.6,
+     "text": "Sharara field\n(approx.)",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 24,
+     "dy": 6
+    },
+    {
+     "lon": 12.73,
+     "lat": 32.76,
+     "text": "Zawiya",
+     "tone": "amber",
+     "t": 2.2,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    },
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi",
+     "tone": "red",
+     "t": 2.8,
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 3.0,
+    "text": "Sharara is Libya's largest oil field (Xinhua).\nOil is about 90% of Libya's economy."
+   },
+   "src": "Sources: Xinhua, Hydrocarbon Processing, Reuters via MarineLink"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Why Libya",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "ONE COUNTRY,\n[TWO GOVERNMENTS]",
+   "sub": "The east has ties with Russia and let the ship refuel. Libyan officials have told AP that Ukrainian drone specialists work in the west.",
+   "map": {
+    "bbox": [
+     6.5,
+     22.5,
+     27.5,
+     35.3
+    ],
+    "bbox_to": [
+     7.5,
+     23.2,
+     26.5,
+     34.9
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 17.6,
+     "lat": 26.6,
+     "text": "Libya"
+    }
+   ],
+   "pins": [
+    {
+     "lon": 13.19,
+     "lat": 32.89,
+     "text": "Tripoli\nUN-backed government",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": 58,
+     "anchor": "mm"
+    },
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi\neastern government",
+     "tone": "amber",
+     "t": 1.2,
+     "dx": 0,
+     "dy": 58,
+     "anchor": "mm"
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "The east says the ship stopped for fuel under\na maritime agreement with Russia (BBC)"
+   },
+   "src": "Sources: Middle East Eye, CBS/AP, BBC"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Moscow's answer",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "THE KREMLIN POINTS TO\n[ITS DEFENSE MINISTRY]",
+   "sub": "Its spokesman said the ministry would give information. As of Monday night, Moscow had not confirmed the loss.",
+   "map": {
+    "bbox": [
+     -2,
+     14,
+     50,
+     60
+    ],
+    "bbox_to": [
+     1,
+     16,
+     47,
+     58.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 31.0,
+     "lat": 48.6,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 17.3,
+     "lat": 25.6,
+     "text": "Libya"
+    },
+    {
+     "lon": 42.0,
+     "lat": 53.0,
+     "text": "Russia"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "tone": "red",
+     "t": 0.2
+    }
+   ],
+   "pins": [
+    {
+     "lon": 37.62,
+     "lat": 55.75,
+     "text": "Moscow",
+     "tone": "grey",
+     "t": 0.5,
+     "dx": 0,
+     "dy": -32,
+     "anchor": "mm",
+     "size": 28
+    },
+    {
+     "lon": 30.52,
+     "lat": 50.45,
+     "text": "Kyiv",
+     "tone": "grey",
+     "t": 1.0,
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    },
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi",
+     "tone": "red",
+     "t": 0.2,
+     "dx": 22,
+     "dy": 4,
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Kyiv's security service calls both ships\nlegitimate military targets (RFE/RL)"
+   },
+   "src": "Sources: CBS/AP, RBC-Ukraine, The Moscow Times, RFE/RL"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The day before",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "TWO SEAS IN\n[TWO DAYS]",
+   "sub": "On Saturday, drones hit a Russia-linked cargo ship in the Gulf of Finland. Finland's military called it a likely Ukrainian strike. Kyiv has not said.",
+   "map": {
+    "bbox": [
+     -6,
+     12,
+     48,
+     66
+    ],
+    "bbox_to": [
+     -3,
+     14,
+     45,
+     64.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 31.0,
+     "lat": 48.8,
+     "text": "Ukraine"
+    },
+    {
+     "lon": 17.3,
+     "lat": 25.4,
+     "text": "Libya"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 26.0,
+     "lat": 59.85,
+     "tone": "red",
+     "t": 0.4
+    },
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "tone": "red",
+     "t": 1.3
+    }
+   ],
+   "pins": [
+    {
+     "lon": 26.0,
+     "lat": 59.85,
+     "text": "Gulf of Finland\nSat 21 Nov (approx.)",
+     "tone": "red",
+     "t": 0.4,
+     "dx": 24,
+     "dy": 44
+    },
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi\nSun 22 Nov",
+     "tone": "red",
+     "t": 1.3,
+     "dx": 24,
+     "dy": -40
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "red",
+    "t": 2.8,
+    "text": "Kremlin spokesman Peskov on the Saturday strike:\n“a very dangerous trend” (CBS/AP)"
+   },
+   "src": "Sources: CBS/AP, The Moscow Times"
+  },
+  {
+   "dur": 5.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "BENGHAZI ASKS THE UN\n[TO INVESTIGATE]",
+   "sub": "The east calls the strike a violation of sovereignty. Tripoli says neither side may fight inside Libya.",
+   "map": {
+    "bbox": [
+     -2,
+     22,
+     42,
+     46
+    ],
+    "bbox_to": [
+     1,
+     23.5,
+     39,
+     44.5
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 17.3,
+     "lat": 28.0,
+     "text": "Libya"
+    }
+   ],
+   "rings": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "r": 46,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pins": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "text": "Benghazi",
+     "tone": "amber",
+     "t": 0.4,
+     "dx": 0,
+     "dy": -78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.4,
+    "text": "UN mission: Libya “must not become a\nbattleground for foreign conflicts”"
+   },
+   "src": "Sources: Middle East Eye, RFE/RL, AFP via Gulf News, CBS/AP"
+  },
+  {
+   "dur": 5.0,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "A [WIDER WAR] OR\n[ISOLATED] STRIKES?",
+   "sub": "Is the war spreading to new seas, or are these isolated strikes? Comment one word.",
+   "map": {
+    "bbox": [
+     -4,
+     12,
+     48,
+     58
+    ],
+    "bbox_to": [
+     0,
+     14,
+     44,
+     56
+    ],
+    "tint": {}
+   },
+   "rings": [
+    {
+     "lon": 20.07,
+     "lat": 32.12,
+     "r": 44,
+     "tone": "amber",
+     "t": 0.3
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 23 Nov 2026"
+  }
+ ]
+}
