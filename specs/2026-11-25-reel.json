@@ -1,0 +1,1042 @@
+{
+ "title": "Reports: new US tariffs on 16 economies | Leverage or cost?",
+ "seed": "2026-11-25-us-section-301-tariffs-16-economies",
+ "publish_date": "2026-11-25",
+ "cover_scene": 0,
+ "cover_t": 3.6,
+ "scenes": [
+  {
+   "dur": 4.0,
+   "tag": "TUE 24 NOV · WASHINGTON",
+   "tag_tone": "red",
+   "hl": "red",
+   "cam": "out",
+   "headline": "REPORTS: NEW US TARIFFS\nON [16 ECONOMIES]",
+   "sub": "Reuters, AP and the Wall Street Journal say an announcement is near. By early Wednesday the White House had not commented.",
+   "map": {
+    "bbox": [
+     -128,
+     -14,
+     152,
+     68
+    ],
+    "bbox_to": [
+     -122,
+     -12,
+     148,
+     66
+    ],
+    "tint": {}
+   },
+   "pulses": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "red",
+     "t": 0.1
+    }
+   ],
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "red",
+     "t": 0.1,
+     "text": "Washington",
+     "dx": 0,
+     "dy": -44,
+     "anchor": "mm",
+     "size": 26
+    },
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.25
+    },
+    {
+     "lon": 4.35,
+     "lat": 50.85,
+     "tone": "amber",
+     "t": 0.31
+    },
+    {
+     "lon": 77.21,
+     "lat": 28.61,
+     "tone": "amber",
+     "t": 0.37
+    },
+    {
+     "lon": 139.69,
+     "lat": 35.69,
+     "tone": "amber",
+     "t": 0.43
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "amber",
+     "t": 0.49
+    },
+    {
+     "lon": -99.13,
+     "lat": 19.43,
+     "tone": "amber",
+     "t": 0.55
+    },
+    {
+     "lon": 105.85,
+     "lat": 21.03,
+     "tone": "amber",
+     "t": 0.61
+    },
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "amber",
+     "t": 0.67
+    },
+    {
+     "lon": 100.5,
+     "lat": 13.75,
+     "tone": "amber",
+     "t": 0.73
+    },
+    {
+     "lon": 101.69,
+     "lat": 3.14,
+     "tone": "amber",
+     "t": 0.79
+    },
+    {
+     "lon": 106.85,
+     "lat": -6.21,
+     "tone": "amber",
+     "t": 0.85
+    },
+    {
+     "lon": 103.82,
+     "lat": 1.35,
+     "tone": "amber",
+     "t": 0.91
+    },
+    {
+     "lon": 90.41,
+     "lat": 23.81,
+     "tone": "amber",
+     "t": 0.97
+    },
+    {
+     "lon": 104.92,
+     "lat": 11.56,
+     "tone": "amber",
+     "t": 1.03
+    },
+    {
+     "lon": 7.45,
+     "lat": 46.95,
+     "tone": "amber",
+     "t": 1.09
+    },
+    {
+     "lon": 10.75,
+     "lat": 59.91,
+     "tone": "amber",
+     "t": 1.15
+    }
+   ],
+   "src": "Sources: Reuters, AP, The Wall Street Journal via AP and Newsquawk"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Who is on the list",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "CHINA, THE EU AND\n[14 MORE]",
+   "sub": "India, Japan, South Korea, Mexico, Vietnam and Taiwan are among them. Twelve of the 16 are in Asia.",
+   "map": {
+    "bbox": [
+     64,
+     -12,
+     148,
+     48
+    ],
+    "bbox_to": [
+     66,
+     -11,
+     146,
+     47
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    590,
+    1010,
+    1380
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.3,
+     "text": "China",
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    },
+    {
+     "lon": 139.69,
+     "lat": 35.69,
+     "tone": "amber",
+     "t": 0.5,
+     "text": "Japan",
+     "dx": 0,
+     "dy": -34,
+     "anchor": "mm"
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "amber",
+     "t": 0.7,
+     "text": "South Korea",
+     "dx": 0,
+     "dy": 36,
+     "anchor": "mm"
+    },
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "amber",
+     "t": 0.9,
+     "text": "Taiwan",
+     "dx": 18,
+     "dy": 0
+    },
+    {
+     "lon": 77.21,
+     "lat": 28.61,
+     "tone": "amber",
+     "t": 1.1,
+     "text": "India",
+     "dx": 18,
+     "dy": 0
+    },
+    {
+     "lon": 105.85,
+     "lat": 21.03,
+     "tone": "amber",
+     "t": 1.3,
+     "text": "Vietnam",
+     "dx": 18,
+     "dy": 0
+    },
+    {
+     "lon": 90.41,
+     "lat": 23.81,
+     "tone": "amber",
+     "t": 1.5,
+     "text": "Bangladesh",
+     "dx": 0,
+     "dy": 36,
+     "anchor": "mm"
+    },
+    {
+     "lon": 100.5,
+     "lat": 13.75,
+     "tone": "amber",
+     "t": 1.7,
+     "text": "Thailand",
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    },
+    {
+     "lon": 104.92,
+     "lat": 11.56,
+     "tone": "amber",
+     "t": 1.9,
+     "text": "Cambodia",
+     "dx": 18,
+     "dy": 0
+    },
+    {
+     "lon": 101.69,
+     "lat": 3.14,
+     "tone": "amber",
+     "t": 2.1,
+     "text": "Malaysia",
+     "dx": -18,
+     "dy": 0,
+     "anchor": "rm"
+    },
+    {
+     "lon": 103.82,
+     "lat": 1.35,
+     "tone": "amber",
+     "t": 2.3,
+     "text": "Singapore",
+     "dx": 18,
+     "dy": 0
+    },
+    {
+     "lon": 106.85,
+     "lat": -6.21,
+     "tone": "amber",
+     "t": 2.5,
+     "text": "Indonesia",
+     "dx": 18,
+     "dy": 0
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1370,
+    "tone": "amber",
+    "t": 3.0,
+    "text": "Also on the list: the European Union,\nSwitzerland, Norway and Mexico"
+   },
+   "src": "Sources: Reuters, US Trade Representative (11 March list)"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Washington's case",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "A US PROBE INTO\n[EXCESS FACTORY CAPACITY]",
+   "sub": "Trade Representative Jamieson Greer opened it on 11 March, saying partners make “more goods than they can consume domestically”.",
+   "map": {
+    "bbox": [
+     -128,
+     12,
+     -62,
+     54
+    ],
+    "bbox_to": [
+     -124,
+     14,
+     -64,
+     52
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": -100,
+     "lat": 41,
+     "text": "United States"
+    }
+   ],
+   "rings": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "r": 46,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "amber",
+     "t": 0.4,
+     "text": "Washington",
+     "dx": 0,
+     "dy": -78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Section 301 of the Trade Act of 1974.\nPublic hearings began on 5 May."
+   },
+   "src": "Sources: US Trade Representative release (11 March), KPMG"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Why now",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "THE SUPREME COURT STRUCK\nDOWN [THE OLD TARIFFS]",
+   "sub": "That was in February. Reuters reports the new duties are meant to rebuild them, tailored to each country.",
+   "map": {
+    "bbox": [
+     -128,
+     12,
+     -62,
+     54
+    ],
+    "bbox_to": [
+     -98,
+     26,
+     -66,
+     48
+    ],
+    "tint": {}
+   },
+   "cam_span": [
+    0.4,
+    3.0
+   ],
+   "names": [
+    {
+     "lon": -100,
+     "lat": 41,
+     "text": "United States"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "red",
+     "t": 0.3
+    }
+   ],
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "red",
+     "t": 0.3,
+     "text": "Washington",
+     "dx": 0,
+     "dy": -78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "Already in place since July: duties of\n10% to 12.5% on 60 trading partners (AP)"
+   },
+   "src": "Sources: Reuters, AP"
+  },
+  {
+   "dur": 6.0,
+   "tag": "How high · not official",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "REPORTED CEILINGS:\n[15% TO 20%]",
+   "sub": "A source told Reuters that caps agreed in earlier trade deals will be kept. By early Wednesday no official rates were out.",
+   "map": {
+    "bbox": [
+     -128,
+     -14,
+     152,
+     68
+    ],
+    "bbox_to": [
+     -122,
+     -12,
+     148,
+     66
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    930
+   ],
+   "pins": [
+    {
+     "lon": 4.35,
+     "lat": 50.85,
+     "tone": "amber",
+     "t": 0.2
+    },
+    {
+     "lon": 139.69,
+     "lat": 35.69,
+     "tone": "amber",
+     "t": 0.2
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "amber",
+     "t": 0.2
+    },
+    {
+     "lon": 101.69,
+     "lat": 3.14,
+     "tone": "amber",
+     "t": 0.2
+    },
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.2
+    }
+   ],
+   "panel": {
+    "y": 940,
+    "t": 0.9,
+    "title": "Ceilings the Reuters source expects to hold",
+    "bars": [
+     {
+      "label": "EU, Japan, South Korea",
+      "frac": 0.6,
+      "value": "15%",
+      "tone": "amber"
+     },
+     {
+      "label": "Malaysia",
+      "frac": 0.76,
+      "value": "19%",
+      "tone": "amber"
+     },
+     {
+      "label": "China, if the truce is extended",
+      "frac": 0.8,
+      "value": "20%",
+      "tone": "red"
+     }
+    ],
+    "note": "Mexico, Norway: no immediate levies expected",
+    "note_tone": "amber"
+   },
+   "src": "Source: Reuters, citing a person with knowledge of the plan"
+  },
+  {
+   "dur": 6.0,
+   "tag": "The market",
+   "tag_tone": "amber",
+   "hl": "red",
+   "headline": "THE NASDAQ 100 FUND:\n[−2.0%] ON TUESDAY",
+   "sub": "Chip stocks led the fall. Early Wednesday, Nasdaq futures were down over 2% more, and Reuters gives the tariff plan as one reason.",
+   "map": {
+    "bbox": [
+     -128,
+     -14,
+     152,
+     68
+    ],
+    "bbox_to": [
+     -122,
+     -12,
+     148,
+     66
+    ],
+    "tint": {}
+   },
+   "focus": [
+    70,
+    560,
+    1010,
+    1480
+   ],
+   "panel": {
+    "y": 800,
+    "h": 600,
+    "t": 0.7,
+    "title": "Nasdaq 100 fund (QQQ) · close: Mon $651.03, Tue $638.10",
+    "chart": {
+     "series": [
+      [
+       "2026-10-01",
+       742.03
+      ],
+      [
+       "2026-10-02",
+       749.58
+      ],
+      [
+       "2026-10-05",
+       756.2
+      ],
+      [
+       "2026-10-06",
+       759.66
+      ],
+      [
+       "2026-10-07",
+       757.73
+      ],
+      [
+       "2026-10-08",
+       747.58
+      ],
+      [
+       "2026-10-09",
+       751.27
+      ],
+      [
+       "2026-10-12",
+       746.04
+      ],
+      [
+       "2026-10-13",
+       743.57
+      ],
+      [
+       "2026-10-14",
+       728.95
+      ],
+      [
+       "2026-10-15",
+       728.0
+      ],
+      [
+       "2026-10-16",
+       709.8
+      ],
+      [
+       "2026-10-19",
+       718.36
+      ],
+      [
+       "2026-10-20",
+       717.63
+      ],
+      [
+       "2026-10-21",
+       725.2
+      ],
+      [
+       "2026-10-22",
+       704.47
+      ],
+      [
+       "2026-10-23",
+       704.4
+      ],
+      [
+       "2026-10-26",
+       712.2
+      ],
+      [
+       "2026-10-27",
+       721.25
+      ],
+      [
+       "2026-10-28",
+       725.61
+      ],
+      [
+       "2026-10-29",
+       715.34
+      ],
+      [
+       "2026-10-30",
+       690.49
+      ],
+      [
+       "2026-11-02",
+       681.09
+      ],
+      [
+       "2026-11-03",
+       685.28
+      ],
+      [
+       "2026-11-04",
+       691.95
+      ],
+      [
+       "2026-11-05",
+       647.05
+      ],
+      [
+       "2026-11-06",
+       656.1
+      ],
+      [
+       "2026-11-09",
+       679.35
+      ],
+      [
+       "2026-11-10",
+       674.76
+      ],
+      [
+       "2026-11-11",
+       690.38
+      ],
+      [
+       "2026-11-12",
+       688.17
+      ],
+      [
+       "2026-11-13",
+       679.89
+      ],
+      [
+       "2026-11-16",
+       661.75
+      ],
+      [
+       "2026-11-17",
+       656.95
+      ],
+      [
+       "2026-11-18",
+       659.51
+      ],
+      [
+       "2026-11-19",
+       645.04
+      ],
+      [
+       "2026-11-20",
+       608.45
+      ],
+      [
+       "2026-11-23",
+       651.03
+      ],
+      [
+       "2026-11-24",
+       638.1
+      ]
+     ],
+     "tone": "red",
+     "t0": 0.5,
+     "dur": 2.4,
+     "marks": [
+      {
+       "date": "2026-11-23",
+       "text": "$651.03 MON",
+       "tone": "white",
+       "dy": -70,
+       "dx": -150
+      },
+      {
+       "date": "2026-11-24",
+       "text": "$638.10 TUE",
+       "tone": "red",
+       "dy": 60,
+       "dx": -120
+      }
+     ]
+    }
+   },
+   "src": "Sources: Robinhood (QQQ closes to 24 Nov), Reuters, CNBC"
+  },
+  {
+   "dur": 5.5,
+   "tag": "Beijing's answer",
+   "tag_tone": "red",
+   "hl": "red",
+   "headline": "CHINA: OVERCAPACITY IS\n[“A FALSE ISSUE”]",
+   "sub": "Foreign ministry spokesman Guo Jiakun said China opposes using it as an excuse. Reuters notes he stopped short of threatening retaliation.",
+   "map": {
+    "bbox": [
+     72,
+     14,
+     140,
+     56
+    ],
+    "bbox_to": [
+     76,
+     16,
+     138,
+     54
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": 103,
+     "lat": 35,
+     "text": "China"
+    }
+   ],
+   "pulses": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "red",
+     "t": 0.3
+    }
+   ],
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "red",
+     "t": 0.3,
+     "text": "Beijing",
+     "dx": 0,
+     "dy": -78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.6,
+    "text": "The White House and the US Trade Representative\ndid not answer Reuters' and AP's questions"
+   },
+   "src": "Sources: Reuters, AP"
+  },
+  {
+   "dur": 5.5,
+   "tag": "The catch",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "THE US-CHINA TRUCE ENDS\n[10 JANUARY]",
+   "sub": "If it is not extended, China's rate would go higher, the Reuters source said. Trump and Xi are due to meet at a G20 summit in Miami next month.",
+   "map": {
+    "bbox": [
+     -128,
+     -14,
+     152,
+     68
+    ],
+    "bbox_to": [
+     -122,
+     -12,
+     148,
+     66
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.4,
+     "text": "Beijing",
+     "dx": 0,
+     "dy": -40,
+     "anchor": "mm",
+     "size": 26
+    },
+    {
+     "lon": -80.19,
+     "lat": 25.76,
+     "tone": "amber",
+     "t": 1.2,
+     "text": "Miami · G20",
+     "dx": 0,
+     "dy": 70,
+     "anchor": "mm",
+     "size": 26
+    }
+   ],
+   "rings": [
+    {
+     "lon": -80.19,
+     "lat": 25.76,
+     "r": 40,
+     "tone": "amber",
+     "t": 1.2
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.8,
+    "text": "China's cap today: 20% on tariffs from\nTrump's second term (Reuters)"
+   },
+   "src": "Source: Reuters"
+  },
+  {
+   "dur": 5.0,
+   "tag": "What's next",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "DEMOCRATS WON CONGRESS.\n[TRUMP KEEPS THE VETO]",
+   "sub": "Overriding a veto takes two-thirds of both houses. Without that, ING says, their ability to undo the tariffs stays limited.",
+   "map": {
+    "bbox": [
+     -128,
+     12,
+     -62,
+     54
+    ],
+    "bbox_to": [
+     -124,
+     14,
+     -64,
+     52
+    ],
+    "tint": {}
+   },
+   "names": [
+    {
+     "lon": -100,
+     "lat": 41,
+     "text": "United States"
+    }
+   ],
+   "rings": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "r": 46,
+     "tone": "amber",
+     "t": 0.4
+    }
+   ],
+   "pins": [
+    {
+     "lon": -77.04,
+     "lat": 38.9,
+     "tone": "amber",
+     "t": 0.4,
+     "text": "Washington",
+     "dx": 0,
+     "dy": -78,
+     "anchor": "mm",
+     "size": 28
+    }
+   ],
+   "callout": {
+    "x": 60,
+    "y": 1340,
+    "tone": "amber",
+    "t": 2.4,
+    "text": "Next: the US Trade Representative's findings.\nAP says they are expected in the coming days."
+   },
+   "src": "Sources: Reuters (ING), AP"
+  },
+  {
+   "dur": 5.0,
+   "tag": "Your call",
+   "tag_tone": "amber",
+   "hl": "amber",
+   "headline": "NEW TARIFFS: [LEVERAGE]\nOR A [COST]?",
+   "sub": "Do they give the US leverage in trade talks, or cost buyers more? Comment one word.",
+   "map": {
+    "bbox": [
+     -128,
+     -14,
+     152,
+     68
+    ],
+    "bbox_to": [
+     -122,
+     -12,
+     148,
+     66
+    ],
+    "tint": {}
+   },
+   "pins": [
+    {
+     "lon": 116.4,
+     "lat": 39.9,
+     "tone": "amber",
+     "t": 0.2
+    },
+    {
+     "lon": 4.35,
+     "lat": 50.85,
+     "tone": "amber",
+     "t": 0.25
+    },
+    {
+     "lon": 77.21,
+     "lat": 28.61,
+     "tone": "amber",
+     "t": 0.3
+    },
+    {
+     "lon": 139.69,
+     "lat": 35.69,
+     "tone": "amber",
+     "t": 0.35
+    },
+    {
+     "lon": 126.98,
+     "lat": 37.57,
+     "tone": "amber",
+     "t": 0.4
+    },
+    {
+     "lon": -99.13,
+     "lat": 19.43,
+     "tone": "amber",
+     "t": 0.45
+    },
+    {
+     "lon": 105.85,
+     "lat": 21.03,
+     "tone": "amber",
+     "t": 0.5
+    },
+    {
+     "lon": 121.56,
+     "lat": 25.03,
+     "tone": "amber",
+     "t": 0.55
+    },
+    {
+     "lon": 100.5,
+     "lat": 13.75,
+     "tone": "amber",
+     "t": 0.6
+    },
+    {
+     "lon": 101.69,
+     "lat": 3.14,
+     "tone": "amber",
+     "t": 0.65
+    },
+    {
+     "lon": 106.85,
+     "lat": -6.21,
+     "tone": "amber",
+     "t": 0.7
+    },
+    {
+     "lon": 103.82,
+     "lat": 1.35,
+     "tone": "amber",
+     "t": 0.75
+    },
+    {
+     "lon": 90.41,
+     "lat": 23.81,
+     "tone": "amber",
+     "t": 0.8
+    },
+    {
+     "lon": 104.92,
+     "lat": 11.56,
+     "tone": "amber",
+     "t": 0.85
+    },
+    {
+     "lon": 7.45,
+     "lat": 46.95,
+     "tone": "amber",
+     "t": 0.9
+    },
+    {
+     "lon": 10.75,
+     "lat": 59.91,
+     "tone": "amber",
+     "t": 0.95
+    }
+   ],
+   "end": {
+    "t": 1.6,
+    "y": 1330,
+    "handle": "@thegildedticker",
+    "note": "Follow for the next chapter"
+   },
+   "src": "News, not financial advice · prices up to 24 Nov 2026"
+  }
+ ]
+}

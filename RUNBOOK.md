@@ -56,9 +56,11 @@ does not mention that limit.
   and the finance Reel was created first, to hold the last post if the second was refused. Nothing was refused:
   the 20th and the 21st post of the month were both accepted (PENDING for 09:40 and 11:40, no plan or limit
   message). Either the plan has changed, or the limit of 20 is not applied when a post is scheduled through this
-  connector. It was not yet known that morning whether a post beyond the 20th also publishes. The next run that
-  sees the answer writes it here and, once, in the project's reference page (`claude/gilded-ticker-daily-format.md`,
-  "Open question"), which still says nothing can go out after 24 Nov.
+  connector.
+- **25 Nov: posts beyond the 20th do publish.** Both of 24 Nov's Reels show PUBLISHED with Instagram links, the
+  11:40 one (the 21st post of the month) included. The 22nd and 23rd were accepted the same morning with no plan
+  or limit message. The project's reference page (`claude/gilded-ticker-daily-format.md`, "Open question") was
+  corrected that day, once; it does not need a daily update.
 - **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it: both
   Reels, every day. Count the month's posts in step 0 as before and put the count in the report. **Do not stop
   at 20 on the count alone.** Look at yesterday's posts in the same list first: if the posts created beyond the
@@ -129,8 +131,8 @@ with `close.date` on SPY.
   on). Count every post it returns, any status, drafts included = **N**. Then
   `python3 pipeline/budget.py D --used N` → `remaining` and `weekdays_left` for the report (see "Posting budget"
   at the top for what its `post` list means now). If N is 20 or more, do not stop on the count alone: on 24 Nov
-  Metricool accepted the 20th and 21st posts, so check that the posts beyond the 20th were PUBLISHED, as
-  "Posting budget" at the top says.
+  Metricool accepted the 20th and 21st posts and both were published, so check that yesterday's posts beyond the
+  20th show PUBLISHED, as "Posting budget" at the top says.
 - **Already done?** From the same list, if today's finance Reel (text starting "Ten on the Tape |") or today's
   geopolitics Reel is already there, drop it from today's list. More than one session can work on a day. If both
   are there, report that and stop.
@@ -347,6 +349,10 @@ People scroll past anything that reads machine-written. The checker (`check.py`)
 - Reading pages: the session's fetch helper only opens links that a web search returned in this session. A link
   it finds on a page (or a redirect) is refused, and asking again through a new helper is refused too, so search
   for the page instead. Search results mix years: check every page's date before using it.
+- A story that is still "reported, not announced" when the Reel is built (25 Nov: new US tariffs on 16 economies):
+  put "REPORTS:" in the hook, date every statement that could change ("by early Wednesday"), build the hook on a
+  number that stays true whatever is announced (the 16 on the US list since March), and say in the report that the
+  official news may land before the Reel goes out. A whole-world map works: `"bbox": [-128, -14, 152, 68]`.
 - `get_equity_historicals` saves its answer to a file only when it is large. Ask for all the day's symbols in one
   call from about 1 April (about 160 bars each) and it lands in the session's `tool-results/` folder, ready for
   `mkspec.py`, which keeps the last 70 bars.

@@ -1,0 +1,151 @@
+{
+ "date": "2026-11-25",
+ "built": "2026-11-25 05:36-06:02 CT (scheduled run, started 05:35 CT; Wednesday, the day before Thanksgiving)",
+ "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Wednesday, so Ten on the Tape is the daily edition: the five biggest news-driven moves of Tuesday 24 Nov.",
+ "budget": {
+  "used_before": 21,
+  "cap": 20,
+  "budget_py": {
+   "post": [],
+   "default": "geo",
+   "remaining": -1,
+   "weekdays_left": 3,
+   "why": "monthly cap of 20 reached (21 used)"
+  },
+  "check": "Both of yesterday's Reels, the 20th and 21st posts of November, show PUBLISHED with Instagram links (09:40 https://www.instagram.com/reel/DgITJBwgH0d/ and 11:40 https://www.instagram.com/reel/DgIg4CxDKJg/). So posts beyond the 20th do go out.",
+  "decision": "Both Reels, as the task prompt asks and as RUNBOOK.md 'Posting budget' says when the posts beyond the 20th were published.",
+  "result": "Metricool refused nothing: the 22nd post (finance, 09:40) and the 23rd (geopolitics, 11:40) were accepted with status PENDING and no plan or limit message.",
+  "used_after": 23,
+  "note_for_owner": "The Free plan's limit of 20 posts a month is not stopping posts scheduled through this connector (or the plan has changed; getBrandSettings does not show it). Two Reels a day can continue. If Metricool ever shows a plan warning in the app, the run will report its exact message."
+ },
+ "finance": {
+  "type": "finance",
+  "edition": "daily",
+  "format": "short (5 stocks)",
+  "session_date": "2026-11-24",
+  "title": "Ten on the Tape | Abercrombie & Fitch stock (ANF) jumped 20% on record sales",
+  "hook": "$ANF +19.7% · RECORD SALES. [OUTLOOK RAISED]",
+  "hook_sub": "Abercrombie's quarterly sales rose 11% to $1.4 billion.",
+  "tickers": [
+   [
+    "ANF",
+    19.69
+   ],
+   [
+    "HPE",
+    -16.31
+   ],
+   [
+    "INSM",
+    14.13
+   ],
+   [
+    "ADI",
+    -17.37
+   ],
+   [
+    "KSS",
+    19.48
+   ]
+  ],
+  "headlines": {
+   "ANF": "Record sales, raised outlook",
+   "HPE": "Sales up 50%, margins fell",
+   "INSM": "Sanofi is buying it for $41B",
+   "ADI": "Beat estimates, fell anyway",
+   "KSS": "Results beat, outlook raised"
+  },
+  "closes": {
+   "ANF": "140.45 -> 168.10",
+   "HPE": "48.02 -> 40.19",
+   "INSM": "149.09 -> 170.15",
+   "ADI": "378.75 -> 312.95",
+   "KSS": "21.20 -> 25.33"
+  },
+  "facts_on_screen": {
+   "ANF": "3.9x normal volume, hit a 52-week high",
+   "HPE": "2.7x normal volume, -45% from 52-week high",
+   "INSM": "10.1x normal volume, -20% from 52-week high",
+   "ADI": "2.3x normal volume, -30% from 52-week high",
+   "KSS": "2.7x normal volume, -1% from 52-week high"
+  },
+  "indices": "Tuesday: S&P 500 -0.5% (7,237.17 -> 7,201.09, Robinhood SPX) · Nasdaq -1.5% (Composite 24,089.56 -> 23,733.54, CappNotes and Motley Fool) · Dow +0.9% (49,595.31 -> 50,018.70, CappNotes; Robinhood DJX 495.95 -> 500.19). Nasdaq 100 -2.0% (26,746.10 -> 26,214.17, Robinhood NDX) is not shown.",
+  "question": "Which one are you watching? Comment the ticker.",
+  "first_comment": "Which one are you watching? Comment the ticker.",
+  "seconds": 34.0,
+  "metricool_id": 441627056,
+  "uuid": "-7850424333317225547",
+  "scheduled_for": "2026-11-25T09:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-7850424333317225547",
+  "media": "gilded-ticker-media-2026-11/2026-11-25/finance/reel-c9ed2a5ff5.mp4 (12.1 MB), cover-a20d65d5a5.jpg (media commit 4080944)",
+  "spec": "specs/2026-11-25-tape.json",
+  "caption": "specs/2026-11-25-finance-caption.txt"
+ },
+ "reel": {
+  "type": "geo",
+  "title": "Reports: new US tariffs on 16 economies | Leverage or cost?",
+  "hook": "REPORTS: NEW US TARIFFS ON [16 ECONOMIES]",
+  "topic": "New US Section 301 tariffs reported to be close for 16 economies, and what is and is not known. Reuters (three people with knowledge of the matter, speaking on Tuesday 24 Nov): the Trump administration is set to announce new tariffs on 16 trading partners after a probe into excess factory capacity; the announcement is 'expected imminently'; the duties would be 'specifically tailored to each country'; goods from Mexico and Norway are unlikely to see any immediate levies; ceilings agreed in trade deals would be honoured (15% for the EU, Japan and South Korea, 19% for Malaysia); China's 20% cap on second-term tariffs would be honoured 'as long as a trade truce with Beijing is extended', and if it expires the Chinese rate 'would rise to a higher level'; the truce 'runs until January 10'; the duties are 'meant to rebuild' the 'Liberation Day' tariffs the Supreme Court struck down in February; the USTR and the White House did not respond to Reuters' queries. AP (two people familiar with the matter, 8:30 PM EST Tuesday): 'China, the European Union and 14 other economies'; rates 'not immediately clear'; on top of duties of 10% to 12.5% imposed in July on 60 trading partners over forced labour; the plans were reported earlier on Tuesday by Bloomberg and The Wall Street Journal; the USTR is expected to release the probe's results 'in the coming days'; the White House and USTR did not respond; 'Trump could veto any legislation' that overturns the tariffs. The 16, as the USTR listed them when it opened the investigations on 11 March 2026 under Section 301(b) of the Trade Act of 1974: China, the European Union, Singapore, Switzerland, Norway, Indonesia, Malaysia, Cambodia, Thailand, Korea, Vietnam, Taiwan, Bangladesh, Mexico, Japan and India (USTR release; KPMG; Reuters gives the same 16). Greer in the release: 'many U.S. trading partners are producing more goods than they can consume domestically'. Hearings began on 5 May (USTR; KPMG: 5 to 8 May). China's answer: foreign ministry spokesman Guo Jiakun on Wednesday 25 Nov: 'The so-called overcapacity is a false issue, and China opposes using it as an excuse for political manipulation'; Beijing 'stopped short of threatening retaliation' (Reuters). Politics: Democrats 'won majorities in both houses of Congress earlier this month'; ING: 'Without the two-thirds majority needed to override a presidential veto', their ability to dismantle the tariffs 'will remain limited' (Reuters). Next: Trump and Xi 'are set to meet again at a G20 gathering in Miami' next month (Reuters; AP: the G20 in Doral, Florida). Markets on Wednesday morning: Reuters says global stocks were weighed on by the tariff prospect and by a tech-led rally running out of steam, 'with Nasdaq futures down over 2%'; CNBC at 4:45 AM ET via JBizNews: Nasdaq 100 futures -2.3%, S&P 500 futures -1.4%; Newsquawk at 05:25 EST: NQ -2.3%, ES -1.4%; TipRanks at 5:44 AM EST: -2.55% and -1.54%.",
+  "market_scene": "QQQ (Invesco QQQ, 'the Nasdaq 100 fund' on screen) official closes: 651.03 on Mon 23 Nov -> 638.10 on Tue 24 Nov = -1.99%, shown as -2.0% (StockTitan prints -1.99%). Chart shows 1 Oct to 24 Nov closes. The sub says chip stocks led Tuesday's fall (CappNotes: technology -3.26%, the only big losing sector; SOXX -8.27%) and gives the futures move of early Wednesday in words, with Reuters' two reasons. Futures are not charted (rule 3: the headline number is the one the chart shows).",
+  "question": "LEVERAGE or COST?",
+  "first_comment": "LEVERAGE or COST? One word.",
+  "seconds": 53.5,
+  "scenes": 10,
+  "metricool_id": 441627456,
+  "uuid": "3701452195736731659",
+  "scheduled_for": "2026-11-25T11:40:00 America/Chicago",
+  "status": "PENDING",
+  "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=3701452195736731659",
+  "media": "gilded-ticker-media-2026-11/2026-11-25/reel/reel-2c5336acbc.mp4 (36.7 MB), cover-c1530b56d2.jpg (media commit 4080944)",
+  "spec": "specs/2026-11-25-reel.json",
+  "caption": "specs/2026-11-25-reel-caption.txt"
+ },
+ "uncertain": [
+  "The tariff story was still a report of plans at build time: no source read shows a USTR or White House announcement, and a search at about 05:57 CT still found only 'prepares', 'awaits' and 'weighs'. The official notice could come before 11:40. Every statement in the Reel is dated ('by early Wednesday') or attributed, and the number 16 is the USTR's own list from March, so the Reel stays true; it may still look late if rates are published first. The owner can delete or edit it in Metricool."
+ ],
+ "skipped": [
+  "Nvidia (NVDA -5.86% to $155.38): on the 21, 22 and 24 Nov tapes; the only new item is a Bernstein upgrade (Motley Fool). AMD -8.86%: Motley Fool cites a registration of about 337 million shares for possible resale, StockTitan gives no company news; one source and thin detail, not used. Micron (MU -11.01%): CappNotes cites a downgrade to Neutral and fears of slower memory demand, StockTitan says there was no company news; not used.",
+  "Dell (DELL -11.83% in the session, CappNotes): it reported after the close (record revenue of $54.9 billion), so a card about Tuesday's fall would be out of date by 09:40. Ambarella (-37.6% after hours, StockTitan), Urban Outfitters, Workday, Nutanix, Autodesk and HP Inc. moved after hours: Wednesday's session, not Tuesday's.",
+  "Other verified winners left out to keep five: Dick's (DKS +14.59%, raised outlook), Dollar Tree (DLTR +11.18%), Sanofi's US shares (SNY +10.97%, the buyer in the Insmed deal). Seen in the wraps and not checked further: Embecta +40.6%, Amentum +20.1%, Cogent +17.4% (an FDA approval), Dycom -18.0%, Semtech -17.0%, Kymera +15.7% (on yesterday's tape; a $1.75 billion share offering).",
+  "Anthropic (ANT -6.54% to $81.90, below its $83 IPO price; CappNotes, TipRanks, Yahoo): not featured, as the RUNBOOK says.",
+  "'The Dow closed above 50,000' is in the caption (CappNotes 50,018.70; Motley Fool 50,019; Newsquawk). No page read calls it a first or a record, so the caption does not either.",
+  "Analog Devices: the analysts' consensus differs by source ($3.89 to $4.05; Quantisnow lists four), so the card says only that it beat estimates. No cause for the fall is given on screen (Chartmill, via Quantisnow: 'a reaction to expectations and positioning'; Motley Fool: the broad tech sell-off).",
+  "Kohl's: earnings of $2.15 a share include a $1.16 tax benefit (StockTitan): in the spec's body, not on screen.",
+  "Tariffs, a single aggregator copy (Head Topics, of Yahoo Finance Canada, 25 Nov 09:06 UTC): it says the administration 'announced' the findings, with 'up to 20%', a list of 14 without Mexico and Norway, exclusions for semiconductors, cars, steel and aluminium, and nothing in effect before January. It cites an unnamed official, and Reuters' copy updated at 06:12 on 25 Nov still said 'expected imminently'. Not used.",
+  "Second-hand details not on screen: the Wall Street Journal's (most imports covered, Vietnam and India could face higher rates; via Newsquawk, PTI and Dimerco) and the Financial Times' (2.5 to 5 points extra for Japan, South Korea and the EU; via Newsquawk). Japan's and the EU's positions come only from Political.org, and South Korea's from an Aju Press analysis quoting an August remark: not used.",
+  "Wednesday's Asian closes (Kospi -6.16%, Admirals; Nikkei -2.78%, Shanghai -2.03%, Hang Seng -1.14%, TipRanks): not on screen; the pages mix chip worries and tariffs as causes.",
+  "Other topics considered: the Houthi attacks on the Ras Tanura refinery and a financial centre in Riyadh on Tuesday (Newsquawk; TipRanks: 11 hurt at the PIF Tower) and Iran's army chief ordering Hormuz to stay closed (Newsquawk), with the Brent oil fund up 1.9%: the same Gulf story as the 21 Nov Reel. The EU's 22nd sanctions package on Russia (CappNotes), a US jury's verdict against Huawei (Yahoo, Newsquawk headline), Taiwan's local elections on 28 Nov (Au79 Macro)."
+ ],
+ "sources": [
+  "Robinhood: get_equity_quotes (official closes dated 2026-11-24 for 25 symbols), get_equity_historicals (daily bars 1 Apr to 24 Nov for ANF, KSS, ADI, HPE, INSM, SNY, DLTR, DKS, MU, AMD; 1 Sep to 24 Nov for QQQ and 13 other funds), get_equity_fundamentals (market_date 2026-11-24), get_index_quotes and get_index_historicals (SPX, NDX, DJX)",
+  "CappNotes, 'Closing Look - Tuesday, November 24, 2026' (Frank Cappelleri; page modified 24 Nov 2026 5:34 p.m. ET)",
+  "StockTitan, 'Stock Market Today, November 24, 2026: Chip Stocks Slide After Monday's Big Rally' (updated 24 Nov 2026 08:14 PM EST; first 39,915 characters read verbatim, the rest as a summary)",
+  "Motley Fool, 'Stock Market Today, Nov. 24: Tech Sell-Off Drags Nasdaq as Dow Gains on Value Rotation' (Howard Smith, 24 Nov 2026 4:51PM EST); also its Nov. 24 pages on AMD and Nvidia (RJ Fulton) and Hecla (Lawrence Rothman)",
+  "Sanofi press release of 24 Nov 2026 filed with the SEC (Exhibit 99.1), 'Sanofi to Acquire Insmed in Strategic Step that Strengthens Long-Term Future'",
+  "Analog Devices press release via PR Newswire, 24 Nov 2026 07:01 ET (read as a summary); Quantisnow, 'Analog Devices posts record $4.37 billion quarter, but shares fall 9.8% premarket' (24 Nov 2026 11:07 AM ET)",
+  "Reuters, 'Trump set to add new sweeping tariffs, undeterred by midterms defeat' (David Lawder and Andrea Shalal): via Investing.com (stamped Nov 24, 2026 11:20 AM, updated Nov 25 06:12 AM, no time zone printed) and Business Recorder (25 Nov 2026 04:14pm Pakistan time); earlier version via The Korea Times, 'US poised to unveil new tariffs targeting S. Korea, 15 other trading partners' (25 Nov 2026 1:30 am KST)",
+  "AP via WTAE, 'US ready to slap tariffs on China, EU and others over subsidized production, sources say' (Chris Rugaber, Aamer Madhani and Josh Boak; updated 8:30 PM EST 24 Nov 2026)",
+  "US Trade Representative press release, 11 March 2026, 'USTR Initiates Section 301 Investigations Relating to Structural Excess Capacity and Production in Manufacturing Sectors'; KPMG TaxNewsFlash, 12 March 2026",
+  "Newsquawk: 'Daily US Opening News - 25th November 2026' (25 Nov 10:47 UTC), 'Daily Asia-Pac Opening News - 25th November 2026' (24 Nov 22:24 UTC), 'Daily European Opening News - 24th November 2026' (24 Nov 06:42 UTC)",
+  "JBizNews, 'Nasdaq Futures Fall More Than 2% as Tech Selling Resumes Before Inflation Report' (25 Nov 2026 4:56 am EST, citing CNBC at 4:45 AM ET); TipRanks, 'Stock Market Today, Nov. 25' (Sheryl Sheth, about 5:45 AM EST); Yahoo Finance live blog (Grace O'Donnell, 25 Nov 2026 2:00 AM PST); PreMarket Daily (James Whitfield, 25 Nov 2026)",
+  "Read for context, nothing from them is on screen: PTI via Upstox (25 Nov 11:59 IST), Aju Press (Kim Yeon-jae, 25 Nov 16:33 KST), Dimerco (25 Nov), Political.org (Elena Vasquez, 24 Nov), Wisevoter and Shanghai Metals Market (25 Nov), Admirals blog (25 Nov 03:06 ET), Head Topics copy of Yahoo Finance Canada (25 Nov 09:06 UTC)",
+  "First sweep of the day's geopolitics, nothing from them is in the Reels: Au79 Macro (24 Nov 2026), Bloomberg via The Irish Times, 'Oil extends decline on signs of continuing US-Iran diplomacy' (24 Nov 2026 06:52), CMB News (24 Nov 2026)",
+  "Could not open (nothing from them was used): Semafor and FX Leaders ('robots_disallowed'); Benzinga, Quartz and Newsquawk's European equity note ('client_error')"
+ ],
+ "notes": [
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date), add_repo (the repository was already attached; the clone and both pushes worked) and a direct WebFetch (pages were read through the session's fetch helper, which reports on each page and keeps quotes short).",
+  "pipeline/tape_reel.py already existed and was not changed today. No code changed. RUNBOOK.md: the 'Posting budget' bullets now record that posts beyond the 20th publish, and one lesson was added about stories that are still only reported. The project's reference page ('Open question') was corrected once, as yesterday's RUNBOOK asked.",
+  "On a Wednesday morning get_equity_quotes returned close.date 2026-11-24 for every symbol; each close equals the close of its 24 Nov daily bar, and every move matches a published closing move to two decimals.",
+  "The lead is chosen by the code: the biggest of the five moves, Abercrombie (+19.69%, ahead of Kohl's +19.48%). The hook rests on StockTitan (record third-quarter net sales of $1.4 billion, up 11%; full-year outlook raised) and CappNotes ('Q3 beat and raised full-year outlook').",
+  "HPE was on the 23 Nov watch tape ('Reports Monday after the close'). Today's card is its earnings reaction, which is new news. 'Is buying' on Insmed's card stands for an agreed deal that still needs Insmed's shareholders and regulators; the caption says 'agreed to buy'.",
+  "When the tariff reports appeared: AP says Bloomberg and the Wall Street Journal reported the plans 'earlier on Tuesday', and Reuters' sources spoke on Tuesday, so the reports were out during Tuesday's session. The wraps read (CappNotes, Motley Fool, StockTitan) put Tuesday's fall down to chip stocks, so the Reel does not tie Tuesday's close to tariffs. It gives Reuters' two reasons for Wednesday's futures.",
+  "'Twelve of the 16 are in Asia' is a count from the USTR's list. 'Trump keeps the veto' is the constitutional point AP and ING (via Reuters) make; the scene states it without comment.",
+  "Hook: 'REPORTS:' is in the headline because nothing was official at build time. The tag gives the day of the reports (Tue 24 Nov).",
+  "Pins sit on capitals' standard coordinates and carry the economy's name (the USTR's word for the 16). No country is tinted in any scene. The whole-world view (bbox -128,-14,152,68) is new and passed the layout check.",
+  "The geopolitics video is 36.7 MB at the default CRF 20, under the 45 MB limit, so it was not re-encoded. Frames from both finished files were looked at before scheduling.",
+  "isAiGenerated is false in both Metricool requests, as publish.py writes it for every post.",
+  "Posts created on Metricool this month: 23.",
+  "Report pushed to the owner's phone at about 06:03 CT with both planner links and the post count."
+ ]
+}
