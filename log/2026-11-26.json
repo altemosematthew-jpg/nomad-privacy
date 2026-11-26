@@ -1,6 +1,6 @@
 {
  "date": "2026-11-26",
- "built": "2026-11-26 05:36-05:55 CT (scheduled run, started 05:35 CT; Thursday, Thanksgiving Day, US market closed)",
+ "built": "2026-11-26 05:36-05:58 CT (scheduled run, started 05:35 CT; Thursday, Thanksgiving Day, US market closed)",
  "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Neither was built or scheduled today: Metricool has published its 20 posts for November and failed both of yesterday's Reels with a limit error.",
  "budget": {
   "returned_by_getScheduledPosts": 23,
@@ -50,7 +50,8 @@
  ],
  "uncertain": [
   "Whether the owner has upgraded or will upgrade: the connector does not show the plan (getBrandSettings returns the brand, its timezone and its Instagram handle only). The rule for the rest of November is in RUNBOOK.md 'Posting budget': build nothing while 20 posts are PUBLISHED, unless he says he has upgraded or a later post shows PUBLISHED.",
-  "The two failed Reels are still in Metricool with status ERROR. Their content is dated (Tuesday's movers; tariffs 'by early Wednesday'), so they should not be published later as they are. They were left alone: this run creates, at most, today's two Reels and changes nothing else."
+  "The two failed Reels are still in Metricool with status ERROR. Their content is dated (Tuesday's movers; tariffs 'by early Wednesday'), so they should not be published later as they are. They were left alone: this run creates, at most, today's two Reels and changes nothing else.",
+  "The project's reference page still has the wrong text about the limit (see notes). A chat that reads that page before RUNBOOK.md could repeat the mistake."
  ],
  "skipped": [
   "Finance Reel (Ten on the Tape, daily edition for Wednesday 25 Nov): not researched, not built. No stock was chosen and no market wrap was read.",
@@ -66,8 +67,14 @@
   "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date: 05:35:57 CST at the start), add_repo (the repository was already attached; the clone worked) and a direct WebFetch (the four Metricool pages were read through the session's fetch helper).",
   "pipeline/tape_reel.py already existed and was not changed. No rendering code changed and nothing was rendered. pipeline/budget.py: only the docstring changed (what to count as used).",
   "RUNBOOK.md: 'Posting budget' was rewritten with what Metricool's help centre says, what happened on 25 Nov, the counting mistake, the rule for 27 to 30 Nov, the default from 1 December and the owner's three options. Step 0 now counts PUBLISHED posts plus PENDING ones that are not drafts, and says to report any ERROR word for word. One bullet was added under step 3: on a market holiday morning get_equity_quotes still shows the close of the session before last, like a weekend.",
-  "The project's reference page (claude/gilded-ticker-daily-format.md): the section 'The monthly post limit' was corrected, because the 25 Nov version said the limit had turned out not to stop posts.",
+  "The project's reference page (claude/gilded-ticker-daily-format.md) was NOT corrected. Its section 'The monthly post limit' still says the limit turned out not to stop posts (the 25 Nov text). This run prepared a corrected section and tried to write the page once; the write was refused: 'Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Destructive or Unwanted Actions].' It was not tried again or done another way. The corrected section is in 'reference_page_fix_proposed' for a chat where the owner can approve it.",
   "Why the limit looked absent on 24 and 25 Nov: Metricool accepts posts beyond the limit as PENDING without a warning and only fails them at publishing time, and the count of posts included a draft.",
   "Report pushed to the owner's phone at about 05:44 CT: nothing scheduled, the exact error message, the correction of yesterday's report, the three options and the planner links of the two failed Reels."
- ]
+ ],
+ "reference_page_fix_proposed": {
+  "page": "claude/gilded-ticker-daily-format.md (project TheGildedTicketINSTAGRAM)",
+  "replace_section": "'## The monthly post limit (asked 21 Nov 2026; the limit turned out not to stop posts, 24–25 Nov)' up to, not including, its last bullet ('- 22 Nov: he asked whether to delete and repost ...'), which stays as it is",
+  "status": "not applied (write refused in the unattended run of 26 Nov)",
+  "new_text": "## The monthly post limit: it is real (20 published posts a month; reached on 24 Nov 2026)\nMetricool's Free plan publishes 20 posts per calendar month. Its help centre (read 26 Nov 2026) says only published\nposts count, drafts do not, more than 20 can be scheduled \"but only 20 will be published during that month\", and\n\"The limit resets on the 1st of each month\". Metricool accepts the extra posts without a warning and fails them at\ntheir publishing time. On 18 Nov the owner chose to stay on the Free plan, and `pipeline/budget.py` was written to\nration posts (one Reel on most days) so the account would not go quiet at the end of a month. The 20 Nov plan asks\nfor two Reels every day and does not mention the limit.\n- 21–24 Nov: both Reels went out each day, as the task prompt asks. The 24 Nov Reels were the 19th and 20th posts\n  published in November.\n- **25 Nov: both Reels failed** with Metricool's status \"You have reached your Metricool account limit.\" An\n  earlier version of this page said the limit had turned out not to stop posts. That was a counting mistake: a\n  draft from 12 Nov had been counted as a post.\n- 26 Nov: nothing was built or scheduled. On the Free plan nothing can go out until 1 December. The daily run\n  stops while 20 of the month's posts are published, and reports any Metricool error word for word, with no retry\n  and no workaround.\n- **Open, asked again on 26 Nov:** (1) upgrade Metricool (its Starter plan lists unlimited scheduling), (2) stay\n  on Free and ration to about one Reel a day, or (3) stay on Free with two a day, which uses a month's 20 posts in\n  ten days. Until he answers, the runs follow the 20 Nov plan: two a day from the 1st (option 3). His answer\n  belongs in `RUNBOOK.md` under \"Posting budget\", and here.\n- 22 Nov: he asked whether to delete and repost or add two extra Reels for more hashtags; told about the 5-tag cap\n  and the budget, he chose **no extra Reels and no reposts**, and to apply the new hashtag rules from the next run.\n"
+ }
 }

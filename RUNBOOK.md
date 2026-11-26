@@ -62,7 +62,10 @@ both Reels every day ("create exactly these two Reels") and does not mention the
   created proves nothing: look at its status after its time has passed.
 - **26 Nov:** 20 published, so nothing was built and nothing was scheduled. The report told the owner that the
   25 Nov Reels did not go out, corrected the 25 Nov report, and asked him to choose (below). The project's
-  reference page (`claude/gilded-ticker-daily-format.md`, "The monthly post limit") was corrected the same day.
+  reference page (`claude/gilded-ticker-daily-format.md`, "The monthly post limit") **still carries the wrong
+  25 Nov text** ("the limit turned out not to stop posts"): the unattended run was not permitted to rewrite it.
+  Do not try again from a scheduled run. The corrected section is in `log/2026-11-26.json`
+  (`reference_page_fix_proposed`) for a chat where the owner can approve it. Until then trust this file.
 - **Rest of November (27–30 Nov):** in step 0, if 20 of the month's posts are PUBLISHED, **build nothing and
   schedule nothing**. Send a two-line report ("Nothing scheduled: Metricool's 20 posts for November are used.
   Posting resumes on 1 December unless you upgrade."). Do not create a post to test the limit: that is retrying a
