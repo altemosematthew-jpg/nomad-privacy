@@ -1,6 +1,6 @@
 {
  "date": "2026-11-26",
- "built": "2026-11-26 05:36-05:58 CT (scheduled run, started 05:35 CT; Thursday, Thanksgiving Day, US market closed)",
+ "built": "2026-11-26 05:36-05:48 CT (scheduled run, started 05:35 CT; Thursday, Thanksgiving Day, US market closed)",
  "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Neither was built or scheduled today: Metricool has published its 20 posts for November and failed both of yesterday's Reels with a limit error.",
  "budget": {
   "returned_by_getScheduledPosts": 23,
@@ -73,7 +73,7 @@
  ],
  "reference_page_fix_proposed": {
   "page": "claude/gilded-ticker-daily-format.md (project TheGildedTicketINSTAGRAM)",
-  "replace_section": "'## The monthly post limit (asked 21 Nov 2026; the limit turned out not to stop posts, 24–25 Nov)' up to, not including, its last bullet ('- 22 Nov: he asked whether to delete and repost ...'), which stays as it is",
+  "replace_section": "the whole section that starts '## The monthly post limit (asked 21 Nov 2026; the limit turned out not to stop posts, 24–25 Nov)', up to the next heading ('## How the plan changed'). Its last bullet (22 Nov, hashtags) is unchanged in the new text.",
   "status": "not applied (write refused in the unattended run of 26 Nov)",
   "new_text": "## The monthly post limit: it is real (20 published posts a month; reached on 24 Nov 2026)\nMetricool's Free plan publishes 20 posts per calendar month. Its help centre (read 26 Nov 2026) says only published\nposts count, drafts do not, more than 20 can be scheduled \"but only 20 will be published during that month\", and\n\"The limit resets on the 1st of each month\". Metricool accepts the extra posts without a warning and fails them at\ntheir publishing time. On 18 Nov the owner chose to stay on the Free plan, and `pipeline/budget.py` was written to\nration posts (one Reel on most days) so the account would not go quiet at the end of a month. The 20 Nov plan asks\nfor two Reels every day and does not mention the limit.\n- 21–24 Nov: both Reels went out each day, as the task prompt asks. The 24 Nov Reels were the 19th and 20th posts\n  published in November.\n- **25 Nov: both Reels failed** with Metricool's status \"You have reached your Metricool account limit.\" An\n  earlier version of this page said the limit had turned out not to stop posts. That was a counting mistake: a\n  draft from 12 Nov had been counted as a post.\n- 26 Nov: nothing was built or scheduled. On the Free plan nothing can go out until 1 December. The daily run\n  stops while 20 of the month's posts are published, and reports any Metricool error word for word, with no retry\n  and no workaround.\n- **Open, asked again on 26 Nov:** (1) upgrade Metricool (its Starter plan lists unlimited scheduling), (2) stay\n  on Free and ration to about one Reel a day, or (3) stay on Free with two a day, which uses a month's 20 posts in\n  ten days. Until he answers, the runs follow the 20 Nov plan: two a day from the 1st (option 3). His answer\n  belongs in `RUNBOOK.md` under \"Posting budget\", and here.\n- 22 Nov: he asked whether to delete and repost or add two extra Reels for more hashtags; told about the 5-tag cap\n  and the budget, he chose **no extra Reels and no reposts**, and to apply the new hashtag rules from the next run.\n"
  }
