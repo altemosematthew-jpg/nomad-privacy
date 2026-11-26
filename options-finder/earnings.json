@@ -1,7 +1,7 @@
-{"asOf": "2026-11-25", "source": "Nasdaq earnings date + Yahoo Finance", "timingUnknown": [], "d": {
+{"asOf": "2026-11-26", "source": "Nasdaq earnings date + Yahoo Finance", "timingUnknown": [], "d": {
   "AAPL": ["2027-01-28", "pm", true],
   "AMD": ["2027-02-02", "pm", true],
-  "AMZN": ["2027-02-04", "pm", false],
+  "AMZN": ["2027-02-04", "pm", true],
   "ARM": ["2027-02-03", "pm", true],
   "AVGO": ["2026-12-09", "pm", true],
   "BAC": ["2027-01-15", "am", true],
