@@ -1,0 +1,73 @@
+{
+ "date": "2026-11-26",
+ "built": "2026-11-26 05:36-05:55 CT (scheduled run, started 05:35 CT; Thursday, Thanksgiving Day, US market closed)",
+ "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Neither was built or scheduled today: Metricool has published its 20 posts for November and failed both of yesterday's Reels with a limit error.",
+ "budget": {
+  "returned_by_getScheduledPosts": 23,
+  "published": 20,
+  "error": 2,
+  "draft_never_published": 1,
+  "cap": 20,
+  "budget_py": {
+   "post": [],
+   "default": "finance",
+   "remaining": 0,
+   "weekdays_left": 2,
+   "why": "monthly cap of 20 reached (20 used)"
+  },
+  "budget_py_note": "Run with --used 20 (the PUBLISHED posts). With --used 23 (everything the list returns, the old way of counting) it prints remaining -3.",
+  "check": "Both of yesterday's Reels (25 Nov, 09:40 finance and 11:40 geopolitics) show status ERROR with detailedStatus 'You have reached your Metricool account limit.' and no Instagram link. The two Reels of 24 Nov show PUBLISHED with Instagram links. Counting by status: 20 PUBLISHED (11 Nov x2, 12 Nov x3, 13 Nov x2, 17 Nov x2, 18, 19 and 20 Nov x1 each, 21 to 24 Nov x2 each), 2 ERROR (25 Nov), 1 draft still PENDING (the carousel draft dated 12 Nov, uuid 1606759134113517517).",
+  "decision": "Nothing built, nothing scheduled, no retry and no workaround. RUNBOOK.md 'Posting budget' said: if one of yesterday's posts beyond the 20th shows an error, 'build nothing, report that status word for word, and stop'. The task prompt says never to retry a plan or limit error and not to work around it.",
+  "result": "getScheduledPosts for 26 Nov 00:00 to 23:59 returned an empty list at 05:41 CT. createScheduledPost was not called.",
+  "correction": "The 24 and 25 Nov runs counted the 12 Nov draft as a post, so they called the 24 Nov Reels the 20th and 21st posts of the month and concluded that posts beyond the 20th publish. They were the 19th and 20th published posts. The 25 Nov report told the owner that the limit was not stopping posts and that two Reels a day could continue. That was wrong, and today's report says so.",
+  "metricool_help_centre": "'Main differences between Free and paid plans' (page metadata: published and modified 2026-11-24): 'Up to 20 posts per month in the planner.' 'Posts are counted by calendar month, so on the 1st of each month you have 20 posts available again.' 'The limit resets on the 1st of each month'. 'The counter includes only posts that are actually published, not scheduled ones.' 'You can schedule more than 20 posts, but only 20 will be published during that month.' 'Drafts are not counted until they are published.' The page does not mention the error message itself.",
+  "paid_plan_as_printed": "Starter, on metricool.com/premium-vs-free-metricool-plans and metricool.com/en/pricing/: 'From $20/month' with annual billing, 'From $25/month' with monthly billing (in euros: 'From €16/month' and 'From €20/month'); 'Unlimited post scheduling'; the pricing page's footnote: 'Unlimited scheduling may be limited by our Fair Use Policy.'",
+  "question_for_owner": "Put to him in today's report: (1) upgrade Metricool and say so, then both Reels resume the next morning; (2) stay on Free and ration to about one Reel a day so each month lasts (budget.py); (3) stay on Free with two a day, which uses December's 20 posts by 10 December. With no answer, the runs keep to the 20 Nov plan: nothing until 1 December, then two a day (option 3)."
+ },
+ "finance": null,
+ "reel": null,
+ "failed_yesterday": [
+  {
+   "type": "finance",
+   "title": "Ten on the Tape | Abercrombie & Fitch stock (ANF) jumped 20% on record sales",
+   "scheduled_for": "2026-11-25T09:40:00 America/Chicago",
+   "metricool_id": 441627056,
+   "uuid": "-7850424333317225547",
+   "status": "ERROR",
+   "detailedStatus": "You have reached your Metricool account limit.",
+   "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=-7850424333317225547"
+  },
+  {
+   "type": "geo",
+   "title": "Reports: new US tariffs on 16 economies | Leverage or cost?",
+   "scheduled_for": "2026-11-25T11:40:00 America/Chicago",
+   "metricool_id": 441627456,
+   "uuid": "3701452195736731659",
+   "status": "ERROR",
+   "detailedStatus": "You have reached your Metricool account limit.",
+   "planner_url": "https://app.metricool.com/planner/calendar?blogId=7018528&openWithPostUuid=3701452195736731659"
+  }
+ ],
+ "uncertain": [
+  "Whether the owner has upgraded or will upgrade: the connector does not show the plan (getBrandSettings returns the brand, its timezone and its Instagram handle only). The rule for the rest of November is in RUNBOOK.md 'Posting budget': build nothing while 20 posts are PUBLISHED, unless he says he has upgraded or a later post shows PUBLISHED.",
+  "The two failed Reels are still in Metricool with status ERROR. Their content is dated (Tuesday's movers; tariffs 'by early Wednesday'), so they should not be published later as they are. They were left alone: this run creates, at most, today's two Reels and changes nothing else."
+ ],
+ "skipped": [
+  "Finance Reel (Ten on the Tape, daily edition for Wednesday 25 Nov): not researched, not built. No stock was chosen and no market wrap was read.",
+  "Geopolitics Reel: not researched, not built. No topic was chosen.",
+  "Yesterday's two Reels were not re-created or re-scheduled: that would be retrying a limit error."
+ ],
+ "sources": [
+  "Metricool: getScheduledPosts for 1 to 30 Nov 2026 (23 posts, read at about 05:37 CT) and for 26 Nov (empty, 05:41 CT); getBrandSettings",
+  "Metricool help centre, 'Main differences between Free and paid plans' (help.metricool.com/main-differences-between-free-and-paid-plans-bl0v9) and 'Plans, add-ons, and API access explained' (help.metricool.com/plans-add-ons-and-api-access-explained-xux1u); metricool.com/premium-vs-free-metricool-plans ('Metricool Pricing Explained: Which Plan Is Right for You?', modified 2026-11-03); metricool.com/en/pricing/. All four read through the session's fetch helper on 26 Nov 2026, which relays short quotes.",
+  "Robinhood: get_equity_quotes for SPY, QQQ and DIA at about 05:37 CT (close.date 2026-11-24 for all three; last regular trades stamped 2026-11-25T20:59:59Z). No price from it is used anywhere."
+ ],
+ "notes": [
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date: 05:35:57 CST at the start), add_repo (the repository was already attached; the clone worked) and a direct WebFetch (the four Metricool pages were read through the session's fetch helper).",
+  "pipeline/tape_reel.py already existed and was not changed. No rendering code changed and nothing was rendered. pipeline/budget.py: only the docstring changed (what to count as used).",
+  "RUNBOOK.md: 'Posting budget' was rewritten with what Metricool's help centre says, what happened on 25 Nov, the counting mistake, the rule for 27 to 30 Nov, the default from 1 December and the owner's three options. Step 0 now counts PUBLISHED posts plus PENDING ones that are not drafts, and says to report any ERROR word for word. One bullet was added under step 3: on a market holiday morning get_equity_quotes still shows the close of the session before last, like a weekend.",
+  "The project's reference page (claude/gilded-ticker-daily-format.md): the section 'The monthly post limit' was corrected, because the 25 Nov version said the limit had turned out not to stop posts.",
+  "Why the limit looked absent on 24 and 25 Nov: Metricool accepts posts beyond the limit as PENDING without a warning and only fails them at publishing time, and the count of posts included a draft.",
+  "Report pushed to the owner's phone at about 05:44 CT: nothing scheduled, the exact error message, the correction of yesterday's report, the three options and the planner links of the two failed Reels."
+ ]
+}

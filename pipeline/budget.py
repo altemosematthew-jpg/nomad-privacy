@@ -4,8 +4,10 @@ Usage:
   python3 pipeline/budget.py D --used N [--cap 20]
 
   D       today's date in America/Chicago (YYYY-MM-DD)
-  --used  posts already created in Metricool this calendar month, any status (PUBLISHED, PENDING, drafts):
-          count everything getScheduledPosts returns from the 1st 00:00 to the last day 23:59 of D's month
+  --used  posts Metricool has PUBLISHED this calendar month plus posts that are PENDING and not drafts (from
+          getScheduledPosts, the 1st 00:00 to the last day 23:59 of D's month). Leave out drafts and posts with
+          status ERROR: the Free plan counts only what is actually published (Metricool help centre, 26 Nov 2026).
+          Counting the draft of 12 Nov 2026 as used made the 24 and 25 Nov runs think the limit was not applied.
   --cap   the plan's monthly limit. The owner chose to stay on the Free plan (18 Nov 2026): 20 a month.
           Use --cap 0 if he upgrades (unlimited).
 

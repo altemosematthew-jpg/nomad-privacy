@@ -42,34 +42,45 @@ on-screen text and the video. So every caption follows these rules (`pipeline/ch
 - The Reel's opening title card uses the same key words as the first line (Instagram reads on-screen text).
 - Do not delete and repost a Reel to change its tags: edit the caption in the Instagram app instead.
 
-### Posting budget: an open question for the owner (put to him in the 21 Nov report)
-The prompt asks for both Reels every day ("create exactly these two Reels"). Metricool's **Free plan still allows
-20 scheduled posts a month**. The owner chose to stay on it on 18 Nov, and `pipeline/budget.py` was written then
-to ration posts (one Reel on most days) so the account would not go quiet at the end of the month. The new prompt
-does not mention that limit.
-- **21 Nov:** 13 posts had been used, 7 were left for the 5 trading days to 30 Nov. Both Reels went out, because
-  two could be spent without taking a post away from any trading day. That left 5 for 5 trading days.
-- From 22 Nov the two instructions pull apart: if the limit of 20 holds, two a day uses the last posts on Tuesday
-  24 Nov, and nothing can go out from then to 30 Nov. In a full month, two a day lasts 10 days.
-- **22 and 23 Nov:** both Reels went out on each day, because the owner had not answered. That made 19.
-- **24 Nov: Metricool did not stop at 20.** 19 were used. The prompt still asked for both Reels, so both were built
-  and the finance Reel was created first, to hold the last post if the second was refused. Nothing was refused:
-  the 20th and the 21st post of the month were both accepted (PENDING for 09:40 and 11:40, no plan or limit
-  message). Either the plan has changed, or the limit of 20 is not applied when a post is scheduled through this
-  connector.
-- **25 Nov: posts beyond the 20th do publish.** Both of 24 Nov's Reels show PUBLISHED with Instagram links, the
-  11:40 one (the 21st post of the month) included. The 22nd and 23rd were accepted the same morning with no plan
-  or limit message. The project's reference page (`claude/gilded-ticker-daily-format.md`, "Open question") was
-  corrected that day, once; it does not need a daily update.
-- **Until the owner answers:** the task prompt is the newer instruction and says it wins, so follow it: both
-  Reels, every day. Count the month's posts in step 0 as before and put the count in the report. **Do not stop
-  at 20 on the count alone.** Look at yesterday's posts in the same list first: if the posts created beyond the
-  20th are PUBLISHED, carry on with both Reels. If one shows an error or never went out, Metricool is not
-  publishing past its limit: build nothing, report that status word for word, and stop. If a
-  `createScheduledPost` call is refused with a plan or limit error: no retry, no workaround, report its exact
-  message; if that happens on the first Reel, do not create the second.
-- **When he answers,** write his answer here, delete this section's other bullets, and if he chooses to ration,
-  `budget.py` and the swap rule in step 0 decide again.
+### Posting budget: the limit is real, and the owner has a choice to make (asked 21 Nov, asked again 26 Nov)
+Metricool's **Free plan publishes 20 posts a calendar month**. Its help centre ("Main differences between Free and
+paid plans", read on 26 Nov 2026) says: "Up to 20 posts per month in the planner"; "The counter includes only posts
+that are actually published, not scheduled ones"; "You can schedule more than 20 posts, but only 20 will be
+published during that month"; "Drafts are not counted until they are published"; "The limit resets on the 1st of
+each month". So Metricool accepts a 21st post without any warning and then fails it at its publishing time.
+The owner chose to stay on the Free plan on 18 Nov, and `pipeline/budget.py` was written then to ration posts (one
+Reel on most days) so the account would not go quiet at the end of the month. The task prompt of 20 Nov asks for
+both Reels every day ("create exactly these two Reels") and does not mention the limit.
+- **21–24 Nov:** both Reels went out every day, because the owner had not answered. The 24 Nov Reels were the 19th
+  and 20th posts *published* in November.
+- **25 Nov: both Reels failed.** Metricool had accepted them (PENDING, no warning). At 09:40 and 11:40 it did not
+  publish them: status ERROR, "You have reached your Metricool account limit." (seen on 26 Nov).
+- **The mistake to avoid.** The runs of 24 and 25 Nov counted everything `getScheduledPosts` returned, and that
+  includes a carousel draft of 12 Nov that was never published. So the 24 Nov Reels were called the 20th and 21st
+  posts, and the 25 Nov run concluded that "posts beyond the 20th do publish" and told the owner that two a day
+  could continue. That was wrong. Count what is PUBLISHED (step 0). A post that is PENDING on the morning it was
+  created proves nothing: look at its status after its time has passed.
+- **26 Nov:** 20 published, so nothing was built and nothing was scheduled. The report told the owner that the
+  25 Nov Reels did not go out, corrected the 25 Nov report, and asked him to choose (below). The project's
+  reference page (`claude/gilded-ticker-daily-format.md`, "The monthly post limit") was corrected the same day.
+- **Rest of November (27–30 Nov):** in step 0, if 20 of the month's posts are PUBLISHED, **build nothing and
+  schedule nothing**. Send a two-line report ("Nothing scheduled: Metricool's 20 posts for November are used.
+  Posting resumes on 1 December unless you upgrade."). Do not create a post to test the limit: that is retrying a
+  plan error, which the prompt forbids. Two things lift this rule: the owner says he has upgraded (his answer will
+  be written below or in the task prompt), or a post dated after the 20th published one shows PUBLISHED. Then post
+  both Reels and run `budget.py` with `--cap 0`.
+- **From 1 December, until the owner answers:** the task prompt is the newer instruction and says it wins, so
+  follow it: both Reels, every day. That uses December's 20 posts on 10 December, and nothing can go out from 11 to
+  31 December. Say so in every report ("x of 20 published; at two a day the last one goes out on <date>"). When
+  20 are PUBLISHED, stop as above. If one of yesterday's posts shows ERROR, report its `detailedStatus` word for
+  word. If a `createScheduledPost` call is refused with a plan or limit error: no retry, no workaround, report its
+  exact message; if that happens on the first Reel, do not create the second.
+- **The owner's choice** (put to him in the 26 Nov report; when he answers, write his answer here, delete the
+  bullets above and act on it):
+  1. Upgrade Metricool. Its pricing page (26 Nov) lists the Starter plan with unlimited scheduling, "From
+     $20/month" billed yearly or "From $25/month" billed monthly. Then: two Reels a day all month, `--cap 0`.
+  2. Stay on Free and ration: `budget.py` and the swap rule in step 0 decide (about one Reel a day, all month).
+  3. Stay on Free with two a day until the 20 are used (about the 10th), then nothing until the next month.
 
 Earlier decisions that still hold (18 Nov 2026, from Metricool's numbers for this account):
 - 46–60% of viewers swiped away in the first 3 seconds and the average watch was 5–12 s. The best Reel
@@ -128,11 +139,13 @@ with `close.date` on SPY.
   `get_index_quotes`).
 - **Count this month's posts:** `getScheduledPosts(brandId="7018528", fromDate="<first of month>T00:00:00-06:00",
   toDate="<last of month>T23:59:59-06:00", timezone="America/Chicago")` (use -05:00 while daylight saving time is
-  on). Count every post it returns, any status, drafts included = **N**. Then
-  `python3 pipeline/budget.py D --used N` → `remaining` and `weekdays_left` for the report (see "Posting budget"
-  at the top for what its `post` list means now). If N is 20 or more, do not stop on the count alone: on 24 Nov
-  Metricool accepted the 20th and 21st posts and both were published, so check that yesterday's posts beyond the
-  20th show PUBLISHED, as "Posting budget" at the top says.
+  on). The answer is large and the harness saves it to a file: read each post's `providers[0].status`,
+  `providers[0].detailedStatus` and `draft` with a few lines of Python. **N** = the posts with status PUBLISHED
+  plus the posts that are PENDING and not drafts (they use the allowance when they go out). Drafts and posts with
+  status ERROR do not count: Metricool counts only what it publishes. Then `python3 pipeline/budget.py D --used N`
+  → `remaining` and `weekdays_left` for the report (see "Posting budget" at the top for what its `post` list means
+  now). **If a post shows ERROR, report its `detailedStatus` word for word.** If N is 20 or more on the Free plan,
+  the month's posts are used: build nothing, report and stop, as "Posting budget" at the top says.
 - **Already done?** From the same list, if today's finance Reel (text starting "Ten on the Tape |") or today's
   geopolitics Reel is already there, drop it from today's list. More than one session can work on a day. If both
   are there, report that and stop.
@@ -209,6 +222,10 @@ Reel, so its reason has to be the best-sourced one.
   Motley Fool article about the stock ("As of 4:00 PM ET 11/20/26"), `fool.com/quote/…` ("Last close" with its
   date), Yahoo Finance's chart page ("At close: November 20 at 4:00:02 PM EST") and news stories that print the
   close. Google Finance, Yahoo's main quote page and Finviz came back stale or blocked; check the date label.
+- **A market holiday morning works like a weekend.** On Thanksgiving morning (Thu 26 Nov 2026, market closed)
+  `get_equity_quotes` returned `close.date` 2026-11-24 for SPY, QQQ and DIA: Tuesday's close, not Wednesday's,
+  because the quote had not rolled to a new session. On such a morning the last session's close is its daily bar,
+  after the same three checks. (Seen, not used: no Reel was built that day, see "Posting budget".)
 - Index moves for the outro and caption: `get_index_historicals` gives official daily closes for the S&P 500, the
   Nasdaq 100 and the Dow (take the instrument ids from `get_index_quotes(symbols=["SPX","NDX","DJX"])`; DJX is the
   Dow divided by 100). The Nasdaq Composite is not on Robinhood: use the Nasdaq 100 and call it that, or take the
