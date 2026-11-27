@@ -1,0 +1,46 @@
+{
+ "date": "2026-11-27",
+ "built": "2026-11-27 05:36-05:42 CT (scheduled run, started 05:35 CT; Friday, the day after Thanksgiving, NYSE early close at noon CT)",
+ "plan": "Reels only (task prompt of 20 Nov 2026): finance Reel 09:40 CT, geopolitics Reel 11:40 CT. Neither was built or scheduled today: Metricool has published its 20 posts for November (Free plan) and nothing since yesterday shows that the plan has changed. RUNBOOK.md 'Posting budget', rule for 27 to 30 Nov.",
+ "budget": {
+  "returned_by_getScheduledPosts": 23,
+  "published": 20,
+  "error": 2,
+  "draft_never_published": 1,
+  "cap": 20,
+  "budget_py": {
+   "post": [],
+   "default": "geo",
+   "remaining": 0,
+   "weekdays_left": 2,
+   "why": "monthly cap of 20 reached (20 used)"
+  },
+  "check": "getScheduledPosts for 1 to 30 Nov, read at about 05:37 CT: the same 23 posts as on 26 Nov. 20 PUBLISHED (the last two are the Reels of 24 Nov, 09:40 and 11:40). 2 ERROR: the Reels of 25 Nov (id 441627056 at 09:40, id 441627456 at 11:40), both with detailedStatus 'You have reached your Metricool account limit.' 1 draft still PENDING (the carousel draft dated 12 Nov, uuid 1606759134113517517). No post dated after 24 Nov is PUBLISHED.",
+  "what_would_lift_the_rule": "The owner saying he has upgraded (in RUNBOOK.md or the task prompt), or a post dated after the 20th published one showing PUBLISHED. Neither is there: the task prompt is the 20 Nov text and does not mention the limit, RUNBOOK.md has no answer from him, the gilded-ticker branch has no commit after 26 Nov 05:47 CT, the project reference page is unchanged, and getBrandSettings shows the brand, its timezone and its Instagram handle only (no plan).",
+  "decision": "Nothing built, nothing scheduled, no test post, no retry and no workaround. A post created today would be accepted as PENDING and, on the Free plan, fail at its publishing time with the same limit message: that is retrying a plan error, which the task prompt forbids.",
+  "result": "getScheduledPosts for 27 Nov 00:00 to 23:59 returned an empty list at 05:36 CT and again at 05:39 CT. createScheduledPost was not called."
+ },
+ "finance": null,
+ "reel": null,
+ "uncertain": [
+  "Whether the owner has upgraded Metricool without saying so: the connector does not show the plan. If he has, posts could have gone out today; the run cannot see that and did not test it.",
+  "His choice is still open (asked 21 Nov, 26 Nov and again in today's report): upgrade; stay on Free and ration to about one Reel a day; or stay on Free with two a day until the 20 are used. With no answer the runs follow the 20 Nov plan from 1 December: both Reels every day, which uses December's 20 posts on 10 December.",
+  "The two failed Reels of 25 Nov are still in Metricool with status ERROR. Their content is dated. They were left alone."
+ ],
+ "skipped": [
+  "Finance Reel (Ten on the Tape; the last session was Wednesday 25 Nov, Thursday was a market holiday): not researched, not built. No stock was chosen, no market wrap was read, no Robinhood call was made.",
+  "Geopolitics Reel: not researched, not built. No topic was chosen and no web search was run.",
+  "The two Reels of 25 Nov were not re-created or re-scheduled."
+ ],
+ "sources": [
+  "Metricool: getScheduledPosts for 27 Nov 2026 (empty, 05:36 and 05:39 CT) and for 1 to 30 Nov 2026 (23 posts, about 05:37 CT); getBrandSettings.",
+  "RUNBOOK.md 'Posting budget' (what Metricool's help centre says about the Free plan, as read on 26 Nov; not read again today) and log/2026-11-26.json.",
+  "Project reference page claude/gilded-ticker-daily-format.md (read only)."
+ ],
+ "notes": [
+  "Tools named in the prompt that are not in this session: mcp__claude_ai__current_time (used TZ=America/Chicago date: 05:36:19 CST at the first reading) and add_repo (the repository was already attached to the session; the clone and the push worked). Nothing was refused.",
+  "pipeline/tape_reel.py already existed. No code and no RUNBOOK.md text changed today; nothing was rendered and nothing was pushed to the media branch.",
+  "The project reference page still carries the wrong 25 Nov text about the limit ('the limit turned out not to stop posts'). It was read, not written: RUNBOOK.md says not to try again from a scheduled run. The corrected section is in log/2026-11-26.json ('reference_page_fix_proposed').",
+  "Report pushed to the owner's phone: nothing scheduled and why, Metricool's exact message on the 25 Nov Reels, when posting resumes, and the choice that is still open."
+ ]
+}
